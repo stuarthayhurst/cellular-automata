@@ -6,6 +6,7 @@
   - Conditions should have a space between them and the keyword
     - For example, `if (condition) {`, not `if(condition) {`
   - Every line should end with a semi-colon
+  - Exposed symbols and interfaces should be annotated with a JSDoc comment
 
 ## Branching policy:
   - All changes must be done via branching
