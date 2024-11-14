@@ -14,3 +14,4 @@
   - Bug fixes should be prefixed with `bugfix/`
   - Merge requests should be filed against `dev`
     - At the end of each sprint, `dev` will be merged into `main`
+  - Merge requests must be approved by at least 1 other person before merging, ideally more
