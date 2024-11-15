@@ -1,5 +1,5 @@
-import { model, togglePaused } from "./model";
-import { stepForward } from "./simulator";
+import { model, togglePaused } from "./model.js";
+import { stepForward } from "./simulator.js";
 
 const pauseButton = document.querySelector("#pauseButton");
 pauseButton.addEventListener("click", () => togglePaused(model));
