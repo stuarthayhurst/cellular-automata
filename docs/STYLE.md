@@ -1,6 +1,7 @@
 ## Code style:
   - Identifiers should use camel case
-  - Indentation should be a double space
+  - HTML + CSS indentation should use 2 spaces
+  - JavaScript indentation should use 4 spaces
   - Braces should be explicitly included
   - Braces should be on the same line as the statement
   - Conditions should have a space between them and the keyword
