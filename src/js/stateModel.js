@@ -1,5 +1,5 @@
 /**
- * @typedef Model
+ * @typedef StateModel
  * @type {object}
  * @property {ViewMode} viewMode
  * @property {Boolean} paused - If the simulation is paused.
@@ -8,8 +8,8 @@
  */
 /** @typedef {"2D"|"3D"} ViewMode */
 
-/** @type {Model} */
-export const model = {
+/** @type {StateModel} */
+export const stateModel = {
     cellData: [],
     cameraPosition: null,
     cameraAngle: null,
@@ -24,16 +24,16 @@ export const model = {
 
 /**
  * Clear all cells.
- * @param model {Model}
+ * @param stateModel {StateModel}
  */
-export function clearCells(model) {
+export function clearCells(stateModel) {
     // TODO: implement this
 }
 
 /**
  * Pause and unpause the simulation.
- * @param model {Model}
+ * @param stateModel {stateModel}
  */
-export function togglePaused(model) {
-    model.paused = !model.paused;
+export function togglePaused(stateModel) {
+    stateModel.paused = !stateModel.paused;
 }
