@@ -1,3 +1,5 @@
+import { stateModel } from "./stateModel";
+
 /**
  * Take one step forward.
  */
