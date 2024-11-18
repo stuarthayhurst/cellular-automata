@@ -94,8 +94,8 @@ function drawFrame() {
     context.bindVertexArray(meshVAO);
 
     //Draw the mesh
-    const triangleCount = 3;
-    context.drawArrays(context.TRIANGLES, 0, triangleCount);
+    const pointCount = 3;
+    context.drawArrays(context.TRIANGLES, 0, pointCount);
 
     //Loop
     window.requestAnimationFrame(drawFrame);
