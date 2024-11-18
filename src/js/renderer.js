@@ -85,8 +85,7 @@ context.vertexAttribPointer(meshAttribLocation,
                             0, //Stride
                             0); //Data offset
 
-let run = true
-while (run) {
+function drawFrame() {
     //Reset the canvas
     resetCanvas(context);
 
@@ -98,6 +97,9 @@ while (run) {
     const triangleCount = 3;
     context.drawArrays(context.TRIANGLES, 0, triangleCount);
 
-    //Stop rendering
-    run = false;
+    //Loop
+    window.requestAnimationFrame(drawFrame);
 }
+
+//Kick off rendering, tied to browser framerate
+window.requestAnimationFrame(drawFrame);
