@@ -1,5 +1,6 @@
 import { modelVertSource } from "./shaders/modelVert.js";
 import { modelFragSource } from "./shaders/modelFrag.js";
+import { stateModel } from "./stateModel.js";
 import { canvas } from "./ui.js";
 
 function compileShader(context, shaderType, shaderSource) {
@@ -130,12 +131,6 @@ context.vertexAttribPointer(meshAttribLocation,
 //Get shader uniform locations
 const MVPLocation = context.getUniformLocation(modelProgram, "MVP");
 
-//TODO: Get these from the data model instead of hard-coding
-let fov = 90;
-let cameraPosition = glMatrix.vec3.fromValues(1.0, 1.0, 1.0);
-let modelOrigin = glMatrix.vec3.fromValues(0.0, 0.0, 0.0);
-let up = glMatrix.vec3.fromValues(0.0, 1.0, 0.0);
-
 function drawFrame() {
     //Reset the canvas
     resetCanvas(context);
@@ -146,15 +141,19 @@ function drawFrame() {
 
     //Calculate the projection matrix
     const projectionMatrix = glMatrix.mat4.create();
-    glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(fov),
+    glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(stateModel.fieldOfView),
                               context.canvas.width / context.canvas.height, 0.1, null);
 
     //Calculate the view matrix
     const viewMatrix = glMatrix.mat4.create();
-    glMatrix.mat4.lookAt(viewMatrix, cameraPosition, modelOrigin, up);
+    const cameraTarget = glMatrix.vec3.create();
+    glMatrix.vec3.add(cameraTarget, stateModel.cameraPosition, stateModel.cameraDirection);
+    glMatrix.mat4.lookAt(viewMatrix, stateModel.cameraPosition, cameraTarget,
+                         glMatrix.vec3.fromValues(0.0, 1.0, 0.0));
 
     //Calculate the model matrix
-    //TODO: Calculate a more useful matrix to take into account actual position
+    //TODO: Calculate a more useful matrix to take into account actual position, scale and rotation
+    // - Rotation and position might be handled by the camera depending on interface design
     const modelMatrix = glMatrix.mat4.create();
     glMatrix.mat4.identity(modelMatrix);
 
