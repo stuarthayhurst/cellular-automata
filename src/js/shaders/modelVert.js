@@ -7,8 +7,10 @@ export const modelVertSource = `#version 300 es
 
 in vec3 inPosition;
 
+uniform mat4 MVP;
+
 void main() {
-    gl_Position = vec4(inPosition, 1.0);
+    gl_Position = MVP * vec4(inPosition, 1.0);
 }
 
 `;

@@ -44,12 +44,53 @@ function resetCanvas(context) {
     context.clear(context.COLOR_BUFFER_BIT);
 }
 
-//TODO: Replace this with actual mesh data
-//TODO: Every frame, check if shape or grid settings changed, recreate the mesh and cache it
+/* TODO:
+ * This is horrible, I know. It's going to be replaced with generated mesh data
+ * But for now, hard-coding a cube is the easiest way to set the rest of the code set up
+ * In future, check if settings changed and then either (re)generate a mesh, or use a cached copy
+*/
 let meshData = new Float32Array([
-  0, 0, 0,
-  0, 1, 0,
-  1, 0, 0,
+    -0.5, -0.5, -0.5,
+     0.5, -0.5, -0.5,
+     0.5,  0.5, -0.5,
+     0.5,  0.5, -0.5,
+    -0.5,  0.5, -0.5,
+    -0.5, -0.5, -0.5,
+
+    -0.5, -0.5,  0.5,
+     0.5, -0.5,  0.5,
+     0.5,  0.5,  0.5,
+     0.5,  0.5,  0.5,
+    -0.5,  0.5,  0.5,
+    -0.5, -0.5,  0.5,
+
+    -0.5,  0.5,  0.5,
+    -0.5,  0.5, -0.5,
+    -0.5, -0.5, -0.5,
+    -0.5, -0.5, -0.5,
+    -0.5, -0.5,  0.5,
+    -0.5,  0.5,  0.5,
+
+     0.5,  0.5,  0.5,
+     0.5,  0.5, -0.5,
+     0.5, -0.5, -0.5,
+     0.5, -0.5, -0.5,
+     0.5, -0.5,  0.5,
+     0.5,  0.5,  0.5,
+
+    -0.5, -0.5, -0.5,
+     0.5, -0.5, -0.5,
+     0.5, -0.5,  0.5,
+     0.5, -0.5,  0.5,
+    -0.5, -0.5,  0.5,
+    -0.5, -0.5, -0.5,
+
+    -0.5,  0.5, -0.5,
+     0.5,  0.5, -0.5,
+     0.5,  0.5,  0.5,
+     0.5,  0.5,  0.5,
+    -0.5,  0.5,  0.5,
+    -0.5,  0.5, -0.5,
 ]);
 
 //Prepare context from canvas element
@@ -67,6 +108,7 @@ const modelFragShader = compileShader(context, context.FRAGMENT_SHADER, modelFra
 
 //Link shaders into a program
 const modelProgram = linkProgram(context, modelVertShader, modelFragShader);
+context.useProgram(modelProgram);
 
 //Create and fill a buffer for the mesh
 const meshAttribLocation = context.getAttribLocation(modelProgram, "inPosition");
@@ -85,6 +127,15 @@ context.vertexAttribPointer(meshAttribLocation,
                             0, //Stride
                             0); //Data offset
 
+//Get shader uniform locations
+const MVPLocation = context.getUniformLocation(modelProgram, "MVP");
+
+//TODO: Get these from the data model instead of hard-coding
+let fov = 90;
+let cameraPosition = glMatrix.vec3.fromValues(1.0, 1.0, 1.0);
+let modelOrigin = glMatrix.vec3.fromValues(0.0, 0.0, 0.0);
+let up = glMatrix.vec3.fromValues(0.0, 1.0, 0.0);
+
 function drawFrame() {
     //Reset the canvas
     resetCanvas(context);
@@ -93,9 +144,29 @@ function drawFrame() {
     context.useProgram(modelProgram);
     context.bindVertexArray(meshVAO);
 
-    //Draw the mesh
-    const pointCount = 3;
-    context.drawArrays(context.TRIANGLES, 0, pointCount);
+    //Calculate the projection matrix
+    const projectionMatrix = glMatrix.mat4.create();
+    glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(fov),
+                              context.canvas.width / context.canvas.height, 0.1, null);
+
+    //Calculate the view matrix
+    const viewMatrix = glMatrix.mat4.create();
+    glMatrix.mat4.lookAt(viewMatrix, cameraPosition, modelOrigin, up);
+
+    //Calculate the model matrix
+    //TODO: Calculate a more useful matrix to take into account actual position
+    const modelMatrix = glMatrix.mat4.create();
+    glMatrix.mat4.identity(modelMatrix);
+
+    //Combine matrices into a precalculated MVP matrix
+    const MVP = glMatrix.mat4.create();
+    glMatrix.mat4.multiply(MVP, projectionMatrix, viewMatrix);
+    glMatrix.mat4.multiply(MVP, MVP, modelMatrix);
+
+    //Send the uniforms and draw the mesh
+    //TODO: Swap to using element buffers and index the meshes
+    context.uniformMatrix4fv(MVPLocation, false, MVP);
+    context.drawArrays(context.TRIANGLES, 0, meshData.length / 3);
 
     //Loop
     window.requestAnimationFrame(drawFrame);
