@@ -1,5 +1,6 @@
 import { modelVertSource } from "./shaders/modelVert.js";
 import { modelFragSource } from "./shaders/modelFrag.js";
+import { canvas } from "./ui.js";
 
 function compileShader(context, shaderType, shaderSource) {
     //Create, load and compile the shader
@@ -51,8 +52,7 @@ let meshData = new Float32Array([
   1, 0, 0,
 ]);
 
-//Fetch elements, prepare context
-const canvas = document.querySelector("#renderer");
+//Prepare context from canvas element
 const context = canvas.getContext("webgl2");
 if (!context) {
     console.log("No WebGL2 support detected, good luck");
