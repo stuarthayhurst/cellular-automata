@@ -165,6 +165,8 @@ function drawFrame() {
 
     //Send the uniforms and draw the mesh
     //TODO: Swap to using element buffers and index the meshes
+    //TODO: Enable depth testing, clear the depth each frame
+    //TODO: Enable backface culling
     context.uniformMatrix4fv(MVPLocation, false, MVP);
     context.drawArrays(context.TRIANGLES, 0, meshData.length / 3);
 
