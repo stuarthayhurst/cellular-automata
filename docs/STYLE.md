@@ -1,4 +1,4 @@
-## Code Style
+## Style Guide
   - **Exposed symbols and interfaces must be annotated with a JSDoc comment**
   - All source files will be formatted with **Prettier** following `.prettierrc`:
     - HTML & CSS indentation is 2 spaces
