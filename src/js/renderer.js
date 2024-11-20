@@ -178,11 +178,20 @@ function drawFrame() {
         glMatrix.vec3.fromValues(0.0, 1.0, 0.0),
     );
 
-    //Calculate the model matrix
-    //TODO: Calculate a more useful matrix to take into account actual position, scale and rotation
-    // - Rotation and position might be handled by the camera depending on interface design
+    /* Calculate the model matrix
+     * For a single model, rotation and translation are better handled by a camera
+     */
     const modelMatrix = glMatrix.mat4.create();
     glMatrix.mat4.identity(modelMatrix);
+    glMatrix.mat4.scale(
+        modelMatrix,
+        modelMatrix,
+        glMatrix.vec3.fromValues(
+            stateModel.zoom,
+            stateModel.zoom,
+            stateModel.zoom,
+        ),
+    );
 
     //Combine matrices into a precalculated MVP matrix
     const MVP = glMatrix.mat4.create();
