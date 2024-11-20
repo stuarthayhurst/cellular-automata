@@ -32,7 +32,7 @@ export function clearCells(stateModel) {
 
 /**
  * Pause and unpause the simulation.
- * @param stateModel {stateModel}
+ * @param stateModel {StateModel}
  */
 export function togglePaused(stateModel) {
     stateModel.paused = !stateModel.paused;

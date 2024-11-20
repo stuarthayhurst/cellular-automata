@@ -1,8 +1,10 @@
 import { stateModel, togglePaused } from "./stateModel.js";
 import { stepForward } from "./simulator.js";
 
-const pauseButton = document.querySelector("#pauseButton");
+export const canvas = document.querySelector("#renderer");
+
+const pauseButton = document.querySelector("#pause-button");
 pauseButton.addEventListener("click", () => togglePaused(stateModel));
 
-const stepForwardButton = document.querySelector("#stepForwardButton");
+const stepForwardButton = document.querySelector("#step-forward-button");
 stepForwardButton.addEventListener("click", () => stepForward());
