@@ -139,8 +139,8 @@ context.vertexAttribPointer(
     context.FLOAT, //Data type
     false, //Normalisation toggle
     0, //Stride
-    0,
-); //Data offset
+    0, //Data offset
+);
 
 //Get shader uniform locations
 const MVPLocation = context.getUniformLocation(modelProgram, "MVP");
