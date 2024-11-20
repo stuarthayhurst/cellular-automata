@@ -1,0 +1,51 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+    color: white;
+}
+
+#app {
+    height: 100vh;
+    display: grid;
+    grid-template-areas:
+        "controls settings"
+        "canvas settings";
+    grid-template-columns: auto 400px;
+    grid-template-rows: 75px auto;
+    background-color: red;
+}
+
+#canvas {
+    grid-area: canvas;
+    background-color: gray;
+}
+
+#controls {
+    grid-area: controls;
+    align-content: center;
+    text-align: center;
+    padding: 20px;
+    background-color: darkslategray;
+}
+
+#controls-bar {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: min-content;
+}
+
+#left-controls {
+    align-content: start;
+    text-align: left;
+}
+
+#right-controls {
+    align-content: end;
+    text-align: right;
+}
+
+#settings {
+    grid-area: settings;
+    padding: 0 20px 20px 20px;
+    background-color: slategray;
+}

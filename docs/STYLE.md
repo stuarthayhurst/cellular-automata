@@ -1,19 +1,9 @@
-## Code style:
-  - Identifiers should use camel case
-  - HTML + CSS indentation should use 2 spaces
-  - JavaScript indentation should use 4 spaces
-  - Braces should be explicitly included
-  - Braces should be on the same line as the statement
-  - Conditions should have a space between them and the keyword
-    - For example, `if (condition) {`, not `if(condition) {`
-  - Every line should end with a semi-colon
-  - Exposed symbols and interfaces should be annotated with a JSDoc comment
-
-## Branching policy:
-  - All changes must be done via branching
-    - Keep branches focused and limited in scope, to allow merging them quickly and efficiently
-  - Features should be prefixed with `feature/`
-  - Bug fixes should be prefixed with `bugfix/`
-  - Merge requests should be filed against `dev`
-    - At the end of each sprint, `dev` will be merged into `main`
-  - Merge requests must be approved by at least 1 other person before merging, ideally more
+## Style Guide
+  - **Exposed symbols and interfaces must be annotated with a JSDoc comment**
+  - All source files will be formatted with **Prettier** following `.prettierrc`:
+    - HTML & CSS indentation is 2 spaces
+    - JavaScript indentation is 4 spaces
+    - Semicolons at the end of every statement
+    - Double quotes rather than single quotes
+  - Use camel case for function and variable names, e.g. `viewMode`, `togglePaused`
+  - Use pascal case for types, e.g. `StateModel`
