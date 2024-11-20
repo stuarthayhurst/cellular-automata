@@ -1,6 +1,9 @@
 /**
  * @typedef StateModel
  * @type {object}
+ * @property {Vec3} cameraPosition - Location of the camera
+ * @property {Vec3} cameraDirection - Direction the camera is facing, so it's looking at cameraPosition + cameraDirection
+ * @property {Number} fieldOfView - Field of view of the camera
  * @property {ViewMode} viewMode
  * @property {Boolean} paused - If the simulation is paused.
  * @property {Number} baseStepIntervalMillis - Interval in milliseconds between simulation steps taken when not paused.
@@ -11,8 +14,11 @@
 /** @type {StateModel} */
 export const stateModel = {
     cellData: [],
-    cameraPosition: null,
-    cameraAngle: null,
+
+    // Camera controls
+    cameraPosition: glMatrix.vec3.fromValues(1.0, 1.0, 1.0),
+    cameraDirection: glMatrix.vec3.fromValues(-1.0, -1.0, -1.0),
+    fieldOfView: 90.0,
 
     viewMode: "3D",
 
