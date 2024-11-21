@@ -49,7 +49,8 @@ function resetCanvas(context) {
  * This is horrible, I know. It's going to be replaced with generated mesh data
  * But for now, hard-coding a cube is the easiest way to set the rest of the code set up
  * In future, check if settings changed and then either (re)generate a mesh, or use a cached copy
-*/
+ */
+// prettier-ignore
 let meshData = new Float32Array([
     -0.5, -0.5, -0.5,
      0.5, -0.5, -0.5,
@@ -104,15 +105,26 @@ if (!context) {
 resetCanvas(context);
 
 //Compile the shaders
-const modelVertShader = compileShader(context, context.VERTEX_SHADER, modelVertSource);
-const modelFragShader = compileShader(context, context.FRAGMENT_SHADER, modelFragSource);
+const modelVertShader = compileShader(
+    context,
+    context.VERTEX_SHADER,
+    modelVertSource,
+);
+const modelFragShader = compileShader(
+    context,
+    context.FRAGMENT_SHADER,
+    modelFragSource,
+);
 
 //Link shaders into a program
 const modelProgram = linkProgram(context, modelVertShader, modelFragShader);
 context.useProgram(modelProgram);
 
 //Create and fill a buffer for the mesh
-const meshAttribLocation = context.getAttribLocation(modelProgram, "inPosition");
+const meshAttribLocation = context.getAttribLocation(
+    modelProgram,
+    "inPosition",
+);
 let meshBuffer = context.createBuffer();
 context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
 context.bufferData(context.ARRAY_BUFFER, meshData, context.STATIC_DRAW);
@@ -121,12 +133,14 @@ context.bufferData(context.ARRAY_BUFFER, meshData, context.STATIC_DRAW);
 let meshVAO = context.createVertexArray();
 context.bindVertexArray(meshVAO);
 context.enableVertexAttribArray(meshAttribLocation);
-context.vertexAttribPointer(meshAttribLocation,
-                            3, //Number of components
-                            context.FLOAT, //Data type
-                            false, //Normalisation toggle
-                            0, //Stride
-                            0); //Data offset
+context.vertexAttribPointer(
+    meshAttribLocation,
+    3, //Number of components
+    context.FLOAT, //Data type
+    false, //Normalisation toggle
+    0, //Stride
+    0,
+); //Data offset
 
 //Get shader uniform locations
 const MVPLocation = context.getUniformLocation(modelProgram, "MVP");
@@ -141,15 +155,28 @@ function drawFrame() {
 
     //Calculate the projection matrix
     const projectionMatrix = glMatrix.mat4.create();
-    glMatrix.mat4.perspective(projectionMatrix, glMatrix.glMatrix.toRadian(stateModel.fieldOfView),
-                              context.canvas.width / context.canvas.height, 0.1, null);
+    glMatrix.mat4.perspective(
+        projectionMatrix,
+        glMatrix.glMatrix.toRadian(stateModel.fieldOfView),
+        context.canvas.width / context.canvas.height,
+        0.1,
+        null,
+    );
 
     //Calculate the view matrix
     const viewMatrix = glMatrix.mat4.create();
     const cameraTarget = glMatrix.vec3.create();
-    glMatrix.vec3.add(cameraTarget, stateModel.cameraPosition, stateModel.cameraDirection);
-    glMatrix.mat4.lookAt(viewMatrix, stateModel.cameraPosition, cameraTarget,
-                         glMatrix.vec3.fromValues(0.0, 1.0, 0.0));
+    glMatrix.vec3.add(
+        cameraTarget,
+        stateModel.cameraPosition,
+        stateModel.cameraDirection,
+    );
+    glMatrix.mat4.lookAt(
+        viewMatrix,
+        stateModel.cameraPosition,
+        cameraTarget,
+        glMatrix.vec3.fromValues(0.0, 1.0, 0.0),
+    );
 
     //Calculate the model matrix
     //TODO: Calculate a more useful matrix to take into account actual position, scale and rotation
