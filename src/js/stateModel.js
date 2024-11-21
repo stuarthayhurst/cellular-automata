@@ -1,7 +1,7 @@
 /**
  * @typedef StateModel
  * @type {object}
- * @property {Array<Number>} cellData - Cell data.
+ * @property {Array<Number>} cells - Row-first cell values.
  * @property {Vec3} cameraPosition - Location of the camera.
  * @property {Vec3} cameraDirection - Direction the camera is facing, so it's looking at cameraPosition + cameraDirection.
  * @property {Number} fieldOfView - Field of view of the camera.
@@ -19,7 +19,7 @@
 /** @type {StateModel} */
 export const stateModel = {
     // Cell data
-    cellData: [],
+    cells: [],
 
     // Camera controls
     cameraPosition: glMatrix.vec3.fromValues(1.0, 1.0, 1.0),

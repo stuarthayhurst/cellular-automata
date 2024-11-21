@@ -2,22 +2,23 @@ import { stateModel } from "./stateModel.js";
 
 /**
  * Take one step forward.
- * @returns {Array<number>}
  */
 export function stepForward() {
     //for now I have used a fixed grid width because I cannot find where it is stored in stateModel
     const width = 10;
-    const grid = stateModel.cellData;
-    let newGrid = [];
+    const cells = stateModel.cells;
+    let newCells = [];
 
-    for (let y = 0; y < grid.length / width; y++) {
+    for (let y = 0; y < cells.length / width; y++) {
         for (let x = 0; x < width; x++) {
-            let neighbourCount = countMooresNeighbours(grid, width, x, y);
-            newGrid.push(computeCellState(grid[x + y * width], neighbourCount));
+            let neighbourCount = countMooresNeighbours(cells, width, x, y);
+            newCells.push(
+                computeCellState(cells[x + y * width], neighbourCount),
+            );
         }
     }
 
-    return newGrid;
+    stateModel.cells = newCells;
 }
 
 //counts the number of live neighbours within the Moore neighbourhood
