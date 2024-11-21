@@ -15,3 +15,10 @@ stateModel.addEventListener("onPausedChanged", () => {
 
 const stepForwardButton = document.querySelector("#step-forward-button");
 stepForwardButton.addEventListener("click", () => stepForward());
+
+function resizeCanvas() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight - 5;
+}
+resizeCanvas();
+addEventListener("resize", (_) => resizeCanvas());
