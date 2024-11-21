@@ -1,5 +1,3 @@
-import * as glMatrix from "./gl-matrix/src/index.js";
-
 /**
  * @typedef StateModel
  * @type {object}
@@ -7,8 +5,8 @@ import * as glMatrix from "./gl-matrix/src/index.js";
  * @property {Number} cellGridWidth
  * @property {Number} cellGridHeight
  *
- * @property {vec3} cameraPosition - Location of the camera.
- * @property {vec3} cameraDirection - Direction the camera is facing, so it's looking at cameraPosition + cameraDirection.
+ * @property {Vec3} cameraPosition - Location of the camera.
+ * @property {Vec3} cameraDirection - Direction the camera is facing, so it's looking at cameraPosition + cameraDirection.
  * @property {Number} fieldOfView - Field of view of the camera.
  *
  * @property {ViewMode} viewMode - Whether to show the 2D editor or 3D view in the interface.

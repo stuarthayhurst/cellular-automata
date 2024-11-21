@@ -2,7 +2,6 @@ import { modelVertSource } from "./shaders/modelVert.js";
 import { modelFragSource } from "./shaders/modelFrag.js";
 import { stateModel } from "./stateModel.js";
 import { canvas } from "./ui.js";
-import * as glMatrix from "./gl-matrix/src/index.js";
 
 function compileShader(context, shaderType, shaderSource) {
     //Create, load and compile the shader
