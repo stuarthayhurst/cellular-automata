@@ -1,4 +1,4 @@
-import { stateModel } from "./stateModel";
+import { stateModel } from "./stateModel.js";
 
 /**
  * Take one step forward.
