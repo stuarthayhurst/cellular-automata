@@ -42,7 +42,7 @@ function linkProgram(context, vertexShader, fragShader) {
 function resetCanvas(context) {
     context.viewport(0, 0, context.canvas.width, context.canvas.height);
     context.clearColor(0, 0, 0, 0);
-    context.clear(context.COLOR_BUFFER_BIT);
+    context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
 }
 
 /* TODO:
@@ -52,47 +52,47 @@ function resetCanvas(context) {
  */
 // prettier-ignore
 let meshData = new Float32Array([
-    -0.5, -0.5, -0.5,
-     0.5, -0.5, -0.5,
-     0.5,  0.5, -0.5,
-     0.5,  0.5, -0.5,
-    -0.5,  0.5, -0.5,
-    -0.5, -0.5, -0.5,
+    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
+     0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
+     0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
+     0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
+    -0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
+    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
 
-    -0.5, -0.5,  0.5,
-     0.5, -0.5,  0.5,
-     0.5,  0.5,  0.5,
-     0.5,  0.5,  0.5,
-    -0.5,  0.5,  0.5,
-    -0.5, -0.5,  0.5,
+    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
+     0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
+     0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
+     0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
+    -0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
+    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
 
-    -0.5,  0.5,  0.5,
-    -0.5,  0.5, -0.5,
-    -0.5, -0.5, -0.5,
-    -0.5, -0.5, -0.5,
-    -0.5, -0.5,  0.5,
-    -0.5,  0.5,  0.5,
+    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
+    -0.5,  0.5, -0.5, -1.0,  0.0,  0.0,
+    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
+    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
+    -0.5, -0.5,  0.5, -1.0,  0.0,  0.0,
+    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
 
-     0.5,  0.5,  0.5,
-     0.5,  0.5, -0.5,
-     0.5, -0.5, -0.5,
-     0.5, -0.5, -0.5,
-     0.5, -0.5,  0.5,
-     0.5,  0.5,  0.5,
+     0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
+     0.5,  0.5, -0.5,  1.0,  0.0,  0.0,
+     0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
+     0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
+     0.5, -0.5,  0.5,  1.0,  0.0,  0.0,
+     0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
 
-    -0.5, -0.5, -0.5,
-     0.5, -0.5, -0.5,
-     0.5, -0.5,  0.5,
-     0.5, -0.5,  0.5,
-    -0.5, -0.5,  0.5,
-    -0.5, -0.5, -0.5,
+    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
+     0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
+     0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
+     0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
+    -0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
+    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
 
-    -0.5,  0.5, -0.5,
-     0.5,  0.5, -0.5,
-     0.5,  0.5,  0.5,
-     0.5,  0.5,  0.5,
-    -0.5,  0.5,  0.5,
-    -0.5,  0.5, -0.5,
+    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
+     0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
+     0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
+     0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
+    -0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
+    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
 ]);
 
 //Prepare context from canvas element
@@ -121,29 +121,53 @@ const modelProgram = linkProgram(context, modelVertShader, modelFragShader);
 context.useProgram(modelProgram);
 
 //Create and fill a buffer for the mesh
-const meshAttribLocation = context.getAttribLocation(
-    modelProgram,
-    "inPosition",
-);
 let meshBuffer = context.createBuffer();
 context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
 context.bufferData(context.ARRAY_BUFFER, meshData, context.STATIC_DRAW);
 
-//Create a vertex array object for the mesh
+//Fetch shader attribute locations
+const meshAttribLocation = context.getAttribLocation(
+    modelProgram,
+    "inPosition",
+);
+const normalAttribLocation = context.getAttribLocation(
+    modelProgram,
+    "inNormal",
+);
+
+//Create a vertex array object for the mesh, define the positions and normals
 let meshVAO = context.createVertexArray();
 context.bindVertexArray(meshVAO);
-context.enableVertexAttribArray(meshAttribLocation);
 context.vertexAttribPointer(
     meshAttribLocation,
     3, //Number of components
     context.FLOAT, //Data type
     false, //Normalisation toggle
-    0, //Stride
-    0, //Data offset
+    6 * 4, //Stride - (2 * 3) * sizeof(float)
+    0, //Data offset - (0 * 3) * sizeof(float)
 );
+context.enableVertexAttribArray(meshAttribLocation);
+context.vertexAttribPointer(
+    normalAttribLocation,
+    3, //Number of components
+    context.FLOAT, //Data type
+    false, //Normalisation toggle
+    6 * 4, //Stride - (2 * 3) * sizeof(float)
+    3 * 4, //Data offset - (1 * 3) * sizeof(float)
+);
+context.enableVertexAttribArray(normalAttribLocation);
 
 //Get shader uniform locations
 const MVPLocation = context.getUniformLocation(modelProgram, "MVP");
+const modelMatrixLocation = context.getUniformLocation(
+    modelProgram,
+    "modelMatrix",
+);
+const cameraPosLocation = context.getUniformLocation(modelProgram, "cameraPos");
+
+//Enable depth testing
+context.enable(context.DEPTH_TEST);
+context.depthFunc(context.LEQUAL);
 
 function drawFrame() {
     //Reset the canvas
@@ -202,8 +226,10 @@ function drawFrame() {
     //TODO: Swap to using element buffers and index the meshes
     //TODO: Enable depth testing, clear the depth each frame
     //TODO: Enable backface culling
+    context.uniform3fv(cameraPosLocation, stateModel.cameraPosition);
     context.uniformMatrix4fv(MVPLocation, false, MVP);
-    context.drawArrays(context.TRIANGLES, 0, meshData.length / 3);
+    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
+    context.drawArrays(context.TRIANGLES, 0, meshData.length / 6);
 
     //Loop
     window.requestAnimationFrame(drawFrame);
