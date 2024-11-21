@@ -4,8 +4,7 @@ import { stateModel } from "./stateModel.js";
  * Take one step forward.
  */
 export function stepForward() {
-    //for now I have used a fixed grid width because I cannot find where it is stored in stateModel
-    const width = 10;
+    const width = stateModel.cellGridWidth;
     const cells = stateModel.cells;
     let newCells = [];
 
