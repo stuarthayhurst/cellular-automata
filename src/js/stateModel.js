@@ -1,10 +1,11 @@
 /**
  * @typedef StateModel
  * @type {object}
- * @property {Vec3} cameraPosition - Location of the camera
- * @property {Vec3} cameraDirection - Direction the camera is facing, so it's looking at cameraPosition + cameraDirection
- * @property {Number} fieldOfView - Field of view of the camera
- * @property {ViewMode} viewMode
+ * @property {Array<Number>} cellData - Cell data.
+ * @property {Vec3} cameraPosition - Location of the camera.
+ * @property {Vec3} cameraDirection - Direction the camera is facing, so it's looking at cameraPosition + cameraDirection.
+ * @property {Number} fieldOfView - Field of view of the camera.
+ * @property {ViewMode} viewMode - Whether to show the 2D editor or 3D view in the interface.
  * @property {Boolean} paused - If the simulation is paused.
  * @property {Number} baseStepIntervalMillis - Interval in milliseconds between simulation steps taken when not paused.
  * @property {Number} stepIntervalMultiplier - Multiplier applied to the base step interval, e.g. 0.5x, 3x.
