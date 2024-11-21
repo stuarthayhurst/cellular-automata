@@ -39,6 +39,45 @@ function linkProgram(context, vertexShader, fragShader) {
     }
 }
 
+function calculateProjectionMatrix(fieldOfView, height, width) {
+    const projectionMatrix = glMatrix.mat4.create();
+    glMatrix.mat4.perspective(
+        projectionMatrix,
+        glMatrix.glMatrix.toRadian(fieldOfView),
+        width / height,
+        0.1,
+        null,
+    );
+
+    return projectionMatrix;
+}
+
+function calculateViewMatrix(cameraPosition, cameraDirection) {
+    const viewMatrix = glMatrix.mat4.create();
+    const cameraTarget = glMatrix.vec3.create();
+    glMatrix.vec3.add(cameraTarget, cameraPosition, cameraDirection);
+    glMatrix.mat4.lookAt(
+        viewMatrix,
+        cameraPosition,
+        cameraTarget,
+        glMatrix.vec3.fromValues(0.0, 1.0, 0.0),
+    );
+
+    return viewMatrix;
+}
+
+function calculateModelMatrix(scale) {
+    const modelMatrix = glMatrix.mat4.create();
+    glMatrix.mat4.identity(modelMatrix);
+    glMatrix.mat4.scale(
+        modelMatrix,
+        modelMatrix,
+        glMatrix.vec3.fromValues(scale, scale, scale),
+    );
+
+    return modelMatrix;
+}
+
 function resetCanvas(context) {
     context.viewport(0, 0, context.canvas.width, context.canvas.height);
     context.clearColor(0, 0, 0, 0);
@@ -178,44 +217,22 @@ function drawFrame() {
     context.bindVertexArray(meshVAO);
 
     //Calculate the projection matrix
-    const projectionMatrix = glMatrix.mat4.create();
-    glMatrix.mat4.perspective(
-        projectionMatrix,
-        glMatrix.glMatrix.toRadian(stateModel.fieldOfView),
-        context.canvas.width / context.canvas.height,
-        0.1,
-        null,
+    const projectionMatrix = calculateProjectionMatrix(
+        stateModel.fieldOfView,
+        context.canvas.height,
+        context.canvas.width,
     );
 
     //Calculate the view matrix
-    const viewMatrix = glMatrix.mat4.create();
-    const cameraTarget = glMatrix.vec3.create();
-    glMatrix.vec3.add(
-        cameraTarget,
+    const viewMatrix = calculateViewMatrix(
         stateModel.cameraPosition,
         stateModel.cameraDirection,
-    );
-    glMatrix.mat4.lookAt(
-        viewMatrix,
-        stateModel.cameraPosition,
-        cameraTarget,
-        glMatrix.vec3.fromValues(0.0, 1.0, 0.0),
     );
 
     /* Calculate the model matrix
      * For a single model, rotation and translation are better handled by a camera
      */
-    const modelMatrix = glMatrix.mat4.create();
-    glMatrix.mat4.identity(modelMatrix);
-    glMatrix.mat4.scale(
-        modelMatrix,
-        modelMatrix,
-        glMatrix.vec3.fromValues(
-            stateModel.zoom,
-            stateModel.zoom,
-            stateModel.zoom,
-        ),
-    );
+    const modelMatrix = calculateModelMatrix(stateModel.zoom);
 
     //Combine matrices into a precalculated MVP matrix
     const MVP = glMatrix.mat4.create();
@@ -224,7 +241,6 @@ function drawFrame() {
 
     //Send the uniforms and draw the mesh
     //TODO: Swap to using element buffers and index the meshes
-    //TODO: Enable depth testing, clear the depth each frame
     //TODO: Enable backface culling
     context.uniform3fv(cameraPosLocation, stateModel.cameraPosition);
     context.uniformMatrix4fv(MVPLocation, false, MVP);
