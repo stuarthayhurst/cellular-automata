@@ -8,6 +8,7 @@
  * @property {Vec3} cameraPosition - Location of the camera.
  * @property {Vec3} cameraDirection - Direction the camera is facing, so it's looking at cameraPosition + cameraDirection.
  * @property {Number} fieldOfView - Field of view of the camera.
+ * @property {Number} zoom - Zoom multiplier, actually just scales the model from the origin
  *
  * @property {ViewMode} viewMode - Whether to show the 2D editor or 3D view in the interface.
  * @property {function(ViewMode)} setViewMode
@@ -34,6 +35,7 @@ export const stateModel = {
     cameraPosition: glMatrix.vec3.fromValues(1.0, 1.0, 1.0),
     cameraDirection: glMatrix.vec3.fromValues(-1.0, -1.0, -1.0),
     fieldOfView: 90.0,
+    zoom: 1.0,
 
     // View Mode
     viewMode: "3D",

@@ -6,10 +6,35 @@
 export const modelFragSource = `#version 300 es
 precision mediump float;
 
+in vec3 fragPos;
+in vec3 normal;
+
 out vec4 outColour;
 
+uniform vec3 cameraPos;
+
+float ambientStrength = 0.1;
+float diffuseStrength = 1.5;
+float specularStrength = 0.5;
+vec3 baseColour = vec3(1, 0, 0);
+
 void main() {
-    outColour = vec4(1, 0, 0, 1);
+  vec3 lightPos = cameraPos;
+
+  //Diffuse lighting
+  vec3 normNormal = normalize(normal);
+  vec3 lightDir = normalize(lightPos - fragPos);
+  float diffuse = max(dot(normNormal, lightDir), 0.0);
+  diffuse *= diffuseStrength;
+
+  //Specular lighting
+  vec3 viewDir = normalize(cameraPos - fragPos);
+  vec3 reflectDir = reflect(-lightDir, normNormal);
+  float specular = pow(max(dot(cameraPos, reflectDir), 0.0), 32.0);
+  specular *= specularStrength;
+
+  //Combine results
+  outColour = vec4((ambientStrength + diffuse + specular) * baseColour, 1.0);
 }
 
 `;

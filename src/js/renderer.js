@@ -39,10 +39,49 @@ function linkProgram(context, vertexShader, fragShader) {
     }
 }
 
+function calculateProjectionMatrix(fieldOfView, height, width) {
+    const projectionMatrix = glMatrix.mat4.create();
+    glMatrix.mat4.perspective(
+        projectionMatrix,
+        glMatrix.glMatrix.toRadian(fieldOfView),
+        width / height,
+        0.1,
+        null,
+    );
+
+    return projectionMatrix;
+}
+
+function calculateViewMatrix(cameraPosition, cameraDirection) {
+    const viewMatrix = glMatrix.mat4.create();
+    const cameraTarget = glMatrix.vec3.create();
+    glMatrix.vec3.add(cameraTarget, cameraPosition, cameraDirection);
+    glMatrix.mat4.lookAt(
+        viewMatrix,
+        cameraPosition,
+        cameraTarget,
+        glMatrix.vec3.fromValues(0.0, 1.0, 0.0),
+    );
+
+    return viewMatrix;
+}
+
+function calculateModelMatrix(scale) {
+    const modelMatrix = glMatrix.mat4.create();
+    glMatrix.mat4.identity(modelMatrix);
+    glMatrix.mat4.scale(
+        modelMatrix,
+        modelMatrix,
+        glMatrix.vec3.fromValues(scale, scale, scale),
+    );
+
+    return modelMatrix;
+}
+
 function resetCanvas(context) {
     context.viewport(0, 0, context.canvas.width, context.canvas.height);
     context.clearColor(0, 0, 0, 0);
-    context.clear(context.COLOR_BUFFER_BIT);
+    context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
 }
 
 /* TODO:
@@ -52,47 +91,47 @@ function resetCanvas(context) {
  */
 // prettier-ignore
 let meshData = new Float32Array([
-    -0.5, -0.5, -0.5,
-     0.5, -0.5, -0.5,
-     0.5,  0.5, -0.5,
-     0.5,  0.5, -0.5,
-    -0.5,  0.5, -0.5,
-    -0.5, -0.5, -0.5,
+    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
+     0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
+     0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
+     0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
+    -0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
+    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
 
-    -0.5, -0.5,  0.5,
-     0.5, -0.5,  0.5,
-     0.5,  0.5,  0.5,
-     0.5,  0.5,  0.5,
-    -0.5,  0.5,  0.5,
-    -0.5, -0.5,  0.5,
+    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
+     0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
+     0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
+     0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
+    -0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
+    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
 
-    -0.5,  0.5,  0.5,
-    -0.5,  0.5, -0.5,
-    -0.5, -0.5, -0.5,
-    -0.5, -0.5, -0.5,
-    -0.5, -0.5,  0.5,
-    -0.5,  0.5,  0.5,
+    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
+    -0.5,  0.5, -0.5, -1.0,  0.0,  0.0,
+    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
+    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
+    -0.5, -0.5,  0.5, -1.0,  0.0,  0.0,
+    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
 
-     0.5,  0.5,  0.5,
-     0.5,  0.5, -0.5,
-     0.5, -0.5, -0.5,
-     0.5, -0.5, -0.5,
-     0.5, -0.5,  0.5,
-     0.5,  0.5,  0.5,
+     0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
+     0.5,  0.5, -0.5,  1.0,  0.0,  0.0,
+     0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
+     0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
+     0.5, -0.5,  0.5,  1.0,  0.0,  0.0,
+     0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
 
-    -0.5, -0.5, -0.5,
-     0.5, -0.5, -0.5,
-     0.5, -0.5,  0.5,
-     0.5, -0.5,  0.5,
-    -0.5, -0.5,  0.5,
-    -0.5, -0.5, -0.5,
+    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
+     0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
+     0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
+     0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
+    -0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
+    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
 
-    -0.5,  0.5, -0.5,
-     0.5,  0.5, -0.5,
-     0.5,  0.5,  0.5,
-     0.5,  0.5,  0.5,
-    -0.5,  0.5,  0.5,
-    -0.5,  0.5, -0.5,
+    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
+     0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
+     0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
+     0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
+    -0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
+    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
 ]);
 
 //Prepare context from canvas element
@@ -121,68 +160,84 @@ const modelProgram = linkProgram(context, modelVertShader, modelFragShader);
 context.useProgram(modelProgram);
 
 //Create and fill a buffer for the mesh
-const meshAttribLocation = context.getAttribLocation(
-    modelProgram,
-    "inPosition",
-);
 let meshBuffer = context.createBuffer();
 context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
 context.bufferData(context.ARRAY_BUFFER, meshData, context.STATIC_DRAW);
 
-//Create a vertex array object for the mesh
+//Fetch shader attribute locations
+const meshAttribLocation = context.getAttribLocation(
+    modelProgram,
+    "inPosition",
+);
+const normalAttribLocation = context.getAttribLocation(
+    modelProgram,
+    "inNormal",
+);
+
+//Create a vertex array object for the mesh, define the positions and normals
 let meshVAO = context.createVertexArray();
 context.bindVertexArray(meshVAO);
-context.enableVertexAttribArray(meshAttribLocation);
 context.vertexAttribPointer(
     meshAttribLocation,
     3, //Number of components
     context.FLOAT, //Data type
     false, //Normalisation toggle
-    0, //Stride
-    0,
-); //Data offset
+    6 * 4, //Stride - (2 * 3) * sizeof(float)
+    0, //Data offset - (0 * 3) * sizeof(float)
+);
+context.enableVertexAttribArray(meshAttribLocation);
+context.vertexAttribPointer(
+    normalAttribLocation,
+    3, //Number of components
+    context.FLOAT, //Data type
+    false, //Normalisation toggle
+    6 * 4, //Stride - (2 * 3) * sizeof(float)
+    3 * 4, //Data offset - (1 * 3) * sizeof(float)
+);
+context.enableVertexAttribArray(normalAttribLocation);
 
 //Get shader uniform locations
 const MVPLocation = context.getUniformLocation(modelProgram, "MVP");
+const modelMatrixLocation = context.getUniformLocation(
+    modelProgram,
+    "modelMatrix",
+);
+const cameraPosLocation = context.getUniformLocation(modelProgram, "cameraPos");
+
+//Enable depth testing
+context.enable(context.DEPTH_TEST);
+context.depthFunc(context.LEQUAL);
 
 function drawFrame() {
+    //Fetch values once to avoid changes during rendering
+    const fieldOfView = stateModel.fieldOfView;
+    const cameraPosition = stateModel.cameraPosition;
+    const cameraDirection = stateModel.cameraDirection;
+    const zoom = stateModel.zoom;
+    const height = context.canvas.height;
+    const width = context.canvas.width;
+
     //Reset the canvas
-    resetCanvas(context);
+    resetCanvas(context, height, width);
 
     //Use the model shader and the vertex array object
     context.useProgram(modelProgram);
     context.bindVertexArray(meshVAO);
 
     //Calculate the projection matrix
-    const projectionMatrix = glMatrix.mat4.create();
-    glMatrix.mat4.perspective(
-        projectionMatrix,
-        glMatrix.glMatrix.toRadian(stateModel.fieldOfView),
-        context.canvas.width / context.canvas.height,
-        0.1,
-        null,
+    const projectionMatrix = calculateProjectionMatrix(
+        fieldOfView,
+        height,
+        width,
     );
 
     //Calculate the view matrix
-    const viewMatrix = glMatrix.mat4.create();
-    const cameraTarget = glMatrix.vec3.create();
-    glMatrix.vec3.add(
-        cameraTarget,
-        stateModel.cameraPosition,
-        stateModel.cameraDirection,
-    );
-    glMatrix.mat4.lookAt(
-        viewMatrix,
-        stateModel.cameraPosition,
-        cameraTarget,
-        glMatrix.vec3.fromValues(0.0, 1.0, 0.0),
-    );
+    const viewMatrix = calculateViewMatrix(cameraPosition, cameraDirection);
 
-    //Calculate the model matrix
-    //TODO: Calculate a more useful matrix to take into account actual position, scale and rotation
-    // - Rotation and position might be handled by the camera depending on interface design
-    const modelMatrix = glMatrix.mat4.create();
-    glMatrix.mat4.identity(modelMatrix);
+    /* Calculate the model matrix
+     * For a single model, rotation and translation are better handled by a camera
+     */
+    const modelMatrix = calculateModelMatrix(zoom);
 
     //Combine matrices into a precalculated MVP matrix
     const MVP = glMatrix.mat4.create();
@@ -191,10 +246,11 @@ function drawFrame() {
 
     //Send the uniforms and draw the mesh
     //TODO: Swap to using element buffers and index the meshes
-    //TODO: Enable depth testing, clear the depth each frame
     //TODO: Enable backface culling
+    context.uniform3fv(cameraPosLocation, cameraPosition);
     context.uniformMatrix4fv(MVPLocation, false, MVP);
-    context.drawArrays(context.TRIANGLES, 0, meshData.length / 3);
+    context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
+    context.drawArrays(context.TRIANGLES, 0, meshData.length / 6);
 
     //Loop
     window.requestAnimationFrame(drawFrame);
