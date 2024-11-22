@@ -8,9 +8,11 @@ const pauseButton = document.querySelector("#pause-button");
 pauseButton.addEventListener("click", () => stateModel.togglePaused());
 stateModel.addEventListener("onPausedChanged", () => {
     if (stateModel.paused) {
-        pauseButton.textContent = "Play";
+        pauseButton.innerHTML = '<i class="fas fa-play"></i>'; 
+        pauseButton.title = "Play";
     } else {
-        pauseButton.textContent = "Pause";
+        pauseButton.innerHTML = '<i class="fas fa-pause"></i>';
+        pauseButton.title = "Pause";
     }
 });
 
