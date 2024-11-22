@@ -1,8 +1,9 @@
-import { stateModel } from "./stateModel.js";
-import { stepForward } from "./simulator.js";
+import { stateModel } from "../stateModel.js";
+import { stepForward } from "../simulator.js";
 
 export const canvas = document.querySelector("#renderer");
 
+// Pause button
 const pauseButton = document.querySelector("#pause-button");
 pauseButton.addEventListener("click", () => stateModel.togglePaused());
 stateModel.addEventListener("onPausedChanged", () => {
@@ -13,12 +14,6 @@ stateModel.addEventListener("onPausedChanged", () => {
     }
 });
 
+// Step forward button
 const stepForwardButton = document.querySelector("#step-forward-button");
 stepForwardButton.addEventListener("click", () => stepForward());
-
-function resizeCanvas() {
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight - 5;
-}
-resizeCanvas();
-addEventListener("resize", (_) => resizeCanvas());

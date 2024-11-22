@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/controls.css" />
     <title>Cellular Automata</title>
   </head>
   <body>
@@ -25,10 +26,23 @@
       </div>
       <div id="settings">
         <h1>Settings</h1>
+        <div style="display: flex; flex-direction: column">
+          <div>
+            <label for="width">Width</label>
+            <input type="number" id="width" min="1" value="10" required />
+          </div>
+          <div>
+            <label for="height">Height</label>
+            <input type="number" id="height" min="1" value="10" required />
+          </div>
+        </div>
       </div>
     </main>
     <script src="js/gl-matrix/dist/gl-matrix-min.js"></script>
     <script type="module" src="js/stateModel.js"></script>
     <script type="module" src="js/renderer.js"></script>
+    <script type="module" src="js/ui/ui.js"></script>
+    <script type="module" src="js/ui/canvas.js"></script>
+    <script type="module" src="js/ui/settings.js"></script>
   </body>
 </html>
