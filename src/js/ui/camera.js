@@ -60,7 +60,7 @@ onmousemove = (mouseEvent) => {
     const thetaNew = dragRefTheta + deltaX * dragSensitivity;
     theta = ((thetaNew % thetaMax) + thetaMax) % thetaMax;
 
-    phi = clamp(0.1, dragRefPhi + deltaY * dragSensitivity, phiMax);
+    phi = clamp(0, dragRefPhi + deltaY * dragSensitivity, phiMax);
 
     recalculatePosition();
 };
@@ -77,7 +77,7 @@ function recalculatePosition() {
     const y = cameraDistance * Math.sin(theta) * Math.sin(phi);
     const z = cameraDistance * Math.cos(phi);
 
-    console.log(theta, phi);
+    console.log(...[theta, phi, x, y, z].map((n) => n.toFixed(3)));
 
     stateModel.cameraPosition = glMatrix.vec3.fromValues(x, y, z);
 }
