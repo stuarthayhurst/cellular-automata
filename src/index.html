@@ -7,8 +7,8 @@
   </head>
   <body>
     <main id="app">
-      <div id="canvas">
-        <canvas id="renderer"></canvas>
+      <div id="canvas-container">
+        <canvas id="canvas"></canvas>
       </div>
       <div id="controls">
         <div id="controls-bar">
@@ -26,6 +26,7 @@
       </div>
       <div id="settings">
         <h1>Settings</h1>
+        <h2>Grid</h2>
         <div style="display: flex; flex-direction: column">
           <div>
             <label for="width">Width</label>
@@ -36,6 +37,7 @@
             <input type="number" id="height" min="1" value="10" required />
           </div>
         </div>
+        <h2>Camera</h2>
       </div>
     </main>
     <script src="js/gl-matrix/dist/gl-matrix-min.js"></script>

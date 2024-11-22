@@ -1,7 +1,7 @@
 import { stateModel } from "../stateModel.js";
 import { stepForward } from "../simulator.js";
 
-export const canvas = document.querySelector("#renderer");
+export const canvas = document.querySelector("#canvas");
 
 // Pause button
 const pauseButton = document.querySelector("#pause-button");

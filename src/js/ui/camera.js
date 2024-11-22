@@ -1,40 +1,78 @@
 import { stateModel } from "../stateModel.js";
 import { canvas } from "./ui.js";
 
-let mouseOverCanvas = false;
-canvas.onmouseover = () => (mouseOverCanvas = true);
-canvas.onmouseout = () => (mouseOverCanvas = false);
+const PRIMARY_BUTTON = 0;
+const DRAGGING_CLASS = "canvas-dragging";
 
-let dragStartTheta = 0;
-let dragStartPhi = 0;
-let dragStartMouseX = 0;
-let dragStartMouseY = 0;
+function clamp(min, value, max) {
+    return Math.min(Math.max(min, value), max);
+}
+
+function setDraggingStyles() {
+    document.body.classList.add(DRAGGING_CLASS);
+    canvas.classList.add(DRAGGING_CLASS);
+}
+
+function unsetDraggingStyles() {
+    document.body.classList.remove(DRAGGING_CLASS);
+    canvas.classList.remove(DRAGGING_CLASS);
+}
+
+let dragging = false;
 
 onmousedown = (mouseEvent) => {
-    dragStartMouseX = mouseEvent.screenX;
-    dragStartMouseY = mouseEvent.screenY;
-    dragStartTheta = theta;
-    dragStartPhi = phi;
+    if (mouseEvent.button !== PRIMARY_BUTTON || !canvas.matches(":hover"))
+        return;
+
+    dragRefMouseX = mouseEvent.screenX;
+    dragRefMouseY = mouseEvent.screenY;
+    dragRefTheta = theta;
+    dragRefPhi = phi;
+
+    dragging = true;
+    setDraggingStyles();
 };
+
+onmouseup = (mouseEvent) => {
+    if (mouseEvent.button !== PRIMARY_BUTTON) return;
+    dragging = false;
+    unsetDraggingStyles();
+};
+
+let dragRefTheta = 0;
+let dragRefPhi = 0;
+let dragRefMouseX = 0;
+let dragRefMouseY = 0;
 
 let theta = 0;
 let phi = Math.PI / 2;
 
-let deltaX = 0;
-let deltaY = 0;
+const thetaMax = 2 * Math.PI;
+const phiMax = Math.PI;
+const dragSensitivity = 0.01;
+
 onmousemove = (mouseEvent) => {
-    if (mouseEvent.buttons !== 1) return;
+    if (!dragging) return;
 
-    deltaX = dragStartMouseX - mouseEvent.screenX;
-    deltaY = dragStartMouseY - mouseEvent.screenY;
+    const deltaX = dragRefMouseX - mouseEvent.screenX;
+    const deltaY = dragRefMouseY - mouseEvent.screenY;
 
-    updatePosition();
+    const thetaNew = dragRefTheta + deltaX * dragSensitivity;
+    theta = ((thetaNew % thetaMax) + thetaMax) % thetaMax;
+
+    phi = clamp(0.1, dragRefPhi + deltaY * dragSensitivity, phiMax);
+
+    recalculatePosition();
 };
 
-function updatePosition() {
-    theta = (deltaY * 0.01) % (2 * Math.PI);
-    phi = (deltaX * 0.01) % Math.PI;
+let cameraDistance = 2.0;
 
+onwheel = (wheelEvent) => {
+    cameraDistance += wheelEvent.deltaY * 0.001;
+    recalculatePosition();
+};
+
+function recalculatePosition() {
     const x = cameraDistance * Math.cos(theta) * Math.sin(phi);
     const y = cameraDistance * Math.sin(theta) * Math.sin(phi);
     const z = cameraDistance * Math.cos(phi);
@@ -43,9 +81,3 @@ function updatePosition() {
 
     stateModel.cameraPosition = glMatrix.vec3.fromValues(x, y, z);
 }
-
-let cameraDistance = 2.0;
-onwheel = (wheelEvent) => {
-    cameraDistance += wheelEvent.deltaY * 0.001;
-    updatePosition();
-};

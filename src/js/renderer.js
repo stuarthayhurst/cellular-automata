@@ -59,7 +59,7 @@ function calculateViewMatrix(cameraPosition) {
         viewMatrix,
         cameraPosition,
         cameraTarget,
-        glMatrix.vec3.fromValues(0.0, 1.0, 0.0),
+        glMatrix.vec3.fromValues(0.0, 0.0, 1.0),
     );
 
     return viewMatrix;
