@@ -1,7 +1,7 @@
 import { modelVertSource } from "./shaders/modelVert.js";
 import { modelFragSource } from "./shaders/modelFrag.js";
 import { stateModel } from "./stateModel.js";
-import { canvas } from "./ui.js";
+import { canvas } from "./ui/ui.js";
 
 function compileShader(context, shaderType, shaderSource) {
     //Create, load and compile the shader
