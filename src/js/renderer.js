@@ -52,10 +52,9 @@ function calculateProjectionMatrix(fieldOfView, height, width) {
     return projectionMatrix;
 }
 
-function calculateViewMatrix(cameraPosition, cameraDirection) {
+function calculateViewMatrix(cameraPosition) {
     const viewMatrix = glMatrix.mat4.create();
-    const cameraTarget = glMatrix.vec3.create();
-    glMatrix.vec3.add(cameraTarget, cameraPosition, cameraDirection);
+    const cameraTarget = glMatrix.vec3.fromValues(0.0, 0.0, 0.0);
     glMatrix.mat4.lookAt(
         viewMatrix,
         cameraPosition,
@@ -212,8 +211,6 @@ function drawFrame() {
     //Fetch values once to avoid changes during rendering
     const fieldOfView = stateModel.fieldOfView;
     const cameraPosition = stateModel.cameraPosition;
-    const cameraDirection = stateModel.cameraDirection;
-    const zoom = stateModel.zoom;
     const height = context.canvas.height;
     const width = context.canvas.width;
 
@@ -232,12 +229,12 @@ function drawFrame() {
     );
 
     //Calculate the view matrix
-    const viewMatrix = calculateViewMatrix(cameraPosition, cameraDirection);
+    const viewMatrix = calculateViewMatrix(cameraPosition);
 
     /* Calculate the model matrix
      * For a single model, rotation and translation are better handled by a camera
      */
-    const modelMatrix = calculateModelMatrix(zoom);
+    const modelMatrix = calculateModelMatrix(1.0);
 
     //Combine matrices into a precalculated MVP matrix
     const MVP = glMatrix.mat4.create();
