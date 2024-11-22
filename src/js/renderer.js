@@ -209,8 +209,16 @@ context.enable(context.DEPTH_TEST);
 context.depthFunc(context.LEQUAL);
 
 function drawFrame() {
+    //Fetch values once to avoid changes during rendering
+    const fieldOfView = stateModel.fieldOfView;
+    const cameraPosition = stateModel.cameraPosition;
+    const cameraDirection = stateModel.cameraDirection;
+    const zoom = stateModel.zoom;
+    const height = context.canvas.height;
+    const width = context.canvas.width;
+
     //Reset the canvas
-    resetCanvas(context);
+    resetCanvas(context, height, width);
 
     //Use the model shader and the vertex array object
     context.useProgram(modelProgram);
@@ -218,21 +226,18 @@ function drawFrame() {
 
     //Calculate the projection matrix
     const projectionMatrix = calculateProjectionMatrix(
-        stateModel.fieldOfView,
-        context.canvas.height,
-        context.canvas.width,
+        fieldOfView,
+        height,
+        width,
     );
 
     //Calculate the view matrix
-    const viewMatrix = calculateViewMatrix(
-        stateModel.cameraPosition,
-        stateModel.cameraDirection,
-    );
+    const viewMatrix = calculateViewMatrix(cameraPosition, cameraDirection);
 
     /* Calculate the model matrix
      * For a single model, rotation and translation are better handled by a camera
      */
-    const modelMatrix = calculateModelMatrix(stateModel.zoom);
+    const modelMatrix = calculateModelMatrix(zoom);
 
     //Combine matrices into a precalculated MVP matrix
     const MVP = glMatrix.mat4.create();
@@ -242,7 +247,7 @@ function drawFrame() {
     //Send the uniforms and draw the mesh
     //TODO: Swap to using element buffers and index the meshes
     //TODO: Enable backface culling
-    context.uniform3fv(cameraPosLocation, stateModel.cameraPosition);
+    context.uniform3fv(cameraPosLocation, cameraPosition);
     context.uniformMatrix4fv(MVPLocation, false, MVP);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
     context.drawArrays(context.TRIANGLES, 0, meshData.length / 6);
