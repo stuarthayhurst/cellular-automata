@@ -3,6 +3,10 @@
   <head>
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/controls.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <title>Cellular Automata</title>
   </head>
   <body>
@@ -16,11 +20,20 @@
             <button disabled>2D/3D</button>
           </div>
           <div id="centre-controls">
-            <button id="pause-button">Play</button>
-            <button id="step-forward-button">></button>
+            <button id="reset-button" title="Reset">
+              <i class="fas fa-sync-alt"></i>
+            </button>
+            <button id="pause-button" title="Play/Pause">
+              <i id="pause-icon" class="fas fa-play"></i>
+            </button>
+            <button id="step-forward-button" title="Step Forward">
+              <i class="fas fa-forward"></i>
+            </button>
           </div>
           <div id="right-controls">
-            <button disabled>Clear</button>
+            <button id="clear-button" title="Clear">
+              <i class="fas fa-eraser"></i>
+            </button>
           </div>
         </div>
       </div>
