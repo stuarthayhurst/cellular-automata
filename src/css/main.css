@@ -10,10 +10,11 @@ body {
   margin: 0;
   font-family: sans-serif;
   color: white;
-} 
+}
 
 body.canvas-dragging {
   cursor: grabbing;
+  user-select: none;
 }
 
 #app {
