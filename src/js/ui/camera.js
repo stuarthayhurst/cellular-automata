@@ -74,10 +74,11 @@ onwheel = (wheelEvent) => {
 
 function recalculatePosition() {
     const x = cameraDistance * Math.cos(theta) * Math.sin(phi);
-    const y = cameraDistance * Math.sin(theta) * Math.sin(phi);
-    const z = cameraDistance * Math.cos(phi);
+    const y = cameraDistance * Math.cos(phi);
+    const z = cameraDistance * Math.sin(theta) * Math.sin(phi);
 
     console.log(...[theta, phi, x, y, z].map((n) => n.toFixed(3)));
 
-    stateModel.cameraPosition = glMatrix.vec3.fromValues(x, y, z);
+    //Account for WebGL being right-handed with -z
+    stateModel.cameraPosition = glMatrix.vec3.fromValues(x, y, -z);
 }
