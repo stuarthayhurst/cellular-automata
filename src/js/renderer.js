@@ -87,54 +87,77 @@ function resetCanvas(context, height, width) {
  * This is horrible, I know. It's going to be replaced with generated mesh data
  * But for now, hard-coding a cube is the easiest way to set the rest of the code set up
  * In future, check if settings changed and then either (re)generate a mesh, or use a cached copy
- * Format: vec3(position), vec3(normal), index
+ * Format: vec3(position), vec3(normal), int(index)
  */
+let meshData = new ArrayBuffer(1008);
+let floatMeshData = new Float32Array(meshData);
+let uintMeshData = new Int32Array(meshData);
+
 // prettier-ignore
-let meshData = new Float32Array([
-    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0, 0,
-     0.5, -0.5, -0.5,  0.0,  0.0, -1.0, 0,
-     0.5,  0.5, -0.5,  0.0,  0.0, -1.0, 0,
-     0.5,  0.5, -0.5,  0.0,  0.0, -1.0, 0,
-    -0.5,  0.5, -0.5,  0.0,  0.0, -1.0, 0,
-    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0, 0,
+let floatData = [
+    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
+     0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
+     0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
+     0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
+    -0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
+    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
 
-    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0, 1,
-     0.5, -0.5,  0.5,  0.0,  0.0,  1.0, 1,
-     0.5,  0.5,  0.5,  0.0,  0.0,  1.0, 1,
-     0.5,  0.5,  0.5,  0.0,  0.0,  1.0, 1,
-    -0.5,  0.5,  0.5,  0.0,  0.0,  1.0, 1,
-    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0, 1,
+    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
+     0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
+     0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
+     0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
+    -0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
+    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
 
-    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0, 2,
-    -0.5,  0.5, -0.5, -1.0,  0.0,  0.0, 2,
-    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0, 2,
-    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0, 2,
-    -0.5, -0.5,  0.5, -1.0,  0.0,  0.0, 2,
-    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0, 2,
+    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
+    -0.5,  0.5, -0.5, -1.0,  0.0,  0.0,
+    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
+    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
+    -0.5, -0.5,  0.5, -1.0,  0.0,  0.0,
+    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
 
-     0.5,  0.5,  0.5,  1.0,  0.0,  0.0, 3,
-     0.5,  0.5, -0.5,  1.0,  0.0,  0.0, 3,
-     0.5, -0.5, -0.5,  1.0,  0.0,  0.0, 3,
-     0.5, -0.5, -0.5,  1.0,  0.0,  0.0, 3,
-     0.5, -0.5,  0.5,  1.0,  0.0,  0.0, 3,
-     0.5,  0.5,  0.5,  1.0,  0.0,  0.0, 3,
+     0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
+     0.5,  0.5, -0.5,  1.0,  0.0,  0.0,
+     0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
+     0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
+     0.5, -0.5,  0.5,  1.0,  0.0,  0.0,
+     0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
 
-    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0, 4,
-     0.5, -0.5, -0.5,  0.0, -1.0,  0.0, 4,
-     0.5, -0.5,  0.5,  0.0, -1.0,  0.0, 4,
-     0.5, -0.5,  0.5,  0.0, -1.0,  0.0, 4,
-    -0.5, -0.5,  0.5,  0.0, -1.0,  0.0, 4,
-    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0, 4,
+    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
+     0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
+     0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
+     0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
+    -0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
+    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
 
-    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0, 5,
-     0.5,  0.5, -0.5,  0.0,  1.0,  0.0, 5,
-     0.5,  0.5,  0.5,  0.0,  1.0,  0.0, 5,
-     0.5,  0.5,  0.5,  0.0,  1.0,  0.0, 5,
-    -0.5,  0.5,  0.5,  0.0,  1.0,  0.0, 5,
-    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0, 5,
-]);
+    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
+     0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
+     0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
+     0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
+    -0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
+    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
+];
 
-//Bind a existing data texture, then fill it
+// prettier-ignore
+let indices = [
+    0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1,
+    2, 2, 2, 2, 2, 2,
+    3, 3, 3, 3, 3, 3,
+    4, 4, 4, 4, 4, 4,
+    5, 5, 5, 5, 5, 5,
+];
+const vertexBlockSize = 4 * 7;
+
+//Write the data to the mesh using a correctly typed buffer view
+for (let i = 0; i < meshData.byteLength / vertexBlockSize; i++) {
+    for (let j = 0; j < 6; j++) {
+        floatMeshData[i * 7 + j] = floatData[i * 6 + j];
+    }
+    uintMeshData[i * 7 + 6] = indices[i];
+}
+
+//Bind an existing data texture, then fill it
 function setDataTexture(context, texture, data) {
     context.bindTexture(context.TEXTURE_2D, texture);
     context.texImage2D(
@@ -236,11 +259,10 @@ context.vertexAttribPointer(
     3 * 4, //Data offset - (1 * 3) * sizeof(float)
 );
 context.enableVertexAttribArray(normalAttribLocation);
-context.vertexAttribPointer(
+context.vertexAttribIPointer(
     cellIndexAttribLocation,
     1, //Number of components
-    context.FLOAT, //Data type
-    false, //Normalisation toggle
+    context.INT, //Data type
     7 * 4, //Stride - ((1 * 1) + (2 * 3)) * sizeof(float)
     6 * 4, //Data offset - (2 * 3) * sizeof(float)
 );
@@ -277,7 +299,7 @@ function drawFrame() {
     //TODO: Use the stateModel once custom meshes are done
     const cellWidth = 3;
     const cellHeight = 2;
-    const cellData = new Uint8Array([1, 0, 0, 0, 0, 1]);
+    const cellData = new Uint8Array([0, 0, 0, 0, 1, 1]);
 
     //Data doesn't match dimensions, try again later
     if (cellWidth * cellHeight != cellData.length) {
@@ -296,9 +318,6 @@ function drawFrame() {
     //TODO: Pack 4 values per pixel
     //TODO: Look into using a bit per pixel, for 8 * 4 * MAX_TEXTURE_SIZE * MAX_TEXTURE_SIZE cells
     //TODO:  - This will give around 20k x 20k grids as a limit
-    //TODO: Look into writing the indices to the underlying bytes of the vertex data
-    //TODO:  - For now everything looks fine, but floating-point indices are insane and
-    //TODO:    will cause problems with large values
 
     //Dimensions have changed, recreate buffers
     if (lastCellWidth != cellWidth || lastCellHeight != cellHeight) {
@@ -351,7 +370,11 @@ function drawFrame() {
     context.uniform3fv(cameraPosLocation, cameraPosition);
     context.uniformMatrix4fv(MVPLocation, false, MVP);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
-    context.drawArrays(context.TRIANGLES, 0, meshData.length / 7);
+    context.drawArrays(
+        context.TRIANGLES,
+        0,
+        meshData.byteLength / vertexBlockSize,
+    );
 
     //Loop
     window.requestAnimationFrame(drawFrame);

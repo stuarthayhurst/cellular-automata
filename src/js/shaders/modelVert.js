@@ -7,7 +7,7 @@ export const modelVertSource = `#version 300 es
 
 in vec3 inPosition;
 in vec3 inNormal;
-in float inCellIndex;
+in int inCellIndex;
 
 out vec3 fragPos;
 out vec3 normal;
@@ -17,7 +17,7 @@ uniform mat4 MVP;
 uniform mat4 modelMatrix;
 
 void main() {
-    cellCoord = ivec2(int(inCellIndex), 0);
+    cellCoord = ivec2(inCellIndex, 0);
 
     normal = mat3(transpose(inverse(modelMatrix))) * inNormal;
     fragPos = vec3(modelMatrix * vec4(inPosition, 1.0));
