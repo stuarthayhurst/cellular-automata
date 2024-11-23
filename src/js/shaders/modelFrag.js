@@ -8,7 +8,8 @@ precision mediump float;
 
 in vec3 fragPos;
 in vec3 normal;
-flat in int cellIndex;
+flat in int cellIndexX;
+flat in int cellIndexY;
 
 out vec4 outColour;
 
@@ -22,44 +23,44 @@ vec3 baseColour = vec3(1, 0, 0);
 vec3 cellColour = vec3(0, 1, 1);
 
 void main() {
-  //Set fragments within an active cell
-  vec4 cellQuad = texelFetch(cellDataTexture, ivec2(cellIndex / 4, 0), 0);
+    //Set fragments within an active cell
+    vec4 cellQuad = texelFetch(cellDataTexture, ivec2(cellIndexX / 4, cellIndexY), 0);
 
-  //This is slow for a GPU, but packing gives 4x better memory usage
-  float alive;
-  int packing = cellIndex % 4;
-  if (packing == 0) {
-    alive = cellQuad.x;
-  } else if (packing == 1) {
-    alive = cellQuad.y;
-  } else if (packing == 2) {
-    alive = cellQuad.z;
-  } else {
-    alive = cellQuad.w;
-  }
+    //This is slow for a GPU, but packing gives 4x better memory usage
+    float alive;
+    int packing = cellIndexX % 4;
+    if (packing == 0) {
+        alive = cellQuad.x;
+    } else if (packing == 1) {
+        alive = cellQuad.y;
+    } else if (packing == 2) {
+        alive = cellQuad.z;
+    } else {
+        alive = cellQuad.w;
+    }
 
-  //Check if the cell is active, return early if it is
-  if (alive > 0.0) {
-    outColour = vec4(cellColour, 1.0);
-    return;
-  }
+    //Check if the cell is active, return early if it is
+    if (alive > 0.0) {
+      outColour = vec4(cellColour, 1.0);
+      return;
+    }
 
-  vec3 lightPos = cameraPos;
+    vec3 lightPos = cameraPos;
 
-  //Diffuse lighting
-  vec3 normNormal = normalize(normal);
-  vec3 lightDir = normalize(lightPos - fragPos);
-  float diffuse = max(dot(normNormal, lightDir), 0.0);
-  diffuse *= diffuseStrength;
+    //Diffuse lighting
+    vec3 normNormal = normalize(normal);
+    vec3 lightDir = normalize(lightPos - fragPos);
+    float diffuse = max(dot(normNormal, lightDir), 0.0);
+    diffuse *= diffuseStrength;
 
-  //Specular lighting
-  vec3 viewDir = normalize(cameraPos - fragPos);
-  vec3 reflectDir = reflect(-lightDir, normNormal);
-  float specular = pow(max(dot(cameraPos, reflectDir), 0.0), 32.0);
-  specular *= specularStrength;
+    //Specular lighting
+    vec3 viewDir = normalize(cameraPos - fragPos);
+    vec3 reflectDir = reflect(-lightDir, normNormal);
+    float specular = pow(max(dot(cameraPos, reflectDir), 0.0), 32.0);
+    specular *= specularStrength;
 
-  //Combine results
-  outColour = vec4((ambientStrength + diffuse + specular) * baseColour, 1.0);
+    //Combine results
+    outColour = vec4((ambientStrength + diffuse + specular) * baseColour, 1.0);
 }
 
 
