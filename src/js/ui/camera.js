@@ -68,6 +68,7 @@ onmousemove = (mouseEvent) => {
 let cameraDistance = 2.0;
 
 onwheel = (wheelEvent) => {
+    if (wheelEvent.target !== canvas && !dragging) return;
     cameraDistance += wheelEvent.deltaY * 0.001;
     recalculatePosition();
 };
