@@ -11,13 +11,13 @@ in float inCellIndex;
 
 out vec3 fragPos;
 out vec3 normal;
-out vec2 cellCoord;
+flat out ivec2 cellCoord;
 
 uniform mat4 MVP;
 uniform mat4 modelMatrix;
 
 void main() {
-    cellCoord = vec2(inCellIndex, 0);
+    cellCoord = ivec2(int(inCellIndex), 0);
 
     normal = mat3(transpose(inverse(modelMatrix))) * inNormal;
     fragPos = vec3(modelMatrix * vec4(inPosition, 1.0));

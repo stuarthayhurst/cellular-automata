@@ -8,7 +8,7 @@ precision mediump float;
 
 in vec3 fragPos;
 in vec3 normal;
-in vec2 cellCoord;
+flat in ivec2 cellCoord;
 
 out vec4 outColour;
 
@@ -19,14 +19,12 @@ float ambientStrength = 0.1;
 float diffuseStrength = 1.5;
 float specularStrength = 0.5;
 vec3 baseColour = vec3(1, 0, 0);
+vec3 cellColour = vec3(0, 1, 1);
 
 void main() {
-
-ivec2 intCoords = ivec2(int(cellCoord.x), int(cellCoord.y));
-bool alive = texelFetch(cellDataTexture, intCoords, 0).x > 0.0;
-
-  if (alive) {
-    outColour = vec4(0.0, 1.0, 1.0, 1.0);
+  //Set fragments within an active cell
+  if (texelFetch(cellDataTexture, cellCoord, 0).x > 0.0) {
+    outColour = vec4(cellColour, 1.0);
     return;
   }
 
