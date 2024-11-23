@@ -49,7 +49,7 @@ let phi = Math.PI / 2;
 
 const thetaMax = 2 * Math.PI;
 const phiMax = Math.PI;
-const dragSensitivity = 0.01;
+const dragSensitivity = 0.006;
 
 onmousemove = (mouseEvent) => {
     if (!dragging) return;
@@ -69,7 +69,7 @@ let cameraDistance = 2.0;
 
 onwheel = (wheelEvent) => {
     if (wheelEvent.target !== canvas && !dragging) return;
-    cameraDistance += wheelEvent.deltaY * 0.001;
+    cameraDistance += wheelEvent.deltaY * 0.002;
     recalculatePosition();
 };
 
