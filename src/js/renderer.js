@@ -349,10 +349,6 @@ function drawFrame() {
     context.useProgram(modelProgram);
     context.bindVertexArray(meshVAO);
 
-    //TODO: Check implementation limits for textures
-    //TODO: Look into using a bit per cell, for 8 * 4 * MAX_TEXTURE_SIZE * MAX_TEXTURE_SIZE cells per texture
-    //TODO:  - This will give around 20k x 20k grids as a limit
-
     //Dimensions have changed, recreate buffers
     if (lastCellWidth != cellWidth || lastCellHeight != cellHeight) {
         //TODO: Recalculate mesh and replace buffer once custom meshes are done

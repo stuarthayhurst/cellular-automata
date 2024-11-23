@@ -63,5 +63,4 @@ void main() {
     outColour = vec4((ambientStrength + diffuse + specular) * baseColour, 1.0);
 }
 
-
 `;
