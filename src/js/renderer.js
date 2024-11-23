@@ -246,7 +246,7 @@ context.vertexAttribPointer(
     3, //Number of components
     context.FLOAT, //Data type
     false, //Normalisation toggle
-    7 * 4, //Stride - ((1 * 1) + (2 * 3)) * sizeof(float)
+    7 * 4, //Stride - (1 * 1) * sizeof(int) + (2 * 3) * sizeof(float)
     0, //Data offset - (0 * 3) * sizeof(float)
 );
 context.enableVertexAttribArray(meshAttribLocation);
@@ -255,7 +255,7 @@ context.vertexAttribPointer(
     3, //Number of components
     context.FLOAT, //Data type
     false, //Normalisation toggle
-    7 * 4, //Stride - ((1 * 1) + (2 * 3)) * sizeof(float)
+    7 * 4, //Stride - (1 * 1) * sizeof(int) + (2 * 3) * sizeof(float)
     3 * 4, //Data offset - (1 * 3) * sizeof(float)
 );
 context.enableVertexAttribArray(normalAttribLocation);
@@ -263,7 +263,7 @@ context.vertexAttribIPointer(
     cellIndexAttribLocation,
     1, //Number of components
     context.INT, //Data type
-    7 * 4, //Stride - ((1 * 1) + (2 * 3)) * sizeof(float)
+    7 * 4, //Stride - (1 * 1) * sizeof(int) + (2 * 3) * sizeof(float)
     6 * 4, //Data offset - (2 * 3) * sizeof(float)
 );
 context.enableVertexAttribArray(cellIndexAttribLocation);
