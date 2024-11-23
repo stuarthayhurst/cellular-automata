@@ -1,0 +1,55 @@
+button.square-btn {
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+input:invalid {
+  border: 2px solid red;
+}
+
+button.square-btn {
+  border: 2px solid var(--foreground-light);
+  color: var(--foreground-light);
+  font-size: 20px;
+  border-radius: 4px;
+  min-height: 45px;
+  min-width: 45px;
+}
+
+button.square-btn:focus {
+  border: 3px solid var(--foreground);
+}
+
+button.btn-primary {
+  color: white;
+  border: none;
+  background-color: var(--primary);
+}
+
+button.btn-primary:active {
+  background-color: var(--primary-dark);
+}
+
+button.btn-danger {
+  color: white;
+  border: none;
+  background-color: var(--danger);
+}
+
+button.btn-danger:active {
+  background-color: var(--danger-dark);
+}
+
+button.btn-secondary:active {
+  background-color: rgb(0 0 0 / 15%);
+}
+
+button:hover {
+  cursor: pointer;
+}
