@@ -173,6 +173,11 @@ function setDataTexture(context, texture, rawData) {
         cols = minPixels % context.MAX_TEXTURE_SIZE;
     }
 
+    if (rows > context.MAX_TEXTURE_SIZE) {
+        console.log("Max texture size exceeded, refusing to upload")
+        return;
+    }
+
     //Resize the buffer to match the rows and columns
     size = rows * cols * 4;
     let data = new Uint8Array(size);
