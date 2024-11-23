@@ -77,8 +77,8 @@ function calculateModelMatrix(scale) {
     return modelMatrix;
 }
 
-function resetCanvas(context) {
-    context.viewport(0, 0, context.canvas.width, context.canvas.height);
+function resetCanvas(context, height, width) {
+    context.viewport(0, 0, width, height);
     context.clearColor(0, 0, 0, 0);
     context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
 }
@@ -87,51 +87,89 @@ function resetCanvas(context) {
  * This is horrible, I know. It's going to be replaced with generated mesh data
  * But for now, hard-coding a cube is the easiest way to set the rest of the code set up
  * In future, check if settings changed and then either (re)generate a mesh, or use a cached copy
+ * Format: vec3(position), vec3(normal), index
  */
 // prettier-ignore
 let meshData = new Float32Array([
-    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
-     0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
-     0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
-     0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
-    -0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
-    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
+    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0, 0,
+     0.5, -0.5, -0.5,  0.0,  0.0, -1.0, 0,
+     0.5,  0.5, -0.5,  0.0,  0.0, -1.0, 0,
+     0.5,  0.5, -0.5,  0.0,  0.0, -1.0, 0,
+    -0.5,  0.5, -0.5,  0.0,  0.0, -1.0, 0,
+    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0, 0,
 
-    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
-     0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
-     0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
-     0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
-    -0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
-    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
+    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0, 1,
+     0.5, -0.5,  0.5,  0.0,  0.0,  1.0, 1,
+     0.5,  0.5,  0.5,  0.0,  0.0,  1.0, 1,
+     0.5,  0.5,  0.5,  0.0,  0.0,  1.0, 1,
+    -0.5,  0.5,  0.5,  0.0,  0.0,  1.0, 1,
+    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0, 1,
 
-    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
-    -0.5,  0.5, -0.5, -1.0,  0.0,  0.0,
-    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
-    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
-    -0.5, -0.5,  0.5, -1.0,  0.0,  0.0,
-    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
+    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0, 2,
+    -0.5,  0.5, -0.5, -1.0,  0.0,  0.0, 2,
+    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0, 2,
+    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0, 2,
+    -0.5, -0.5,  0.5, -1.0,  0.0,  0.0, 2,
+    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0, 2,
 
-     0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
-     0.5,  0.5, -0.5,  1.0,  0.0,  0.0,
-     0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
-     0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
-     0.5, -0.5,  0.5,  1.0,  0.0,  0.0,
-     0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
+     0.5,  0.5,  0.5,  1.0,  0.0,  0.0, 3,
+     0.5,  0.5, -0.5,  1.0,  0.0,  0.0, 3,
+     0.5, -0.5, -0.5,  1.0,  0.0,  0.0, 3,
+     0.5, -0.5, -0.5,  1.0,  0.0,  0.0, 3,
+     0.5, -0.5,  0.5,  1.0,  0.0,  0.0, 3,
+     0.5,  0.5,  0.5,  1.0,  0.0,  0.0, 3,
 
-    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
-     0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
-     0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
-     0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
-    -0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
-    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
+    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0, 4,
+     0.5, -0.5, -0.5,  0.0, -1.0,  0.0, 4,
+     0.5, -0.5,  0.5,  0.0, -1.0,  0.0, 4,
+     0.5, -0.5,  0.5,  0.0, -1.0,  0.0, 4,
+    -0.5, -0.5,  0.5,  0.0, -1.0,  0.0, 4,
+    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0, 4,
 
-    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
-     0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
-     0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
-     0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
-    -0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
-    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
+    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0, 5,
+     0.5,  0.5, -0.5,  0.0,  1.0,  0.0, 5,
+     0.5,  0.5,  0.5,  0.0,  1.0,  0.0, 5,
+     0.5,  0.5,  0.5,  0.0,  1.0,  0.0, 5,
+    -0.5,  0.5,  0.5,  0.0,  1.0,  0.0, 5,
+    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0, 5,
 ]);
+
+//Bind a existing data texture, then fill it
+function setDataTexture(context, texture, data) {
+    context.bindTexture(context.TEXTURE_2D, texture);
+    context.texImage2D(
+        context.TEXTURE_2D,
+        0,
+        context.LUMINANCE,
+        data.length,
+        1,
+        0,
+        context.LUMINANCE,
+        context.UNSIGNED_BYTE,
+        data,
+    );
+}
+
+//Create a texture for storing data, bind it, fill it and return it
+function createDataTexture(context, data) {
+    //Upload data to a texture
+    const texture = context.createTexture();
+    setDataTexture(context, texture, data);
+
+    //Disable filtering
+    context.texParameteri(
+        context.TEXTURE_2D,
+        context.TEXTURE_MIN_FILTER,
+        context.NEAREST,
+    );
+    context.texParameteri(
+        context.TEXTURE_2D,
+        context.TEXTURE_MAG_FILTER,
+        context.NEAREST,
+    );
+
+    return texture;
+}
 
 //Prepare context from canvas element
 const context = canvas.getContext("webgl2");
@@ -140,7 +178,7 @@ if (!context) {
 }
 
 //Reset canvas while loading
-resetCanvas(context);
+resetCanvas(context, context.canvas.height, context.canvas.width);
 
 //Compile the shaders
 const modelVertShader = compileShader(
@@ -172,6 +210,10 @@ const normalAttribLocation = context.getAttribLocation(
     modelProgram,
     "inNormal",
 );
+const cellIndexAttribLocation = context.getAttribLocation(
+    modelProgram,
+    "inCellIndex",
+);
 
 //Create a vertex array object for the mesh, define the positions and normals
 let meshVAO = context.createVertexArray();
@@ -181,7 +223,7 @@ context.vertexAttribPointer(
     3, //Number of components
     context.FLOAT, //Data type
     false, //Normalisation toggle
-    6 * 4, //Stride - (2 * 3) * sizeof(float)
+    7 * 4, //Stride - ((1 * 1) + (2 * 3)) * sizeof(float)
     0, //Data offset - (0 * 3) * sizeof(float)
 );
 context.enableVertexAttribArray(meshAttribLocation);
@@ -190,10 +232,19 @@ context.vertexAttribPointer(
     3, //Number of components
     context.FLOAT, //Data type
     false, //Normalisation toggle
-    6 * 4, //Stride - (2 * 3) * sizeof(float)
+    7 * 4, //Stride - ((1 * 1) + (2 * 3)) * sizeof(float)
     3 * 4, //Data offset - (1 * 3) * sizeof(float)
 );
 context.enableVertexAttribArray(normalAttribLocation);
+context.vertexAttribPointer(
+    cellIndexAttribLocation,
+    1, //Number of components
+    context.FLOAT, //Data type
+    false, //Normalisation toggle
+    7 * 4, //Stride - ((1 * 1) + (2 * 3)) * sizeof(float)
+    6 * 4, //Data offset - (2 * 3) * sizeof(float)
+);
+context.enableVertexAttribArray(cellIndexAttribLocation);
 
 //Get shader uniform locations
 const MVPLocation = context.getUniformLocation(modelProgram, "MVP");
@@ -202,30 +253,79 @@ const modelMatrixLocation = context.getUniformLocation(
     "modelMatrix",
 );
 const cameraPosLocation = context.getUniformLocation(modelProgram, "cameraPos");
+const cellDataTexLocation = context.getUniformLocation(
+    modelProgram,
+    "cellDataTexture",
+);
 
 //Enable depth testing
 context.enable(context.DEPTH_TEST);
 context.depthFunc(context.LEQUAL);
 
+let lastCellWidth = 0;
+let lastCellHeight = 0;
+let cellDataTexture = 0;
+
 function drawFrame() {
     //Fetch values once to avoid changes during rendering
     const fieldOfView = stateModel.fieldOfView;
     const cameraPosition = stateModel.cameraPosition;
-    const height = context.canvas.height;
-    const width = context.canvas.width;
+    const canvasHeight = context.canvas.height;
+    const canvasWidth = context.canvas.width;
+
+    //Fetch simulation data
+    //TODO: Use the stateModel once custom meshes are done
+    const cellWidth = 3;
+    const cellHeight = 2;
+    const cellData = new Uint8Array([1, 0, 0, 0, 0, 1]);
+
+    //Data doesn't match dimensions, try again later
+    if (cellWidth * cellHeight != cellData.length) {
+        return;
+    }
 
     //Reset the canvas
-    resetCanvas(context, height, width);
+    resetCanvas(context, canvasHeight, canvasWidth);
 
     //Use the model shader and the vertex array object
     context.useProgram(modelProgram);
     context.bindVertexArray(meshVAO);
 
+    //TODO: Check implementation limits for textures
+    //TODO: Use both texture dimensions
+    //TODO: Pack 4 values per pixel
+    //TODO: Look into using a bit per pixel, for 8 * 4 * MAX_TEXTURE_SIZE * MAX_TEXTURE_SIZE cells
+    //TODO:  - This will give around 20k x 20k grids as a limit
+    //TODO: Look into writing the indices to the underlying bytes of the vertex data
+    //TODO:  - For now everything looks fine, but floating-point indices are insane and
+    //TODO:    will cause problems with large values
+
+    //Dimensions have changed, recreate buffers
+    if (lastCellWidth != cellWidth || lastCellHeight != cellHeight) {
+        //TODO: Recalculate mesh and replace buffer once custom meshes are done
+
+        //Clear existing data
+        if (cellDataTexture != 0) {
+            context.deleteTexture(cellDataTexture);
+            cellDataTexture = 0;
+        }
+
+        //Create the texture, fill it with data and bind it
+        cellDataTexture = createDataTexture(context, cellData);
+        context.bindTexture(context.TEXTURE_2D, cellDataTexture);
+
+        lastCellWidth = cellWidth;
+        lastCellHeight = cellHeight;
+    } else {
+        //Just update the cell data if the size hasn't changed, then bind the texture
+        setDataTexture(context, cellDataTexture, cellData);
+    }
+
     //Calculate the projection matrix
     const projectionMatrix = calculateProjectionMatrix(
         fieldOfView,
-        height,
-        width,
+        canvasHeight,
+        canvasWidth,
     );
 
     //Calculate the view matrix
@@ -241,13 +341,17 @@ function drawFrame() {
     glMatrix.mat4.multiply(MVP, projectionMatrix, viewMatrix);
     glMatrix.mat4.multiply(MVP, MVP, modelMatrix);
 
-    //Send the uniforms and draw the mesh
+    //Enable the data texture
+    context.activeTexture(context.TEXTURE0);
+    context.uniform1i(cellDataTexLocation, 0);
+
+    //Send the remaining uniforms and draw the mesh
     //TODO: Swap to using element buffers and index the meshes
     //TODO: Enable backface culling
     context.uniform3fv(cameraPosLocation, cameraPosition);
     context.uniformMatrix4fv(MVPLocation, false, MVP);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
-    context.drawArrays(context.TRIANGLES, 0, meshData.length / 6);
+    context.drawArrays(context.TRIANGLES, 0, meshData.length / 7);
 
     //Loop
     window.requestAnimationFrame(drawFrame);
