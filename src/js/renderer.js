@@ -158,16 +158,25 @@ for (let i = 0; i < meshData.byteLength / vertexBlockSize; i++) {
 }
 
 //Bind an existing data texture, then fill it
-function setDataTexture(context, texture, data) {
+function setDataTexture(context, texture, rawData) {
+    //Resize buffer up to next multiple of 4
+    let newSize = rawData.length;
+    if (newSize % 4) {
+        newSize = (Math.floor(rawData.length / 4) + 1) * 4;
+    }
+    let data = new Uint8Array(newSize);
+    data.set(rawData);
+
+    //Data is treated as 4 separate cells per pixel, one per colour channel
     context.bindTexture(context.TEXTURE_2D, texture);
     context.texImage2D(
         context.TEXTURE_2D,
         0,
-        context.LUMINANCE,
-        data.length,
+        context.RGBA,
+        data.length / 4,
         1,
         0,
-        context.LUMINANCE,
+        context.RGBA,
         context.UNSIGNED_BYTE,
         data,
     );
@@ -315,8 +324,7 @@ function drawFrame() {
 
     //TODO: Check implementation limits for textures
     //TODO: Use both texture dimensions
-    //TODO: Pack 4 values per pixel
-    //TODO: Look into using a bit per pixel, for 8 * 4 * MAX_TEXTURE_SIZE * MAX_TEXTURE_SIZE cells
+    //TODO: Look into using a bit per cell, for 8 * 4 * MAX_TEXTURE_SIZE * MAX_TEXTURE_SIZE cells per texture
     //TODO:  - This will give around 20k x 20k grids as a limit
 
     //Dimensions have changed, recreate buffers

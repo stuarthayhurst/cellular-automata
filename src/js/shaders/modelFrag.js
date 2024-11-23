@@ -8,7 +8,7 @@ precision mediump float;
 
 in vec3 fragPos;
 in vec3 normal;
-flat in ivec2 cellCoord;
+flat in int cellIndex;
 
 out vec4 outColour;
 
@@ -23,7 +23,23 @@ vec3 cellColour = vec3(0, 1, 1);
 
 void main() {
   //Set fragments within an active cell
-  if (texelFetch(cellDataTexture, cellCoord, 0).x > 0.0) {
+  vec4 cellQuad = texelFetch(cellDataTexture, ivec2(cellIndex / 4, 0), 0);
+
+  //This is slow for a GPU, but packing gives 4x better memory usage
+  float alive;
+  int packing = cellIndex % 4;
+  if (packing == 0) {
+    alive = cellQuad.x;
+  } else if (packing == 1) {
+    alive = cellQuad.y;
+  } else if (packing == 2) {
+    alive = cellQuad.z;
+  } else {
+    alive = cellQuad.w;
+  }
+
+  //Check if the cell is active, return early if it is
+  if (alive > 0.0) {
     outColour = vec4(cellColour, 1.0);
     return;
   }
