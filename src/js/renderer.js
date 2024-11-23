@@ -174,7 +174,7 @@ function setDataTexture(context, texture, rawData) {
     }
 
     if (rows > context.MAX_TEXTURE_SIZE) {
-        console.log("Max texture size exceeded, refusing to upload")
+        console.log("Max texture size exceeded, refusing to upload");
         return;
     }
 
@@ -223,6 +223,17 @@ function createDataTexture(context, data) {
 const context = canvas.getContext("webgl2");
 if (!context) {
     console.log("No WebGL2 support detected, good luck");
+} else {
+    const maxSize = context.MAX_TEXTURE_SIZE ** 2 * 4;
+    console.log(
+        "WebGL2 support detected, width x height must not exceed " + maxSize,
+    );
+    console.log(
+        "Maximum square dimensions are " +
+            context.MAX_TEXTURE_SIZE * 2 +
+            " x " +
+            context.MAX_TEXTURE_SIZE * 2,
+    );
 }
 
 //Reset canvas while loading
