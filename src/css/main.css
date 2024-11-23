@@ -1,3 +1,7 @@
+* :not(body) {
+  cursor: inherit;
+}
+
 :root {
   --primary: dodgerblue;
   --primary-dark: #1872cc;
@@ -19,6 +23,11 @@ body {
   color: white;
 }
 
+body.canvas-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
 #app {
   height: 100vh;
   display: grid;
@@ -30,14 +39,19 @@ body {
   background-color: red;
 }
 
-#renderer {
-  width: 100%;
-  height: 100%;
+#canvas-container {
+  grid-area: canvas;
 }
 
 #canvas {
+  width: 100%;
+  height: 100%;
   grid-area: canvas;
   background-color: var(--very-light-grey);
+}
+
+#canvas:not(.canvas-dragging) {
+  cursor: grab;
 }
 
 #controls {

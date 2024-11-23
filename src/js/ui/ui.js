@@ -1,1 +1,1 @@
-export const canvas = document.querySelector("#renderer");
+export const canvas = document.querySelector("#canvas");
