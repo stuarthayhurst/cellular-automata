@@ -1,3 +1,14 @@
+:root {
+  --primary: dodgerblue;
+  --primary-dark: #1872cc;
+  --danger: #ff1e1e;
+  --danger-dark: #cc1818;
+  --foreground: black;
+  --foreground-light: #636363;
+  --background: white;
+  --very-light-grey: #f7f7f7;
+}
+
 html {
   overflow: hidden;
 }
@@ -6,7 +17,7 @@ body {
   margin: 0;
   font-family: sans-serif;
   color: white;
-} 
+}
 
 #app {
   height: 100vh;
@@ -15,7 +26,7 @@ body {
     "controls settings"
     "canvas settings";
   grid-template-columns: auto 400px;
-  grid-template-rows: 75px auto;
+  grid-template-rows: min-content auto;
   background-color: red;
 }
 
@@ -26,15 +37,15 @@ body {
 
 #canvas {
   grid-area: canvas;
-  background-color: gray;
+  background-color: var(--very-light-grey);
 }
 
 #controls {
   grid-area: controls;
   align-content: center;
   text-align: center;
-  padding: 20px;
-  background-color: darkslategray;
+  padding: 10px;
+  background-color: white;
 }
 
 #controls-bar {

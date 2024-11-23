@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" href="css/main.css" />
-    <link rel="stylesheet" href="css/controls.css" />
+    <link rel="stylesheet" href="css/html-controls.css" />
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
       rel="stylesheet"
@@ -17,21 +17,39 @@
       <div id="controls">
         <div id="controls-bar">
           <div id="left-controls">
-            <button disabled>2D/3D</button>
+            <button class="square-btn btn-secondary" title="2D/3D">
+              <i class="fas fa-right-left"></i>
+            </button>
           </div>
           <div id="centre-controls">
-            <button id="reset-button" title="Reset">
-              <i class="fas fa-sync-alt"></i>
+            <button
+              id="reset-button"
+              class="square-btn btn-secondary"
+              title="Reset"
+            >
+              <i class="fas fa-backward-fast"></i>
             </button>
-            <button id="pause-button" title="Play/Pause">
+            <button
+              id="pause-button"
+              class="square-btn btn-primary"
+              title="Play/Pause"
+            >
               <i id="pause-icon" class="fas fa-play"></i>
             </button>
-            <button id="step-forward-button" title="Step Forward">
-              <i class="fas fa-forward"></i>
+            <button
+              id="step-forward-button"
+              class="square-btn btn-secondary"
+              title="Step Forward"
+            >
+              <i class="fas fa-forward-step"></i>
             </button>
           </div>
           <div id="right-controls">
-            <button id="clear-button" title="Clear">
+            <button
+              id="clear-button"
+              class="square-btn btn-danger"
+              title="Clear"
+            >
               <i class="fas fa-eraser"></i>
             </button>
           </div>
@@ -55,6 +73,7 @@
     <script type="module" src="js/stateModel.js"></script>
     <script type="module" src="js/renderer.js"></script>
     <script type="module" src="js/ui/ui.js"></script>
+    <script type="module" src="js/ui/controls.js"></script>
     <script type="module" src="js/ui/canvas.js"></script>
     <script type="module" src="js/ui/settings.js"></script>
   </body>
