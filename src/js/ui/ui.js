@@ -5,6 +5,7 @@ const appContainer = document.querySelector("#app");
 
 toggleSettingsButton.addEventListener("click", () => {
  
+  
   settingsPanel.classList.toggle("hidden");
 
   appContainer.classList.toggle("settings-hidden");
