@@ -9,4 +9,4 @@ function updateCanvasResolution() {
 
 updateCanvasResolution();
 
-addEventListener("resize", (_) => updateCanvasResolution());
+onresize = () => updateCanvasResolution();

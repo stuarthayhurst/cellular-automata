@@ -2,8 +2,9 @@ import { stateModel } from "../stateModel.js";
 import { stepForward } from "../simulator.js";
 
 // Pause button
+/** @type HTMLButtonElement */
 const pauseButton = document.querySelector("#pause-button");
-pauseButton.addEventListener("click", () => stateModel.togglePaused());
+pauseButton.onclick = () => stateModel.togglePaused();
 stateModel.addEventListener("onPausedChanged", () => {
     if (stateModel.paused) {
         pauseButton.innerHTML = '<i class="fas fa-play"></i>';
@@ -15,5 +16,6 @@ stateModel.addEventListener("onPausedChanged", () => {
 });
 
 // Step forward button
+/** @type HTMLButtonElement */
 const stepForwardButton = document.querySelector("#step-forward-button");
-stepForwardButton.addEventListener("click", () => stepForward());
+stepForwardButton.onclick = () => stepForward();
