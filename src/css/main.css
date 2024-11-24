@@ -39,6 +39,13 @@ body.canvas-dragging {
   background-color: red;
 }
 
+#app.settings-hidden {
+  grid-template-areas:
+    "controls"
+    "canvas";
+  grid-template-columns: auto; 
+}
+
 #canvas-container {
   grid-area: canvas;
 }
@@ -82,4 +89,8 @@ body.canvas-dragging {
   grid-area: settings;
   padding: 0 20px 20px 20px;
   background-color: slategray;
+}
+
+#settings.hidden {
+  display: none;
 }
