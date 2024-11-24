@@ -4,6 +4,7 @@
 */
 
 export const modelVertSource = `#version 300 es
+precision lowp usampler2D;
 
 in vec3 inPosition;
 in vec3 inNormal;
@@ -16,16 +17,16 @@ flat out int cellIndexY;
 
 uniform mat4 MVP;
 uniform mat4 modelMatrix;
-uniform sampler2D cellDataTexture;
+uniform usampler2D cellDataTexture;
 
 void main() {
     int textureWidth = textureSize(cellDataTexture, 0).x;
 
-    //Wrap cellIndexX every 4 widths (4 cells per pixel)
-    cellIndexX = inCellIndex % (textureWidth * 4);
+    //Wrap cellIndexX every 4 * 8 widths (8 cells per byte, 4 bytes per pixel)
+    cellIndexX = inCellIndex % (textureWidth * 4 * 8);
 
-    //Increment cellIndexY every 4 widths (4 cells per pixel)
-    cellIndexY = inCellIndex / (textureWidth * 4);
+    //Increment cellIndexY every 4 * 8 widths (8 cells per byte, 4 bytes per pixel)
+    cellIndexY = inCellIndex / (textureWidth * 4 * 8);
 
     normal = mat3(transpose(inverse(modelMatrix))) * inNormal;
     fragPos = vec3(modelMatrix * vec4(inPosition, 1.0));

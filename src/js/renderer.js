@@ -159,14 +159,8 @@ for (let i = 0; i < meshData.byteLength / vertexBlockSize; i++) {
 
 //Bind an existing data texture, then fill it
 function setDataTexture(context, texture, rawData) {
-    //Resize buffer up to next multiple of 4, minimum for byte packing
-    let size = rawData.length;
-    if (size % 4) {
-        size = (Math.floor(rawData.length / 4) + 1) * 4;
-    }
-
     //Calculate rows and columns required to store the bytes
-    const minPixels = size / 4;
+    const minPixels = Math.ceil(rawData.length / (4 * 8));
     const rows = Math.ceil(minPixels / context.MAX_TEXTURE_SIZE);
     let cols = context.MAX_TEXTURE_SIZE;
     if (rows == 1) {
@@ -179,20 +173,23 @@ function setDataTexture(context, texture, rawData) {
     }
 
     //Resize the buffer to match the rows and columns
-    size = rows * cols * 4;
+    let size = rows * cols * 4;
     let data = new Uint8Array(size);
-    data.set(rawData);
+
+    for (let i = 0; i < rawData.length; i++) {
+        data[Math.floor(i / 8)] |= rawData[i] << i % 8;
+    }
 
     //Data is treated as 4 separate cells per pixel, one per colour channel
     context.bindTexture(context.TEXTURE_2D, texture);
     context.texImage2D(
         context.TEXTURE_2D,
         0,
-        context.RGBA,
+        context.RGBA8UI,
         cols,
         rows,
         0,
-        context.RGBA,
+        context.RGBA_INTEGER,
         context.UNSIGNED_BYTE,
         data,
     );
@@ -224,16 +221,12 @@ const context = canvas.getContext("webgl2");
 if (!context) {
     console.log("No WebGL2 support detected, good luck");
 } else {
-    const maxSize = context.MAX_TEXTURE_SIZE ** 2 * 4;
+    const maxSize = context.MAX_TEXTURE_SIZE ** 2 * 4 * 8;
     console.log(
         "WebGL2 support detected, width x height must not exceed " + maxSize,
     );
-    console.log(
-        "Maximum square dimensions are " +
-            context.MAX_TEXTURE_SIZE * 2 +
-            " x " +
-            context.MAX_TEXTURE_SIZE * 2,
-    );
+    const square = Math.floor(Math.sqrt(maxSize));
+    console.log("Maximum square dimensions are " + square + " x " + square);
 }
 
 //Reset canvas while loading

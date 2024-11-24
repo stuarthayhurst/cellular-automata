@@ -5,6 +5,7 @@
 
 export const modelFragSource = `#version 300 es
 precision mediump float;
+precision lowp usampler2D;
 
 in vec3 fragPos;
 in vec3 normal;
@@ -14,7 +15,7 @@ flat in int cellIndexY;
 out vec4 outColour;
 
 uniform vec3 cameraPos;
-uniform sampler2D cellDataTexture;
+uniform usampler2D cellDataTexture;
 
 float ambientStrength = 0.1;
 float diffuseStrength = 1.5;
@@ -23,24 +24,32 @@ vec3 baseColour = vec3(1, 0, 0);
 vec3 cellColour = vec3(0, 1, 1);
 
 void main() {
-    //Set fragments within an active cell
-    vec4 cellQuad = texelFetch(cellDataTexture, ivec2(cellIndexX / 4, cellIndexY), 0);
+    //Fetch the pixel the cell is in
+    uvec4 cellQuad = texelFetch(cellDataTexture, ivec2(cellIndexX / (4 * 8), cellIndexY), 0);
 
+    //Decide which byte of the pixel to look at
+    int packing = cellIndexX % (4 * 8);
+    int byte = packing / 8;
+
+    //Fetch the specific byte
     //This is slow for a GPU, but packing gives 4x better memory usage
-    float alive;
-    int packing = cellIndexX % 4;
-    if (packing == 0) {
+    uint alive;
+    if (byte == 0) {
         alive = cellQuad.x;
-    } else if (packing == 1) {
+    } else if (byte == 1) {
         alive = cellQuad.y;
-    } else if (packing == 2) {
+    } else if (byte == 2) {
         alive = cellQuad.z;
     } else {
         alive = cellQuad.w;
     }
 
+    //Decide which bit of the byte to look at and fetch it
+    int bit = packing % 8;
+    alive = alive & uint((1 << bit));
+
     //Check if the cell is active, return early if it is
-    if (alive > 0.0) {
+    if (alive > uint(0)) {
       outColour = vec4(cellColour, 1.0);
       return;
     }
