@@ -12,8 +12,7 @@ in int inCellIndex;
 
 out vec3 fragPos;
 out vec3 normal;
-flat out int cellIndexX;
-flat out int cellIndexY;
+flat out uint alive;
 
 uniform mat4 MVP;
 uniform mat4 modelMatrix;
@@ -23,10 +22,34 @@ void main() {
     int textureWidth = textureSize(cellDataTexture, 0).x;
 
     //Wrap cellIndexX every 4 * 8 widths (8 cells per byte, 4 bytes per pixel)
-    cellIndexX = inCellIndex % (textureWidth * 4 * 8);
+    int cellIndexX = inCellIndex % (textureWidth * 4 * 8);
 
     //Increment cellIndexY every 4 * 8 widths (8 cells per byte, 4 bytes per pixel)
-    cellIndexY = inCellIndex / (textureWidth * 4 * 8);
+    int cellIndexY = inCellIndex / (textureWidth * 4 * 8);
+
+    //Fetch the pixel the cell is in
+    uvec4 cellQuad = texelFetch(cellDataTexture, ivec2(cellIndexX / (4 * 8), cellIndexY), 0);
+
+    //Decide which byte of the pixel to look at
+    int packing = cellIndexX % (4 * 8);
+    int byte = packing / 8;
+
+    //Fetch the specific byte
+    //This is slow for a GPU, but packing gives 4x better memory usage
+    uint fetchedByte;
+    if (byte == 0) {
+        fetchedByte = cellQuad.x;
+    } else if (byte == 1) {
+        fetchedByte = cellQuad.y;
+    } else if (byte == 2) {
+        fetchedByte = cellQuad.z;
+    } else {
+        fetchedByte = cellQuad.w;
+    }
+
+    //Decide which bit of the byte to look at and fetch it
+    int bit = packing % 8;
+    alive = fetchedByte & uint((1 << bit));
 
     normal = mat3(transpose(inverse(modelMatrix))) * inNormal;
     fragPos = vec3(modelMatrix * vec4(inPosition, 1.0));
