@@ -1,27 +1,49 @@
 import { stateModel } from "../stateModel.js";
 import { canvas } from "./ui.js";
 
-const PRIMARY_BUTTON = 0;
-const DRAGGING_CLASS = "canvas-dragging";
+const primaryButton = 0;
+const draggingClass = "canvas-dragging";
+const thetaMax = 2 * Math.PI;
+const phiMax = Math.PI;
+const dragSensitivity = 0.006;
 
 function clamp(min, value, max) {
     return Math.min(Math.max(min, value), max);
 }
 
 function setDraggingStyles() {
-    document.body.classList.add(DRAGGING_CLASS);
-    canvas.classList.add(DRAGGING_CLASS);
+    document.body.classList.add(draggingClass);
+    canvas.classList.add(draggingClass);
 }
 
 function unsetDraggingStyles() {
-    document.body.classList.remove(DRAGGING_CLASS);
-    canvas.classList.remove(DRAGGING_CLASS);
+    document.body.classList.remove(draggingClass);
+    canvas.classList.remove(draggingClass);
+}
+
+function recalculatePosition() {
+    const position = glMatrix.vec3.fromValues(
+        Math.cos(theta) * Math.sin(phi),
+        Math.cos(phi),
+        -Math.sin(theta) * Math.sin(phi), // Account for WebGL being right-handed with -z
+    );
+
+    glMatrix.vec3.scale(stateModel.cameraPosition, position, cameraDistance);
 }
 
 let dragging = false;
 
+let dragRefTheta = 0;
+let dragRefPhi = 0;
+let dragRefMouseX = 0;
+let dragRefMouseY = 0;
+
+let theta = 0;
+let phi = Math.PI / 2;
+let cameraDistance = 2.0;
+
 onmousedown = (mouseEvent) => {
-    if (mouseEvent.button !== PRIMARY_BUTTON || !canvas.matches(":hover"))
+    if (mouseEvent.button !== primaryButton || !canvas.matches(":hover"))
         return;
 
     dragRefMouseX = mouseEvent.screenX;
@@ -34,22 +56,10 @@ onmousedown = (mouseEvent) => {
 };
 
 onmouseup = (mouseEvent) => {
-    if (mouseEvent.button !== PRIMARY_BUTTON) return;
+    if (mouseEvent.button !== primaryButton) return;
     dragging = false;
     unsetDraggingStyles();
 };
-
-let dragRefTheta = 0;
-let dragRefPhi = 0;
-let dragRefMouseX = 0;
-let dragRefMouseY = 0;
-
-let theta = 0;
-let phi = Math.PI / 2;
-
-const thetaMax = 2 * Math.PI;
-const phiMax = Math.PI;
-const dragSensitivity = 0.006;
 
 onmousemove = (mouseEvent) => {
     if (!dragging) return;
@@ -65,21 +75,8 @@ onmousemove = (mouseEvent) => {
     recalculatePosition();
 };
 
-let cameraDistance = 2.0;
-
 onwheel = (wheelEvent) => {
     if (wheelEvent.target !== canvas && !dragging) return;
     cameraDistance += wheelEvent.deltaY * 0.002;
     recalculatePosition();
 };
-
-function recalculatePosition() {
-    //Account for WebGL being right-handed with -z
-    const position = glMatrix.vec3.fromValues(
-        Math.cos(theta) * Math.sin(phi),
-        Math.cos(phi),
-        -Math.sin(theta) * Math.sin(phi),
-    );
-
-    glMatrix.vec3.scale(stateModel.cameraPosition, position, cameraDistance);
-}
