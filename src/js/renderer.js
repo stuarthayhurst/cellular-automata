@@ -83,6 +83,71 @@ function resetCanvas(context, height, width) {
     context.clear(context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
 }
 
+/*
+ * Bind an existing data texture, then fill it
+ * Pack the cell data into each bit of a byte, then pack 4 bytes per pixel
+ * Use both dimensions of a 2D texture
+ * If this needs even higher density, we can use 3D textures
+ *   That's not really worth it unless we absolutely have to, due to the extra complexity
+ */
+function setDataTexture(context, texture, rawData) {
+    //Calculate rows and columns required to store the bytes
+    const minPixels = Math.ceil(rawData.length / (4 * 8));
+    const rows = Math.ceil(minPixels / context.MAX_TEXTURE_SIZE);
+    let cols = context.MAX_TEXTURE_SIZE;
+    if (rows == 1) {
+        cols = minPixels % context.MAX_TEXTURE_SIZE;
+    }
+
+    if (rows > context.MAX_TEXTURE_SIZE) {
+        console.log("Max texture size exceeded, refusing to upload");
+        return;
+    }
+
+    //Resize the buffer to match the rows and columns
+    let size = rows * cols * 4;
+    let data = new Uint8Array(size);
+
+    for (let i = 0; i < rawData.length; i++) {
+        data[Math.floor(i / 8)] |= rawData[i] << i % 8;
+    }
+
+    //Data is treated as 4 separate cells per pixel, one per colour channel
+    context.bindTexture(context.TEXTURE_2D, texture);
+    context.texImage2D(
+        context.TEXTURE_2D,
+        0,
+        context.RGBA8UI,
+        cols,
+        rows,
+        0,
+        context.RGBA_INTEGER,
+        context.UNSIGNED_BYTE,
+        data,
+    );
+}
+
+//Create a texture for storing data, bind it, fill it and return it
+function createDataTexture(context, data) {
+    //Upload data to a texture
+    const texture = context.createTexture();
+    setDataTexture(context, texture, data);
+
+    //Disable filtering
+    context.texParameteri(
+        context.TEXTURE_2D,
+        context.TEXTURE_MIN_FILTER,
+        context.NEAREST,
+    );
+    context.texParameteri(
+        context.TEXTURE_2D,
+        context.TEXTURE_MAG_FILTER,
+        context.NEAREST,
+    );
+
+    return texture;
+}
+
 /* TODO:
  * This is horrible, I know. It's going to be replaced with generated mesh data
  * But for now, hard-coding a cube is the easiest way to set the rest of the code set up
@@ -155,65 +220,6 @@ for (let i = 0; i < meshData.byteLength / vertexBlockSize; i++) {
         floatMeshData[i * 7 + j] = floatData[i * 6 + j];
     }
     uintMeshData[i * 7 + 6] = indices[i];
-}
-
-//Bind an existing data texture, then fill it
-function setDataTexture(context, texture, rawData) {
-    //Calculate rows and columns required to store the bytes
-    const minPixels = Math.ceil(rawData.length / (4 * 8));
-    const rows = Math.ceil(minPixels / context.MAX_TEXTURE_SIZE);
-    let cols = context.MAX_TEXTURE_SIZE;
-    if (rows == 1) {
-        cols = minPixels % context.MAX_TEXTURE_SIZE;
-    }
-
-    if (rows > context.MAX_TEXTURE_SIZE) {
-        console.log("Max texture size exceeded, refusing to upload");
-        return;
-    }
-
-    //Resize the buffer to match the rows and columns
-    let size = rows * cols * 4;
-    let data = new Uint8Array(size);
-
-    for (let i = 0; i < rawData.length; i++) {
-        data[Math.floor(i / 8)] |= rawData[i] << i % 8;
-    }
-
-    //Data is treated as 4 separate cells per pixel, one per colour channel
-    context.bindTexture(context.TEXTURE_2D, texture);
-    context.texImage2D(
-        context.TEXTURE_2D,
-        0,
-        context.RGBA8UI,
-        cols,
-        rows,
-        0,
-        context.RGBA_INTEGER,
-        context.UNSIGNED_BYTE,
-        data,
-    );
-}
-
-//Create a texture for storing data, bind it, fill it and return it
-function createDataTexture(context, data) {
-    //Upload data to a texture
-    const texture = context.createTexture();
-    setDataTexture(context, texture, data);
-
-    //Disable filtering
-    context.texParameteri(
-        context.TEXTURE_2D,
-        context.TEXTURE_MIN_FILTER,
-        context.NEAREST,
-    );
-    context.texParameteri(
-        context.TEXTURE_2D,
-        context.TEXTURE_MAG_FILTER,
-        context.NEAREST,
-    );
-
-    return texture;
 }
 
 //Prepare context from canvas element
