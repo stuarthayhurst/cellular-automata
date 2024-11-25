@@ -1,7 +1,7 @@
 /**
  * @typedef StateModel
  * @type {object}
- * @property {Array<Number>} cells - Row-first cell values.
+ * @property {Uint8Array} cells - Row-first cell values.
  * @property {Number} cellGridWidth
  * @property {Number} cellGridHeight
  *
@@ -25,7 +25,7 @@
 /** @type {StateModel} */
 export const stateModel = {
     // Cell data
-    cells: [],
+    cells: new Uint8Array (100),
     cellGridWidth: 10,
     cellGridHeight: 10,
 
@@ -42,15 +42,42 @@ export const stateModel = {
 
     // Simulation speed controls
     paused: true,
+    baseStepIntervalMillis: 200,
+    stepIntervalMultiplier: 1.0, // value of stepIntervalMultiplier is set to 1.0 initially (default speed)
+    
     togglePaused() {
         this.paused = !this.paused;
         this.broadcastEvent("onPausedChanged");
+
+        if(!this.paused) {
+            this.startSimulation(); // Start simulation if unpaused
+        } else {
+            this.stopSimulation(); // Stop simulation if paused
+        }
     },
-    baseStepIntervalMillis: 200,
-    stepIntervalMultiplier: 1.0, // value of stepIntervalMultiplier is set to 1.0 initially (default speed)
+
+    // simulation management interval
+    simulationInterval : null,
+   
+    // starting the simulation loop using setInterval
+    // Broadcasts "simulationStep" event at each step
+
+    startSimulation(){
+        this.stopSimulation(); //clear any existing intervals
+        this.simulationInterval = setInterval(() => {
+            this.broadcastEvent("SimulationStep");
+        }, this.baseStepIntervalMillis * this.stepIntervalMultiplier);
+    },
+
+    // stops the simulator loop by clearing the interval.
+    stopSimulation(){
+        clearInterval(this.simulationInterval)
+        this.simulationInterval = null;
+    },
+
 
     // Events system
-    eventListeners: new Map(),
+    eventListeners: new Map(), 
     addEventListener(eventName, callback) {
         this.eventListeners[eventName] ??= [];
         this.eventListeners[eventName].push(callback);
@@ -60,3 +87,5 @@ export const stateModel = {
         this.eventListeners[eventName].forEach((callback) => callback());
     },
 };
+
+stateModel.cells.fill(0);

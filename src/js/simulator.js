@@ -5,44 +5,55 @@ import { stateModel } from "./stateModel.js";
  */
 export function stepForward() {
     const width = stateModel.cellGridWidth;
+    const height = stateModel.cellGridHeight;
     const cells = stateModel.cells;
-    let newCells = [];
+    const newCells = new Uint8Array(cells.length); //Using Uint8Array for effiecient storage
 
-    for (let y = 0; y < cells.length / width; y++) {
+    for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-            let neighbourCount = countMooresNeighbours(cells, width, x, y);
-            newCells.push(
-                computeCellState(cells[x + y * width], neighbourCount),
-            );
+            const index = x + y * width; // calculate the linear index
+            const neighbourCount = countMooresNeighbours(cells, width, x, y);
+            newCells [index] = computeCellState(cells[index], neighbourCount); 
         }
     }
 
     stateModel.cells = newCells;
+    stateModel.broadcastEvent("onGridUpdated"); // Tell listeners of grid changes
 }
 
 //counts the number of live neighbours within the Moore neighbourhood
 //returns int
 function countMooresNeighbours(grid, width, x, y) {
+    const height = grid.length / width;
     let sum = 0;
-    let thisIndex = x + y * width;
 
     //iterating through neighbours using index offset
-    for (let offsetY = -1; offsetY < 2; offsetY++) {
-        for (let offsetX = -1; offsetX < 2; offsetX++) {
+    for (let offsetY = -1; offsetY <= 1; offsetY++) {
+        for (let offsetX = -1; offsetX <= 1; offsetX++) {
+            // skip the cell itself
             if (offsetY === 0 && offsetX === 0) {
                 continue;
             }
 
-            let offsetIndex = thisIndex + offsetX - offsetY * width;
-            if (!(offsetIndex < 0 || offsetIndex >= grid.length)) {
-                if (grid[offsetIndex] === 1) {
-                    sum++;
-                }
+            const neighbourX = x + offsetX;
+            const neighbourY = y + offsetY;
+
+            //check bounds so to avoid accessing out of bounds indices
+
+            if (
+                neighbourX >= 0 &&
+                neighbourY >= 0 &&
+                neighbourX < width &&
+                neighbourY < height
+            ) {
+                const neighbourIndex = neighbourX + neighbourY * width;
+                sum += grid[neighbourIndex];
             }
         }
     }
     return sum;
 }
+
 
 //calculate whether a cell should live or die based on total alive neighbours
 function computeCellState(cellState, aliveNeighbours) {
@@ -57,3 +68,6 @@ function computeCellState(cellState, aliveNeighbours) {
     //cell is dead if none of conditions met
     return 0;
 }
+
+stateModel.addEventListener("SimulationStep", stepForward);
+
