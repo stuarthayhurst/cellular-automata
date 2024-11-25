@@ -68,7 +68,7 @@ onmousemove = (mouseEvent) => {
     const deltaX = dragRefMouseX - mouseEvent.screenX;
     const deltaY = dragRefMouseY - mouseEvent.screenY;
 
-    const deltaYMin = phiMax - dragRefPhi / dragSensitivity;
+    const deltaYMin = -dragRefPhi / dragSensitivity;
     const deltaYMax = (phiMax - dragRefPhi) / dragSensitivity;
 
     if (deltaY < deltaYMin || deltaY > deltaYMax) {
