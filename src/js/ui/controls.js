@@ -22,12 +22,15 @@ const stepForwardButton = document.querySelector("#step-forward-button");
 stepForwardButton.onclick = () => stepForward();
 
 // Toggle Settings Panel
+/** @type HTMLButtonElement */
 const toggleSettingsButton = document.querySelector("#toggle-settings-button");
+/** @type HTMLDivElement */
 const settingsPanel = document.querySelector("#settings");
+/** @type HTMLDivElement */
 const appContainer = document.querySelector("#app");
 
-toggleSettingsButton.addEventListener("click", () => {
+toggleSettingsButton.onclick = () => {
     settingsPanel.classList.toggle("hidden");
     appContainer.classList.toggle("settings-hidden");
     updateCanvasResolution();
-});
+};
