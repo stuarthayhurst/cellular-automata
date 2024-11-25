@@ -34,3 +34,31 @@ toggleSettingsButton.onclick = () => {
     appContainer.classList.toggle("settings-hidden");
     updateCanvasResolution();
 };
+
+// Speed selector
+/** @type HTMLSelectElement */
+const speedSelector = document.querySelector("#speed-selector");
+
+speedSelector.addEventListener("change", (event) => {
+    const selectedSpeed = parseFloat(event.target.value);
+    stateModel.stepIntervalMultiplier = selectedSpeed;
+
+    if (!stateModel.paused) {
+        adjustSimulationSpeed(); // recalculate interval with new speed
+    }
+});
+
+// Adjust simulation speed based on selected multiplier
+function adjustSimulationSpeed() {
+    const interval =
+        stateModel.baseStepIntervalMillis * stateModel.stepIntervalMultiplier;
+
+    if (stateModel.paused) {
+        return; //  if the simulation is paused, the function exits early
+    }
+
+    clearInterval(stateModel.stepInterval); // clear existing intervals
+    stateModel.stepInterval = setInterval(() => {
+        stepForward();
+    }, interval); // set new interval with adjusted speed
+}

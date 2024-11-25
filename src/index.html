@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <link rel="stylesheet" href="css/main.css" />
@@ -36,6 +36,16 @@
             >
               <i id="pause-icon" class="fas fa-play"></i>
             </button>
+            <select
+              id="speed-selector"
+              class="square-btn dropdown-btn"
+              title="Select Speed"
+            >
+              <option value="0.5">0.5x</option>
+              <option value="1" selected>1x</option>
+              <option value="2">2x</option>
+              <option value="3">3x</option>
+            </select>
             <button
               id="step-forward-button"
               class="square-btn btn-secondary"
@@ -50,7 +60,7 @@
               class="square-btn btn-secondary"
               title="Settings"
             >
-              <i class="fas fa-sliders"></i> 
+              <i class="fas fa-sliders"></i>
             </button>
             <button
               id="clear-button"

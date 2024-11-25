@@ -47,7 +47,7 @@ export const stateModel = {
         this.broadcastEvent("onPausedChanged");
     },
     baseStepIntervalMillis: 200,
-    stepIntervalMultiplier: 1.0,
+    stepIntervalMultiplier: 1.0, // value of stepIntervalMultiplier is set to 1.0 initially (default speed)
 
     // Events system
     eventListeners: new Map(),

@@ -53,3 +53,24 @@ button.btn-secondary:active {
 button:hover {
   cursor: pointer;
 }
+
+select.dropdown-btn {
+  background-color: var(--background-light);
+  border: 2px solid var(--foreground-light);
+  border-radius: 4px;
+  color: var(--foreground);
+  font-size: 16px;
+  padding: 10px 14px;
+  min-width: 100px;
+  cursor: pointer;
+  outline: none;
+}
+
+select.dropdown-btn:hover {
+  background-color: var(--background-dark);
+}
+
+select.dropdown-btn option {
+  background-color: var(--background-light);
+  color: var(--foreground);
+}
