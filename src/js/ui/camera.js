@@ -68,10 +68,19 @@ onmousemove = (mouseEvent) => {
     const deltaX = dragRefMouseX - mouseEvent.screenX;
     const deltaY = dragRefMouseY - mouseEvent.screenY;
 
-    const thetaNew = dragRefTheta + deltaX * dragSensitivity;
-    theta = ((thetaNew % thetaMax) + thetaMax) % thetaMax;
+    const deltaYMin = phiMax - dragRefPhi / dragSensitivity;
+    const deltaYMax = (phiMax - dragRefPhi) / dragSensitivity;
 
-    phi = clamp(0.00000000001, dragRefPhi + deltaY * dragSensitivity, phiMax);
+    if (deltaY < deltaYMin || deltaY > deltaYMax) {
+        dragRefPhi = phi;
+        dragRefMouseY = mouseEvent.screenY;
+    }
+
+    const thetaNew = dragRefTheta + deltaX * dragSensitivity;
+    const phiNew = dragRefPhi + deltaY * dragSensitivity;
+
+    theta = ((thetaNew % thetaMax) + thetaMax) % thetaMax;
+    phi = clamp(0.00000000001, phiNew, phiMax);
     // Prevents phi from being 0 to prevent a bug with lookAt
 
     recalculatePosition();
