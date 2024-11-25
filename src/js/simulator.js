@@ -1,5 +1,6 @@
 import { stateModel } from "./stateModel.js";
 
+
 /**
  * Take one step forward.
  */
@@ -8,11 +9,13 @@ export function stepForward() {
     const height = stateModel.cellGridHeight;
     const cells = stateModel.cells;
     const newCells = new Uint8Array(cells.length); //Using Uint8Array for effiecient storage
+    const widthMinOne = width - 1; //To prevent recalculation in loop
+    const heightMinOne = height - 1;
 
-    for (let y = 0; y < height; y++) {
+    for (let y= 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             const index = x + y * width; // calculate the linear index
-            const neighbourCount = countMooresNeighbours(cells, width, x, y);
+            const neighbourCount = countMooresNeighbours(cells, width, x, y, widthMinOne, heightMinOne);
             newCells [index] = computeCellState(cells[index], neighbourCount); 
         }
     }
@@ -23,8 +26,7 @@ export function stepForward() {
 
 //counts the number of live neighbours within the Moore neighbourhood
 //returns int
-function countMooresNeighbours(grid, width, x, y) {
-    const height = grid.length / width;
+function countMooresNeighbours(grid, width, x, y, widthMinOne, heightMinOne) {
     let sum = 0;
 
     //iterating through neighbours using index offset
@@ -41,10 +43,7 @@ function countMooresNeighbours(grid, width, x, y) {
             //check bounds so to avoid accessing out of bounds indices
 
             if (
-                neighbourX >= 0 &&
-                neighbourY >= 0 &&
-                neighbourX < width &&
-                neighbourY < height
+                neighbourX >= 0 && neighbourX <= widthMinOne && neighbourY >= 0 && neighbourY <= heightMinOne
             ) {
                 const neighbourIndex = neighbourX + neighbourY * width;
                 sum += grid[neighbourIndex];
@@ -58,15 +57,15 @@ function countMooresNeighbours(grid, width, x, y) {
 //calculate whether a cell should live or die based on total alive neighbours
 function computeCellState(cellState, aliveNeighbours) {
     //the below conditional checks for all of the rules that cause a cell to live (Conway's game of life)
-    if (
-        (cellState === 0 && aliveNeighbours === 3) ||
-        (cellState === 1 && aliveNeighbours <= 3 && aliveNeighbours >= 2)
-    ) {
-        return 1;
+    if 
+        (cellState === 0 && aliveNeighbours === 3) {
+            return 1; //Dead cell with 3 live neighbors turns alive
+    } else if
+        (cellState === 1 && aliveNeighbours <= 3 && aliveNeighbours >= 2){
+            return 1; //Alive cell with 3 or 2 neighbors stays the same (alive)
+    } else {
+        return 0;//cell is dead if none of conditions met
     }
-
-    //cell is dead if none of conditions met
-    return 0;
 }
 
 stateModel.addEventListener("SimulationStep", stepForward);
