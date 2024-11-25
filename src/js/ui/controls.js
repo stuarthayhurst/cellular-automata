@@ -5,16 +5,27 @@ import { updateCanvasResolution } from "./canvas.js";
 // Pause button
 /** @type HTMLButtonElement */
 const pauseButton = document.querySelector("#pause-button");
-pauseButton.onclick = () => stateModel.togglePaused();
-stateModel.addEventListener("onPausedChanged", () => {
+/** @type HTMLElement */
+const pauseIcon = document.querySelector("#pause-icon");
+
+pauseButton.onclick = () => {
+    stateModel.togglePaused();
+    updatePauseButton();
+};
+
+stateModel.addEventListener("onPausedChanged", updatePauseButton);
+
+function updatePauseButton() {
     if (stateModel.paused) {
-        pauseButton.innerHTML = '<i class="fas fa-play"></i>';
-        pauseButton.title = "Play";
+        pauseIcon.classList.remove("fa-pause");
+        pauseIcon.classList.add("fa-play");
+        pauseIcon.title = "Play";
     } else {
-        pauseButton.innerHTML = '<i class="fas fa-pause"></i>';
-        pauseButton.title = "Pause";
+        pauseIcon.classList.remove("fa-play");
+        pauseIcon.classList.add("fa-pause");
+        pauseIcon.title = "Pause";
     }
-});
+}
 
 // Step forward button
 /** @type HTMLButtonElement */
