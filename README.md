@@ -11,3 +11,4 @@
   - Due to CORS, the project has to be hosted locally at a minimum
     - Use `cd src; python3 -m http.server` to host it
     - View the webpage by visiting `http://0.0.0.0:8000/`
+    - Some (Windows) systems seem to complain about `python3`, if this is the case try `python -m http.server` instead

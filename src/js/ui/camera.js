@@ -3,12 +3,10 @@ import { canvas } from "./ui.js";
 
 const primaryButton = 0;
 const draggingClass = "canvas-dragging";
-
 const thetaMax = 2 * Math.PI;
 const phiMax = Math.PI;
-
-const dragSensitivity = 0.005;
-const zoomSpeed = 0.2;
+const dragSensitivity = 0.006;
+const minCameraDistance = 0.1;
 
 function clamp(min, value, max) {
     return Math.min(Math.max(min, value), max);
@@ -70,20 +68,29 @@ onmousemove = (mouseEvent) => {
     const deltaX = dragRefMouseX - mouseEvent.screenX;
     const deltaY = dragRefMouseY - mouseEvent.screenY;
 
-    const thetaNew = dragRefTheta + deltaX * dragSensitivity;
-    theta = ((thetaNew % thetaMax) + thetaMax) % thetaMax;
+    const deltaYMin = -dragRefPhi / dragSensitivity;
+    const deltaYMax = (phiMax - dragRefPhi) / dragSensitivity;
 
-    phi = clamp(0, dragRefPhi + deltaY * dragSensitivity, phiMax);
+    if (deltaY < deltaYMin || deltaY > deltaYMax) {
+        dragRefPhi = phi;
+        dragRefMouseY = mouseEvent.screenY;
+    }
+
+    const thetaNew = dragRefTheta + deltaX * dragSensitivity;
+    const phiNew = dragRefPhi + deltaY * dragSensitivity;
+
+    theta = ((thetaNew % thetaMax) + thetaMax) % thetaMax;
+    phi = clamp(0.00000000001, phiNew, phiMax);
+    // Prevents phi from being 0 to prevent a bug with lookAt
 
     recalculatePosition();
 };
 
 onwheel = (wheelEvent) => {
     if (wheelEvent.target !== canvas && !dragging) return;
-    if (wheelEvent.deltaY > 0) {
-        cameraDistance += zoomSpeed;
-    } else {
-        cameraDistance -= zoomSpeed;
-    }
+    cameraDistance = Math.max(
+        minCameraDistance,
+        cameraDistance + wheelEvent.deltaY * 0.002,
+    );
     recalculatePosition();
 };

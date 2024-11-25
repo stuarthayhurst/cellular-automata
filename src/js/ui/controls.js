@@ -8,14 +8,9 @@ const pauseButton = document.querySelector("#pause-button");
 /** @type HTMLElement */
 const pauseIcon = document.querySelector("#pause-icon");
 
-pauseButton.onclick = () => {
-    stateModel.togglePaused();
-    updatePauseButton();
-};
+pauseButton.onclick = () => stateModel.togglePaused();
 
-stateModel.addEventListener("onPausedChanged", updatePauseButton);
-
-function updatePauseButton() {
+stateModel.addEventListener("onPausedChanged", () => {
     if (stateModel.paused) {
         pauseIcon.classList.remove("fa-pause");
         pauseIcon.classList.add("fa-play");
@@ -25,7 +20,7 @@ function updatePauseButton() {
         pauseIcon.classList.add("fa-pause");
         pauseIcon.title = "Pause";
     }
-}
+});
 
 // Step forward button
 /** @type HTMLButtonElement */
