@@ -6,6 +6,7 @@ const draggingClass = "canvas-dragging";
 const thetaMax = 2 * Math.PI;
 const phiMax = Math.PI;
 const dragSensitivity = 0.006;
+const minCameraDistance = 0.1;
 
 function clamp(min, value, max) {
     return Math.min(Math.max(min, value), max);
@@ -78,6 +79,9 @@ onmousemove = (mouseEvent) => {
 
 onwheel = (wheelEvent) => {
     if (wheelEvent.target !== canvas && !dragging) return;
-    cameraDistance += wheelEvent.deltaY * 0.002;
+    cameraDistance = Math.max(
+        minCameraDistance,
+        cameraDistance + wheelEvent.deltaY * 0.002,
+    );
     recalculatePosition();
 };
