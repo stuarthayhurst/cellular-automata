@@ -73,7 +73,7 @@ onmousemove = (mouseEvent) => {
     const thetaNew = dragRefTheta + deltaX * dragSensitivity;
     theta = ((thetaNew % thetaMax) + thetaMax) % thetaMax;
 
-    phi = clamp(0, dragRefPhi + deltaY * dragSensitivity, phiMax);
+    phi = clamp(0.00000000001, dragRefPhi + deltaY * dragSensitivity, phiMax);
 
     recalculatePosition();
 };
