@@ -158,6 +158,15 @@ function generateMesh(height, width) {
     const ringRadius = 1 - volumeDiameter / 2;
     let meshWidthScale = 1;
     let meshHeightScale = 1;
+    let minDimension = 40;
+
+    //Scale the mesh up to handle tiny grids
+    if (height < minDimension) {
+        meshHeightScale = Math.ceil(minDimension / height);
+    }
+    if (width < minDimension) {
+        meshWidthScale = Math.ceil(minDimension / width);
+    }
 
     //Generate the mesh, indices and normals
     const [skeleton, skeletonOrigins] = generateSkeleton(
@@ -202,10 +211,11 @@ function generateMesh(height, width) {
     return [meshData, vertexBlockSize];
 }
 
-//Generate the mesh data
-let width = 40;
-let height = 40;
-let [meshData, vertexBlockSize] = generateMesh(height, width);
+//Bind the mesh buffer and copy the data into it
+function fillMeshBuffer(context, meshBuffer, meshData) {
+    context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
+    context.bufferData(context.ARRAY_BUFFER, meshData, context.STATIC_DRAW);
+}
 
 //Prepare context from canvas element
 const context = canvas.getContext("webgl2");
@@ -239,10 +249,9 @@ const modelFragShader = compileShader(
 const modelProgram = linkProgram(context, modelVertShader, modelFragShader);
 context.useProgram(modelProgram);
 
-//Create and fill a buffer for the mesh
+//Create and bind a buffer for the mesh
 let meshBuffer = context.createBuffer();
 context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
-context.bufferData(context.ARRAY_BUFFER, meshData, context.STATIC_DRAW);
 
 //Fetch shader attribute locations
 const meshAttribLocation = context.getAttribLocation(
@@ -307,6 +316,7 @@ context.depthFunc(context.LEQUAL);
 let lastCellWidth = 0;
 let lastCellHeight = 0;
 let cellDataTexture = 0;
+let vertexCount = 0;
 
 function drawFrame() {
     //Fetch values once to avoid changes during rendering
@@ -316,10 +326,13 @@ function drawFrame() {
     const canvasWidth = context.canvas.width;
 
     //Fetch simulation data
-    //TODO: Use the stateModel once custom meshes are done
-    const cellWidth = 3;
-    const cellHeight = 2;
-    const cellData = new Uint8Array([0, 0, 0, 0, 1, 1]);
+    const cellWidth = stateModel.cellGridWidth;
+    const cellHeight = stateModel.cellGridHeight;
+    const cellData = new Uint8Array(stateModel.cells);
+
+    //TODO: Remove these debug cells once we have a default
+    cellData[4] = 1;
+    cellData[6] = 1;
 
     //Data doesn't match dimensions, try again later
     if (cellWidth * cellHeight != cellData.length) {
@@ -335,7 +348,10 @@ function drawFrame() {
 
     //Dimensions have changed, recreate buffers
     if (lastCellWidth != cellWidth || lastCellHeight != cellHeight) {
-        //TODO: Recalculate mesh and replace buffer once custom meshes are done
+        //Generate the mesh data and fill its buffer
+        let [meshData, vertexBlockSize] = generateMesh(cellHeight, cellWidth);
+        fillMeshBuffer(context, meshBuffer, meshData);
+        vertexCount = meshData.byteLength / vertexBlockSize;
 
         //Clear existing data
         if (cellDataTexture != 0) {
@@ -384,11 +400,8 @@ function drawFrame() {
     context.uniform3fv(cameraPosLocation, cameraPosition);
     context.uniformMatrix4fv(MVPLocation, false, MVP);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
-    context.drawArrays(
-        context.TRIANGLES,
-        0,
-        meshData.byteLength / vertexBlockSize,
-    );
+    context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
+    context.drawArrays(context.TRIANGLES, 0, vertexCount);
 
     //Loop
     window.requestAnimationFrame(drawFrame);
