@@ -1,5 +1,6 @@
 import { modelVertSource } from "./shaders/modelVert.js";
 import { modelFragSource } from "./shaders/modelFrag.js";
+import { generateSkeleton, calculateMesh, calculateNormals } from "./mesh.js";
 import { stateModel } from "./stateModel.js";
 import { canvas } from "./ui/ui.js";
 
@@ -148,79 +149,63 @@ function createDataTexture(context, data) {
     return texture;
 }
 
-/* TODO:
- * This is horrible, I know. It's going to be replaced with generated mesh data
- * But for now, hard-coding a cube is the easiest way to set the rest of the code set up
- * In future, check if settings changed and then either (re)generate a mesh, or use a cached copy
- * Format: vec3(position), vec3(normal), int(index)
+/*
+ * Generate interleaved mesh, normal and index data for rendering
+ * Format: vec3f32(position), vec3f32(normal) int32(index)
  */
-let meshData = new ArrayBuffer(1008);
-let floatMeshData = new Float32Array(meshData);
-let uintMeshData = new Int32Array(meshData);
+function generateMesh(height, width) {
+    const volumeDiameter = 0.55;
+    const ringRadius = 1 - volumeDiameter / 2;
+    let meshWidthScale = 1;
+    let meshHeightScale = 1;
 
-// prettier-ignore
-let floatData = [
-    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
-     0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
-     0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
-     0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
-    -0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
-    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
+    //Generate the mesh, indices and normals
+    const [skeleton, skeletonOrigins] = generateSkeleton(
+        width,
+        height,
+        ringRadius,
+        volumeDiameter,
+        meshWidthScale,
+        meshHeightScale,
+    );
+    const [mesh, origins, indices] = calculateMesh(
+        skeleton,
+        skeletonOrigins,
+        width,
+        height,
+        meshWidthScale,
+        meshHeightScale,
+    );
+    const normals = calculateNormals(mesh, origins);
 
-    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
-     0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
-     0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
-     0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
-    -0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
-    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
+    //Size of each buffer * their 3 uses * 4 bytes per element
+    const bufferSize = (mesh.length + normals.length + indices.length) * 3 * 4;
+    const vertexBlockSize = 4 * 7;
 
-    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
-    -0.5,  0.5, -0.5, -1.0,  0.0,  0.0,
-    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
-    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
-    -0.5, -0.5,  0.5, -1.0,  0.0,  0.0,
-    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
+    let meshData = new ArrayBuffer(bufferSize);
+    let floatView = new Float32Array(meshData);
+    let intView = new Int32Array(meshData);
 
-     0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
-     0.5,  0.5, -0.5,  1.0,  0.0,  0.0,
-     0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
-     0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
-     0.5, -0.5,  0.5,  1.0,  0.0,  0.0,
-     0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
+    //Write the data to the mesh array using a correctly typed buffer view
+    for (let i = 0; i < mesh.length; i++) {
+        for (let j = 0; j < 3; j++) {
+            floatView[i * 7 + j] = mesh[i][j];
+        }
 
-    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
-     0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
-     0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
-     0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
-    -0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
-    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
+        for (let j = 0; j < 3; j++) {
+            floatView[i * 7 + j + 3] = normals[i][j];
+        }
 
-    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
-     0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
-     0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
-     0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
-    -0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
-    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
-];
-
-// prettier-ignore
-let indices = [
-    0, 0, 0, 0, 0, 0,
-    1, 1, 1, 1, 1, 1,
-    2, 2, 2, 2, 2, 2,
-    3, 3, 3, 3, 3, 3,
-    4, 4, 4, 4, 4, 4,
-    5, 5, 5, 5, 5, 5,
-];
-const vertexBlockSize = 4 * 7;
-
-//Write the data to the mesh using a correctly typed buffer view
-for (let i = 0; i < meshData.byteLength / vertexBlockSize; i++) {
-    for (let j = 0; j < 6; j++) {
-        floatMeshData[i * 7 + j] = floatData[i * 6 + j];
+        intView[i * 7 + 6] = indices[Math.floor(i / 3)];
     }
-    uintMeshData[i * 7 + 6] = indices[i];
+
+    return [meshData, vertexBlockSize];
 }
+
+//Generate the mesh data
+let width = 40;
+let height = 40;
+let [meshData, vertexBlockSize] = generateMesh(height, width);
 
 //Prepare context from canvas element
 const context = canvas.getContext("webgl2");
