@@ -26,7 +26,7 @@ export function stepForward() {
 
 //counts the number of live neighbours within the Moore neighbourhood
 //returns int
-function countMooresNeighbours(grid, width, x, y, widthMinOne, heightMinOne) {
+export function countMooresNeighbours(grid, width, x, y, widthMinOne, heightMinOne) {
     let sum = 0;
 
     //iterating through neighbours using index offset
@@ -55,7 +55,7 @@ function countMooresNeighbours(grid, width, x, y, widthMinOne, heightMinOne) {
 
 
 //calculate whether a cell should live or die based on total alive neighbours
-function computeCellState(cellState, aliveNeighbours) {
+export function computeCellState(cellState, aliveNeighbours) {
     //the below conditional checks for all of the rules that cause a cell to live (Conway's game of life)
     if 
         (cellState === 0 && aliveNeighbours === 3) {
