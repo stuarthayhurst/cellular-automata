@@ -158,7 +158,7 @@ function generateMesh(height, width) {
     const ringRadius = 1 - volumeDiameter / 2;
     let meshWidthScale = 1;
     let meshHeightScale = 1;
-    let minDimension = 40;
+    let minDimension = 100;
 
     //Scale the mesh up to handle tiny grids
     if (height < minDimension) {
