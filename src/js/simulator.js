@@ -1,6 +1,5 @@
 import { stateModel } from "./stateModel.js";
 
-
 /**
  * Take one step forward.
  */
@@ -8,15 +7,13 @@ export function stepForward() {
     const width = stateModel.cellGridWidth;
     const height = stateModel.cellGridHeight;
     const cells = stateModel.cells;
-    const newCells = new Uint8Array(cells.length); //Using Uint8Array for effiecient storage
-    const widthMinOne = width - 1; //To prevent recalculation in loop
-    const heightMinOne = height - 1;
+    const newCells = cells;
 
-    for (let y= 0; y < height; y++) {
+    for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-            const index = x + y * width; // calculate the linear index
-            const neighbourCount = countMooresNeighbours(cells, width, x, y, widthMinOne, heightMinOne);
-            newCells [index] = computeCellState(cells[index], neighbourCount); 
+            const index = x + y * width;
+            const neighbourCount = countMooresNeighbours(cells, width, x, y);
+            newCells[index] = conwaysCellState(cells[index], neighbourCount);
         }
     }
 
@@ -24,49 +21,53 @@ export function stepForward() {
     stateModel.broadcastEvent("onGridUpdated"); // Tell listeners of grid changes
 }
 
-//counts the number of live neighbours within the Moore neighbourhood
-//returns int
-export function countMooresNeighbours(grid, width, x, y, widthMinOne, heightMinOne) {
-    let sum = 0;
+/**
+ * Count Moore's Neighbours
+ * @param {Uint8Array} cells - Array of cells.
+ * @param {Number} width - Cell cells width.
+ * @param {Number} x - Cell X.
+ * @param {Number} y - Cell Y.
+ * @returns {Number} - The number of Moore's Neighbours.
+ */
+export function countMooresNeighbours(cells, width, x, y) {
+    let neighbours = 0;
 
-    //iterating through neighbours using index offset
     for (let offsetY = -1; offsetY <= 1; offsetY++) {
         for (let offsetX = -1; offsetX <= 1; offsetX++) {
-            // skip the cell itself
-            if (offsetY === 0 && offsetX === 0) {
-                continue;
-            }
+            if (offsetY === 0 && offsetX === 0) continue;
 
             const neighbourX = x + offsetX;
             const neighbourY = y + offsetY;
 
-            //check bounds so to avoid accessing out of bounds indices
+            const l = cells.length;
+            const neighbourIndex =
+                (((neighbourX + neighbourY * width) % l) + l) % l;
 
-            if (
-                neighbourX >= 0 && neighbourX <= widthMinOne && neighbourY >= 0 && neighbourY <= heightMinOne
-            ) {
-                const neighbourIndex = neighbourX + neighbourY * width;
-                sum += grid[neighbourIndex];
-            }
+            neighbours += cells[neighbourIndex];
         }
     }
-    return sum;
+
+    return neighbours;
 }
 
-
-//calculate whether a cell should live or die based on total alive neighbours
-export function computeCellState(cellState, aliveNeighbours) {
-    //the below conditional checks for all of the rules that cause a cell to live (Conway's game of life)
-    if 
-        (cellState === 0 && aliveNeighbours === 3) {
-            return 1; //Dead cell with 3 live neighbors turns alive
-    } else if
-        (cellState === 1 && aliveNeighbours <= 3 && aliveNeighbours >= 2){
-            return 1; //Alive cell with 3 or 2 neighbors stays the same (alive)
+/**
+ * Calculate the new state of a cell in Conway's game of life.
+ * @param {0|1} cellState - The current cell state.
+ * @param {Number} aliveNeighbours - The number of alive Moore's neighbours of the cell.
+ * @returns {0|1} - The new cell state.
+ */
+export function conwaysCellState(cellState, aliveNeighbours) {
+    if (cellState === 0 && aliveNeighbours === 3) {
+        return 1; // Dead cell with 3 live neighbors turns alive
+    } else if (
+        cellState === 1 &&
+        aliveNeighbours <= 3 &&
+        aliveNeighbours >= 2
+    ) {
+        return 1; // Alive cell with 3 or 2 neighbors stays the same (alive)
     } else {
-        return 0;//cell is dead if none of conditions met
+        return 0; // Cell is dead if none of conditions met
     }
 }
 
 stateModel.addEventListener("SimulationStep", stepForward);
-
