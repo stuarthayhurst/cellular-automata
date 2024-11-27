@@ -336,6 +336,7 @@ function drawFrame() {
 
     //Data doesn't match dimensions, try again later
     if (cellWidth * cellHeight != cellData.length) {
+        window.requestAnimationFrame(drawFrame);
         return;
     }
 
