@@ -313,6 +313,10 @@ const cellDataTexLocation = context.getUniformLocation(
 context.enable(context.DEPTH_TEST);
 context.depthFunc(context.LEQUAL);
 
+//Enable back-face culling
+context.enable(context.CULL_FACE);
+context.cullFace(context.BACK);
+
 let lastCellWidth = 0;
 let lastCellHeight = 0;
 let cellDataTexture = 0;
@@ -397,7 +401,6 @@ function drawFrame() {
 
     //Send the remaining uniforms and draw the mesh
     //TODO: Swap to using element buffers and index the meshes
-    //TODO: Enable backface culling
     context.uniform3fv(cameraPosLocation, cameraPosition);
     context.uniformMatrix4fv(MVPLocation, false, MVP);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
