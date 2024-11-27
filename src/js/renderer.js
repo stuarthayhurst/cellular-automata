@@ -1,5 +1,6 @@
 import { modelVertSource } from "./shaders/modelVert.js";
 import { modelFragSource } from "./shaders/modelFrag.js";
+import { generateSkeleton, calculateMesh, calculateNormals } from "./mesh.js";
 import { stateModel } from "./stateModel.js";
 import { canvas } from "./ui/ui.js";
 
@@ -148,78 +149,72 @@ function createDataTexture(context, data) {
     return texture;
 }
 
-/* TODO:
- * This is horrible, I know. It's going to be replaced with generated mesh data
- * But for now, hard-coding a cube is the easiest way to set the rest of the code set up
- * In future, check if settings changed and then either (re)generate a mesh, or use a cached copy
- * Format: vec3(position), vec3(normal), int(index)
+/*
+ * Generate interleaved mesh, normal and index data for rendering
+ * Format: vec3f32(position), vec3f32(normal) int32(index)
  */
-let meshData = new ArrayBuffer(1008);
-let floatMeshData = new Float32Array(meshData);
-let uintMeshData = new Int32Array(meshData);
+function generateMesh(height, width) {
+    const volumeDiameter = 0.55;
+    const ringRadius = 1 - volumeDiameter / 2;
+    let meshWidthScale = 1;
+    let meshHeightScale = 1;
+    let minDimension = 100;
 
-// prettier-ignore
-let floatData = [
-    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
-     0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
-     0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
-     0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
-    -0.5,  0.5, -0.5,  0.0,  0.0, -1.0,
-    -0.5, -0.5, -0.5,  0.0,  0.0, -1.0,
-
-    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
-     0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
-     0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
-     0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
-    -0.5,  0.5,  0.5,  0.0,  0.0,  1.0,
-    -0.5, -0.5,  0.5,  0.0,  0.0,  1.0,
-
-    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
-    -0.5,  0.5, -0.5, -1.0,  0.0,  0.0,
-    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
-    -0.5, -0.5, -0.5, -1.0,  0.0,  0.0,
-    -0.5, -0.5,  0.5, -1.0,  0.0,  0.0,
-    -0.5,  0.5,  0.5, -1.0,  0.0,  0.0,
-
-     0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
-     0.5,  0.5, -0.5,  1.0,  0.0,  0.0,
-     0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
-     0.5, -0.5, -0.5,  1.0,  0.0,  0.0,
-     0.5, -0.5,  0.5,  1.0,  0.0,  0.0,
-     0.5,  0.5,  0.5,  1.0,  0.0,  0.0,
-
-    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
-     0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
-     0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
-     0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
-    -0.5, -0.5,  0.5,  0.0, -1.0,  0.0,
-    -0.5, -0.5, -0.5,  0.0, -1.0,  0.0,
-
-    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
-     0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
-     0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
-     0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
-    -0.5,  0.5,  0.5,  0.0,  1.0,  0.0,
-    -0.5,  0.5, -0.5,  0.0,  1.0,  0.0,
-];
-
-// prettier-ignore
-let indices = [
-    0, 0, 0, 0, 0, 0,
-    1, 1, 1, 1, 1, 1,
-    2, 2, 2, 2, 2, 2,
-    3, 3, 3, 3, 3, 3,
-    4, 4, 4, 4, 4, 4,
-    5, 5, 5, 5, 5, 5,
-];
-const vertexBlockSize = 4 * 7;
-
-//Write the data to the mesh using a correctly typed buffer view
-for (let i = 0; i < meshData.byteLength / vertexBlockSize; i++) {
-    for (let j = 0; j < 6; j++) {
-        floatMeshData[i * 7 + j] = floatData[i * 6 + j];
+    //Scale the mesh up to handle tiny grids
+    if (height < minDimension) {
+        meshHeightScale = Math.ceil(minDimension / height);
     }
-    uintMeshData[i * 7 + 6] = indices[i];
+    if (width < minDimension) {
+        meshWidthScale = Math.ceil(minDimension / width);
+    }
+
+    //Generate the mesh, indices and normals
+    const [skeleton, skeletonOrigins] = generateSkeleton(
+        width,
+        height,
+        ringRadius,
+        volumeDiameter,
+        meshWidthScale,
+        meshHeightScale,
+    );
+    const [mesh, origins, indices] = calculateMesh(
+        skeleton,
+        skeletonOrigins,
+        width,
+        height,
+        meshWidthScale,
+        meshHeightScale,
+    );
+    const normals = calculateNormals(mesh, origins);
+
+    //Size of each buffer * their 3 uses * 4 bytes per element
+    const bufferSize = (mesh.length + normals.length + indices.length) * 3 * 4;
+    const vertexBlockSize = 4 * 7;
+
+    let meshData = new ArrayBuffer(bufferSize);
+    let floatView = new Float32Array(meshData);
+    let intView = new Int32Array(meshData);
+
+    //Write the data to the mesh array using a correctly typed buffer view
+    for (let i = 0; i < mesh.length; i++) {
+        for (let j = 0; j < 3; j++) {
+            floatView[i * 7 + j] = mesh[i][j];
+        }
+
+        for (let j = 0; j < 3; j++) {
+            floatView[i * 7 + j + 3] = normals[i][j];
+        }
+
+        intView[i * 7 + 6] = indices[Math.floor(i / 3)];
+    }
+
+    return [meshData, vertexBlockSize];
+}
+
+//Bind the mesh buffer and copy the data into it
+function fillMeshBuffer(context, meshBuffer, meshData) {
+    context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
+    context.bufferData(context.ARRAY_BUFFER, meshData, context.STATIC_DRAW);
 }
 
 //Prepare context from canvas element
@@ -254,10 +249,9 @@ const modelFragShader = compileShader(
 const modelProgram = linkProgram(context, modelVertShader, modelFragShader);
 context.useProgram(modelProgram);
 
-//Create and fill a buffer for the mesh
+//Create and bind a buffer for the mesh
 let meshBuffer = context.createBuffer();
 context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
-context.bufferData(context.ARRAY_BUFFER, meshData, context.STATIC_DRAW);
 
 //Fetch shader attribute locations
 const meshAttribLocation = context.getAttribLocation(
@@ -319,9 +313,14 @@ const cellDataTexLocation = context.getUniformLocation(
 context.enable(context.DEPTH_TEST);
 context.depthFunc(context.LEQUAL);
 
+//Enable back-face culling
+context.enable(context.CULL_FACE);
+context.cullFace(context.BACK);
+
 let lastCellWidth = 0;
 let lastCellHeight = 0;
 let cellDataTexture = 0;
+let vertexCount = 0;
 
 function drawFrame() {
     //Fetch values once to avoid changes during rendering
@@ -331,13 +330,17 @@ function drawFrame() {
     const canvasWidth = context.canvas.width;
 
     //Fetch simulation data
-    //TODO: Use the stateModel once custom meshes are done
-    const cellWidth = 3;
-    const cellHeight = 2;
-    const cellData = new Uint8Array([0, 0, 0, 0, 1, 1]);
+    const cellWidth = stateModel.cellGridWidth;
+    const cellHeight = stateModel.cellGridHeight;
+    const cellData = new Uint8Array(stateModel.cells);
+
+    //TODO: Remove these debug cells once we have a default
+    cellData[4] = 1;
+    cellData[6] = 1;
 
     //Data doesn't match dimensions, try again later
     if (cellWidth * cellHeight != cellData.length) {
+        window.requestAnimationFrame(drawFrame);
         return;
     }
 
@@ -350,7 +353,10 @@ function drawFrame() {
 
     //Dimensions have changed, recreate buffers
     if (lastCellWidth != cellWidth || lastCellHeight != cellHeight) {
-        //TODO: Recalculate mesh and replace buffer once custom meshes are done
+        //Generate the mesh data and fill its buffer
+        let [meshData, vertexBlockSize] = generateMesh(cellHeight, cellWidth);
+        fillMeshBuffer(context, meshBuffer, meshData);
+        vertexCount = meshData.byteLength / vertexBlockSize;
 
         //Clear existing data
         if (cellDataTexture != 0) {
@@ -395,15 +401,11 @@ function drawFrame() {
 
     //Send the remaining uniforms and draw the mesh
     //TODO: Swap to using element buffers and index the meshes
-    //TODO: Enable backface culling
     context.uniform3fv(cameraPosLocation, cameraPosition);
     context.uniformMatrix4fv(MVPLocation, false, MVP);
     context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
-    context.drawArrays(
-        context.TRIANGLES,
-        0,
-        meshData.byteLength / vertexBlockSize,
-    );
+    context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
+    context.drawArrays(context.TRIANGLES, 0, vertexCount);
 
     //Loop
     window.requestAnimationFrame(drawFrame);
