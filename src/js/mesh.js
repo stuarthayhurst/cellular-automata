@@ -98,10 +98,15 @@ export function calculateMesh(
         mesh.push(skeleton[prevPoint]);
         origins.push(currentOrigin);
 
-        //Calculate the grid index, account for scale
-        let widthIndex = Math.floor(Math.floor(i / height) / meshWidthScale);
-        let heightIndex = Math.floor(((i % height) * width) / meshHeightScale);
-        let gridIndex = widthIndex + heightIndex;
+        //Calculate the raw grid index components
+        let y = i % height;
+        let x = Math.floor(i / height);
+
+        //Account for mesh scaling / interpolation
+        x = Math.floor(x / meshWidthScale);
+        y = Math.floor(y / meshHeightScale);
+        let gridIndex = y * Math.floor(width / meshWidthScale) + x;
+
         indices.push(gridIndex);
         indices.push(gridIndex);
     }
