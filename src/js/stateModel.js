@@ -25,7 +25,7 @@
 /** @type {StateModel} */
 export const stateModel = {
     // Cell data
-    cells: new Uint8Array(100),
+    cells: new Uint8Array(100).fill(0),
     cellGridWidth: 10,
     cellGridHeight: 10,
 
@@ -87,4 +87,10 @@ export const stateModel = {
     },
 };
 
-stateModel.cells.fill(0);
+// Glider
+stateModel.cells[3] =
+    stateModel.cells[11] =
+    stateModel.cells[13] =
+    stateModel.cells[22] =
+    stateModel.cells[23] =
+        1;

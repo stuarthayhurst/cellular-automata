@@ -334,10 +334,6 @@ function drawFrame() {
     const cellHeight = stateModel.cellGridHeight;
     const cellData = new Uint8Array(stateModel.cells);
 
-    //TODO: Remove these debug cells once we have a default
-    cellData[4] = 1;
-    cellData[6] = 1;
-
     //Data doesn't match dimensions, try again later
     if (cellWidth * cellHeight != cellData.length) {
         window.requestAnimationFrame(drawFrame);
