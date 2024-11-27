@@ -23,7 +23,6 @@
 /** @typedef {"2D"|"3D"} ViewMode */
 
 /** @type {StateModel} */
-import * as glMatrix from 'gl-matrix';
 export const stateModel = {
     // Cell data
     cells: new Uint8Array (100),
