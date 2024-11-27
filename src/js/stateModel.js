@@ -25,7 +25,7 @@
 /** @type {StateModel} */
 export const stateModel = {
     // Cell data
-    cells: new Uint8Array(100).fill(0),
+    cells: new Uint8Array(100),
     cellGridWidth: 10,
     cellGridHeight: 10,
 

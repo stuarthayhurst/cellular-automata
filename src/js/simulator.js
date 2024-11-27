@@ -7,7 +7,7 @@ export function stepForward() {
     const width = stateModel.cellGridWidth;
     const height = stateModel.cellGridHeight;
     const cells = stateModel.cells;
-    const newCells = cells;
+    const newCells = new Uint8Array(cells.length);
 
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
