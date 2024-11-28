@@ -70,4 +70,30 @@ export function conwaysCellState(cellState, aliveNeighbours) {
     }
 }
 
-stateModel.addEventListener("SimulationStep", stepForward);
+let simulationInterval = null;
+
+function unPauseSimulation() {
+    simulationInterval = setInterval(() => {
+        stepForward();
+    }, stateModel.baseStepIntervalMillis / stateModel.simulationSpeed);
+}
+
+function pauseSimulation() {
+    clearInterval(simulationInterval);
+    simulationInterval = null;
+}
+
+stateModel.addEventListener("onPausedChanged", () => {
+    if (stateModel.paused) {
+        pauseSimulation();
+    } else {
+        unPauseSimulation();
+    }
+});
+
+stateModel.addEventListener("onSimulationSpeedChanged", () => {
+    if (stateModel.paused) return;
+
+    clearInterval(simulationInterval);
+    unPauseSimulation();
+});

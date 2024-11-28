@@ -14,7 +14,8 @@
  * @property {Boolean} paused - If the simulation is paused.
  * @property {function()} togglePaused
  * @property {Number} baseStepIntervalMillis - Interval in milliseconds between simulation steps taken when not paused.
- * @property {Number} stepIntervalMultiplier - Multiplier applied to the base step interval, e.g. 0.5x, 3x.
+ * @property {Number} simulationSpeed - Divisor applied to the base step interval, e.g. 0.5x, 3x.
+ * @property {function(Number)} setSimulationSpeed
  *
  * @property {Map<string, Array<function>>} eventListeners
  * @property {function(String, Function)} addEventListener
@@ -43,36 +44,14 @@ export const stateModel = {
     // Simulation speed controls
     paused: true,
     baseStepIntervalMillis: 200,
-    stepIntervalMultiplier: 1.0, // value of stepIntervalMultiplier is set to 1.0 initially (default speed)
-
+    simulationSpeed: 1.0,
     togglePaused() {
         this.paused = !this.paused;
         this.broadcastEvent("onPausedChanged");
-
-        if (!this.paused) {
-            this.startSimulation(); // Start simulation if unpaused
-        } else {
-            this.stopSimulation(); // Stop simulation if paused
-        }
     },
-
-    // simulation management interval
-    simulationInterval: null,
-
-    // starting the simulation loop using setInterval
-    // Broadcasts "simulationStep" event at each step
-
-    startSimulation() {
-        this.stopSimulation(); //clear any existing intervals
-        this.simulationInterval = setInterval(() => {
-            this.broadcastEvent("SimulationStep");
-        }, this.baseStepIntervalMillis * this.stepIntervalMultiplier);
-    },
-
-    // stops the simulator loop by clearing the interval.
-    stopSimulation() {
-        clearInterval(this.simulationInterval);
-        this.simulationInterval = null;
+    setSimulationSpeed(speed) {
+        this.simulationSpeed = speed;
+        this.broadcastEvent("onSimulationSpeedChanged");
     },
 
     // Events system
