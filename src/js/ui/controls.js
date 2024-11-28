@@ -47,3 +47,4 @@ const speedSelector = document.querySelector("#speed-selector");
 speedSelector.addEventListener("change", (event) => {
     stateModel.setSimulationSpeed(parseFloat(event.target.value));
 });
+
