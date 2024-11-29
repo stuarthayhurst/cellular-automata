@@ -67,9 +67,9 @@ export const stateModel = {
 };
 
 // Glider
-stateModel.cells[3] =
-    stateModel.cells[11] =
-    stateModel.cells[13] =
+stateModel.cells[2] =
+    stateModel.cells[10] =
+    stateModel.cells[12] =
+    stateModel.cells[21] =
     stateModel.cells[22] =
-    stateModel.cells[23] =
         1;

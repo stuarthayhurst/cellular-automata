@@ -1,4 +1,5 @@
 import { stateModel } from "../stateModel.js";
+import { resizeCellGrid } from "../simulator.js";
 
 /**
  * Add an event listener to an input element so that when the user focuses away
@@ -24,7 +25,11 @@ const cellGridWidthInput = document.querySelector("#width");
 setupSetIfValid(
     cellGridWidthInput,
     () => stateModel.cellGridWidth,
-    () => (stateModel.cellGridWidth = Number(cellGridWidthInput.value)),
+    () =>
+        resizeCellGrid(
+            Number(cellGridWidthInput.value),
+            stateModel.cellGridHeight,
+        ),
 );
 
 // Height
@@ -33,5 +38,9 @@ const cellGridHeightInput = document.querySelector("#height");
 setupSetIfValid(
     cellGridHeightInput,
     () => stateModel.cellGridHeight,
-    () => (stateModel.cellGridHeight = Number(cellGridHeightInput.value)),
+    () =>
+        resizeCellGrid(
+            stateModel.cellGridWidth,
+            Number(cellGridHeightInput.valu),
+        ),
 );
