@@ -41,6 +41,6 @@ setupSetIfValid(
     () =>
         resizeCellGrid(
             stateModel.cellGridWidth,
-            Number(cellGridHeightInput.valu),
+            Number(cellGridHeightInput.value),
         ),
 );
