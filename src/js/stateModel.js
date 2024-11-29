@@ -2,12 +2,14 @@
  * @typedef StateModel
  * @type {object}
  * @property {Uint8Array} cells - Row-first cell values.
- * @property {Uint8Array} stepZeroCells - Row-first cell values in the starting state.
- * @property {Number} stepZeroCellGridWidth
- * @property {Number} stepZeroCellGridHeight
+ * @property {Uint8Array} startCells - Row-first cell values in the starting state.
+ * @property {Number} startCellGridWidth
+ * @property {Number} startCellGridHeight
  * @property {Number} step - Number of simulation steps taken.
  * @property {Number} cellGridWidth
  * @property {Number} cellGridHeight
+ * @property {function():void} saveStartState
+ * @property {function():void} reset
  *
  * @property {vec3} cameraPosition - Location of the camera.
  * @property {Number} fieldOfView - Field of view of the camera.
@@ -32,12 +34,26 @@
 export const stateModel = {
     // Simulation
     cells: new Uint8Array(100),
-    stepZeroCells: null,
-    stepZeroCellGridWidth: 10,
-    stepZeroCellGridHeight: 10,
+    startCells: null,
+    startCellGridWidth: 10,
+    startCellGridHeight: 10,
     step: 0,
     cellGridWidth: 10,
     cellGridHeight: 10,
+    saveStartState() {
+        this.stepZeroCells = new Uint8Array(this.cells);
+        this.stepZeroCellGridHeight = this.cellGridHeight;
+        this.stepZeroCellGridWidth = this.cellGridWidth;
+        this.notifyChange("start");
+    },
+    reset() {
+        if (this.step === 0) return;
+        this.cells = new Uint8Array(this.stepZeroCells);
+        this.step = 0;
+        this.cellGridWidth = this.stepZeroCellGridWidth;
+        this.cellGridHeight = this.stepZeroCellGridHeight;
+        this.notifyChange("reset");
+    },
 
     // Camera controls
     cameraPosition: glMatrix.vec3.fromValues(2, 0, 0),

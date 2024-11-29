@@ -10,11 +10,7 @@ export function stepForward() {
     const cells = stateModel.cells;
     const nextCells = new Uint8Array(cells.length);
 
-    if (stateModel.step === 0) {
-        stateModel.stepZeroCells = new Uint8Array(stateModel.cells);
-        stateModel.stepZeroCellGridHeight = stateModel.cellGridHeight;
-        stateModel.stepZeroCellGridWidth = stateModel.cellGridWidth;
-    }
+    if (stateModel.step === 0) stateModel.saveStartState();
 
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
@@ -26,17 +22,6 @@ export function stepForward() {
 
     stateModel.cells = nextCells;
     stateModel.step++;
-}
-
-/**
- * Set cells to the state they were in before the first step.
- */
-export function resetSimulation() {
-    if (stateModel.step === 0) return;
-    stateModel.cells = new Uint8Array(stateModel.stepZeroCells);
-    stateModel.step = 0;
-    stateModel.cellGridWidth = stateModel.stepZeroCellGridWidth;
-    stateModel.cellGridHeight = stateModel.stepZeroCellGridHeight;
 }
 
 /**

@@ -1,5 +1,5 @@
 import { stateModel } from "../stateModel.js";
-import { resetSimulation, stepForward } from "../simulator.js";
+import { stepForward } from "../simulator.js";
 import { updateCanvasResolution } from "./canvas.js";
 
 // Pause button
@@ -52,6 +52,12 @@ speedSelector.onchange = (event) => {
 /** @type HTMLButtonElement */
 const resetButton = document.querySelector("#reset-button");
 resetButton.onclick = () => {
-    resetSimulation();
+    stateModel.reset();
     stateModel.pause();
 };
+stateModel.onChanged("reset", () => {
+    resetButton.disabled = true;
+});
+stateModel.onChanged("start", () => {
+    resetButton.disabled = false;
+});
