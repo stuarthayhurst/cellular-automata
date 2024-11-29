@@ -2,6 +2,7 @@ import { stateModel } from "./stateModel.js";
 
 /**
  * Take one step forward.
+ * @returns {void}
  */
 export function stepForward() {
     const width = stateModel.cellGridWidth;
@@ -31,6 +32,24 @@ export function resetSimulation() {
     if (stateModel.step === 0) return;
     stateModel.cells = new Uint8Array(stateModel.stepZeroCells);
     stateModel.step = 0;
+}
+
+/**
+ * Resize the cell grid.
+ * @param newWidth
+ * @param newHeight
+ * @returns {void}
+ */
+export function resizeCellGrid(newWidth, newHeight) {
+    const resizedCells = new Uint8Array(newWidth * newHeight);
+    stateModel.cells.forEach((cellState, index) => {
+        const [x, y] = indexToPos(index, stateModel.cellGridWidth);
+        const newIndex = posToIndex(x, y, newWidth);
+        if (newIndex < resizedCells.length) resizedCells[newIndex] = cellState;
+    });
+    stateModel.cells = resizedCells;
+    stateModel.cellGridWidth = newWidth;
+    stateModel.cellGridHeight = newHeight;
 }
 
 /**
@@ -80,6 +99,35 @@ export function conwaysCellState(cellState, aliveNeighbours) {
     } else {
         return 0; // Cell is dead if none of conditions met
     }
+}
+
+function indexToPos(index, width) {
+    const x = index % width;
+    const y = Math.floor(index / width);
+    return [x, y];
+}
+
+function posToIndex(x, y, width) {
+    return x + width * y;
+}
+
+function life(cells) {
+    return cells.reduce((acc, cellState) => acc + cellState);
+}
+
+function printCells() {
+    const cells = stateModel.cells;
+    const width = stateModel.cellGridWidth;
+    const height = stateModel.cellGridHeight;
+    let result = "";
+    for (let y = 0; y < height; y++) {
+        let row = "";
+        for (let x = 0; x < width; x++) {
+            row += cells[posToIndex(x, y, width)] === 0 ? "□ " : "■ ";
+        }
+        result += row + "\n";
+    }
+    console.log(result);
 }
 
 let simulationInterval = null;
