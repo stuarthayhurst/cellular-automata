@@ -60,7 +60,7 @@ export const stateModel = {
             this.startCellGridWidth,
             this.startCellGridHeight,
         );
-        this.notifyChange("reset");
+        this.notifyChange("resetToStart");
     },
 
     // Camera controls

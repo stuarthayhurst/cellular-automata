@@ -52,10 +52,10 @@ speedSelector.onchange = (event) => {
 /** @type HTMLButtonElement */
 const resetButton = document.querySelector("#reset-button");
 resetButton.onclick = () => {
-    stateModel.reset();
+    stateModel.resetToStart();
     stateModel.pause();
 };
-stateModel.onChanged("reset", () => {
+stateModel.onChanged("resetToStart", () => {
     resetButton.disabled = true;
 });
 stateModel.onChanged("start", () => {
