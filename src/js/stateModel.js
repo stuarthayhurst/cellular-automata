@@ -8,8 +8,9 @@
  * @property {Number} step - Number of simulation steps taken.
  * @property {Number} cellGridWidth
  * @property {Number} cellGridHeight
+ * @property {function(Number, Number)} setGridDimensions
  * @property {function():void} saveStartState
- * @property {function():void} reset
+ * @property {function():void} resetToStart
  *
  * @property {vec3} cameraPosition - Location of the camera.
  * @property {Number} fieldOfView - Field of view of the camera.
@@ -34,24 +35,31 @@
 export const stateModel = {
     // Simulation
     cells: new Uint8Array(100),
+    cellGridWidth: 10,
+    cellGridHeight: 10,
+    step: 0,
     startCells: null,
     startCellGridWidth: 10,
     startCellGridHeight: 10,
-    step: 0,
-    cellGridWidth: 10,
-    cellGridHeight: 10,
+    setGridDimensions(width, height) {
+        this.cellGridWidth = width;
+        this.cellGridHeight = height;
+        this.notifyChange("gridDimensions");
+    },
     saveStartState() {
         this.stepZeroCells = new Uint8Array(this.cells);
-        this.stepZeroCellGridHeight = this.cellGridHeight;
-        this.stepZeroCellGridWidth = this.cellGridWidth;
+        this.startCellGridWidth = this.cellGridWidth;
+        this.startCellGridHeight = this.cellGridHeight;
         this.notifyChange("start");
     },
-    reset() {
+    resetToStart() {
         if (this.step === 0) return;
         this.cells = new Uint8Array(this.stepZeroCells);
         this.step = 0;
-        this.cellGridWidth = this.stepZeroCellGridWidth;
-        this.cellGridHeight = this.stepZeroCellGridHeight;
+        this.setGridDimensions(
+            this.startCellGridWidth,
+            this.startCellGridHeight,
+        );
         this.notifyChange("reset");
     },
 

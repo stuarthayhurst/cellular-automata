@@ -44,3 +44,8 @@ setupSetIfValid(
             Number(cellGridHeightInput.value),
         ),
 );
+
+stateModel.onChanged("gridDimensions", () => {
+    cellGridWidthInput.value = String(stateModel.cellGridWidth);
+    cellGridHeightInput.value = String(stateModel.cellGridHeight);
+});
