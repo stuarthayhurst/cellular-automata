@@ -3,6 +3,8 @@
  * @type {object}
  * @property {Uint8Array} cells - Row-first cell values.
  * @property {Uint8Array} stepZeroCells - Row-first cell values in the starting state.
+ * @property {Number} stepZeroCellGridWidth
+ * @property {Number} stepZeroCellGridHeight
  * @property {Number} step - Number of simulation steps taken.
  * @property {Number} cellGridWidth
  * @property {Number} cellGridHeight
@@ -31,6 +33,8 @@ export const stateModel = {
     // Simulation
     cells: new Uint8Array(100),
     stepZeroCells: null,
+    stepZeroCellGridWidth: 10,
+    stepZeroCellGridHeight: 10,
     step: 0,
     cellGridWidth: 10,
     cellGridHeight: 10,
