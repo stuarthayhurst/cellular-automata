@@ -15,6 +15,7 @@
  *
  * @property {Boolean} paused - If the simulation is paused.
  * @property {function()} togglePaused
+ * @property {function()} pause
  * @property {Number} baseStepIntervalMillis - Interval in milliseconds between simulation steps taken when not paused.
  * @property {Number} simulationSpeed - Divisor applied to the base step interval, e.g. 0.5x, 3x.
  * @property {function(Number)} setSimulationSpeed
@@ -51,6 +52,10 @@ export const stateModel = {
     simulationSpeed: 1.0,
     togglePaused() {
         this.paused = !this.paused;
+        this.notifyChange("paused");
+    },
+    pause() {
+        this.paused = true;
         this.notifyChange("paused");
     },
     setSimulationSpeed(speed) {

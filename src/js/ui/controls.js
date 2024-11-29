@@ -51,4 +51,7 @@ speedSelector.onchange = (event) => {
 // Reset button
 /** @type HTMLButtonElement */
 const resetButton = document.querySelector("#reset-button");
-resetButton.onclick = () => resetSimulation();
+resetButton.onclick = () => {
+    resetSimulation();
+    stateModel.pause();
+};
