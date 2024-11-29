@@ -1,5 +1,5 @@
 import { stateModel } from "../stateModel.js";
-import { stepForward } from "../simulator.js";
+import { resetSimulation, stepForward } from "../simulator.js";
 import { updateCanvasResolution } from "./canvas.js";
 
 // Pause button
@@ -10,7 +10,7 @@ const pauseIcon = document.querySelector("#pause-icon");
 
 pauseButton.onclick = () => stateModel.togglePaused();
 
-stateModel.addEventListener("onPausedChanged", () => {
+stateModel.onChanged("paused", () => {
     if (stateModel.paused) {
         pauseIcon.classList.remove("fa-pause");
         pauseIcon.classList.add("fa-play");
@@ -44,7 +44,11 @@ toggleSettingsButton.onclick = () => {
 // Speed selector
 /** @type HTMLSelectElement */
 const speedSelector = document.querySelector("#speed-selector");
-speedSelector.addEventListener("change", (event) => {
+speedSelector.onchange = (event) => {
     stateModel.setSimulationSpeed(parseFloat(event.target.value));
-});
+};
 
+// Reset button
+/** @type HTMLButtonElement */
+const resetButton = document.querySelector("#reset-button");
+resetButton.onclick = () => resetSimulation();

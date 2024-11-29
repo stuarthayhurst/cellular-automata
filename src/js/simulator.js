@@ -7,18 +7,30 @@ export function stepForward() {
     const width = stateModel.cellGridWidth;
     const height = stateModel.cellGridHeight;
     const cells = stateModel.cells;
-    const newCells = new Uint8Array(cells.length);
+    const nextCells = new Uint8Array(cells.length);
+
+    if (stateModel.step === 0)
+        stateModel.stepZeroCells = new Uint8Array(stateModel.cells);
 
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             const index = x + y * width;
             const neighbourCount = countMooresNeighbours(cells, width, x, y);
-            newCells[index] = conwaysCellState(cells[index], neighbourCount);
+            nextCells[index] = conwaysCellState(cells[index], neighbourCount);
         }
     }
 
-    stateModel.cells = newCells;
-    stateModel.broadcastEvent("onGridUpdated"); // Tell listeners of grid changes
+    stateModel.cells = nextCells;
+    stateModel.step++;
+}
+
+/**
+ * Set cells to the state they were in before the first step.
+ */
+export function resetSimulation() {
+    if (stateModel.step === 0) return;
+    stateModel.cells = new Uint8Array(stateModel.stepZeroCells);
+    stateModel.step = 0;
 }
 
 /**
@@ -83,7 +95,7 @@ function pauseSimulation() {
     simulationInterval = null;
 }
 
-stateModel.addEventListener("onPausedChanged", () => {
+stateModel.onChanged("paused", () => {
     if (stateModel.paused) {
         pauseSimulation();
     } else {
@@ -91,7 +103,7 @@ stateModel.addEventListener("onPausedChanged", () => {
     }
 });
 
-stateModel.addEventListener("onSimulationSpeedChanged", () => {
+stateModel.onChanged("simulationSpeed", () => {
     if (stateModel.paused) return;
 
     clearInterval(simulationInterval);
