@@ -2,8 +2,15 @@
  * @typedef StateModel
  * @type {object}
  * @property {Uint8Array} cells - Row-first cell values.
+ * @property {Uint8Array} startCells - Row-first cell values in the starting state.
+ * @property {Number} startCellGridWidth
+ * @property {Number} startCellGridHeight
+ * @property {Number} step - Number of simulation steps taken.
  * @property {Number} cellGridWidth
  * @property {Number} cellGridHeight
+ * @property {function(Number, Number)} setGridDimensions
+ * @property {function():void} saveStartState
+ * @property {function():void} resetToStart
  *
  * @property {vec3} cameraPosition - Location of the camera.
  * @property {Number} fieldOfView - Field of view of the camera.
@@ -13,22 +20,48 @@
  *
  * @property {Boolean} paused - If the simulation is paused.
  * @property {function()} togglePaused
+ * @property {function()} pause
  * @property {Number} baseStepIntervalMillis - Interval in milliseconds between simulation steps taken when not paused.
  * @property {Number} simulationSpeed - Divisor applied to the base step interval, e.g. 0.5x, 3x.
  * @property {function(Number)} setSimulationSpeed
  *
- * @property {Map<string, Array<function>>} eventListeners
- * @property {function(String, Function)} addEventListener
- * @property {function(String)} broadcastEvent
+ * @property {Map<string, Array<function>>} changeListeners
+ * @property {function(String, Function)} onChanged
+ * @property {function(String)} notifyChange
  */
 /** @typedef {"2D"|"3D"} ViewMode */
 
 /** @type {StateModel} */
 export const stateModel = {
-    // Cell data
+    // Simulation
     cells: new Uint8Array(100),
     cellGridWidth: 10,
     cellGridHeight: 10,
+    step: 0,
+    startCells: null,
+    startCellGridWidth: 10,
+    startCellGridHeight: 10,
+    setGridDimensions(width, height) {
+        this.cellGridWidth = width;
+        this.cellGridHeight = height;
+        this.notifyChange("gridDimensions");
+    },
+    saveStartState() {
+        this.stepZeroCells = new Uint8Array(this.cells);
+        this.startCellGridWidth = this.cellGridWidth;
+        this.startCellGridHeight = this.cellGridHeight;
+        this.notifyChange("start");
+    },
+    resetToStart() {
+        if (this.step === 0) return;
+        this.cells = new Uint8Array(this.stepZeroCells);
+        this.step = 0;
+        this.setGridDimensions(
+            this.startCellGridWidth,
+            this.startCellGridHeight,
+        );
+        this.notifyChange("resetToStart");
+    },
 
     // Camera controls
     cameraPosition: glMatrix.vec3.fromValues(2, 0, 0),
@@ -38,7 +71,7 @@ export const stateModel = {
     viewMode: "3D",
     setViewMode(newViewMode) {
         this.viewMode = newViewMode;
-        this.broadcastEvent("onViewModeChanged");
+        this.notifyChange("viewMode");
     },
 
     // Simulation speed controls
@@ -47,29 +80,33 @@ export const stateModel = {
     simulationSpeed: 1.0,
     togglePaused() {
         this.paused = !this.paused;
-        this.broadcastEvent("onPausedChanged");
+        this.notifyChange("paused");
+    },
+    pause() {
+        this.paused = true;
+        this.notifyChange("paused");
     },
     setSimulationSpeed(speed) {
         this.simulationSpeed = speed;
-        this.broadcastEvent("onSimulationSpeedChanged");
+        this.notifyChange("simulationSpeed");
     },
 
-    // Events system
-    eventListeners: new Map(),
-    addEventListener(eventName, callback) {
-        this.eventListeners[eventName] ??= [];
-        this.eventListeners[eventName].push(callback);
+    // Change event system
+    changeListeners: new Map(),
+    onChanged(eventName, callback) {
+        this.changeListeners[eventName] ??= [];
+        this.changeListeners[eventName].push(callback);
     },
-    broadcastEvent(eventName) {
-        this.eventListeners[eventName] ??= [];
-        this.eventListeners[eventName].forEach((callback) => callback());
+    notifyChange(eventName) {
+        this.changeListeners[eventName] ??= [];
+        this.changeListeners[eventName].forEach((callback) => callback());
     },
 };
 
 // Glider
-stateModel.cells[3] =
-    stateModel.cells[11] =
-    stateModel.cells[13] =
+stateModel.cells[2] =
+    stateModel.cells[10] =
+    stateModel.cells[12] =
+    stateModel.cells[21] =
     stateModel.cells[22] =
-    stateModel.cells[23] =
         1;

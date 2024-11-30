@@ -16,16 +16,17 @@
       </div>
       <div id="controls">
         <div id="controls-bar">
-          <div id="left-controls">
+          <div id="left-controls" class="controls-section">
             <button class="square-btn btn-secondary" title="2D/3D">
               <i class="fas fa-right-left"></i>
             </button>
           </div>
-          <div id="centre-controls">
+          <div id="centre-controls" class="controls-section">
             <button
               id="reset-button"
               class="square-btn btn-secondary"
               title="Reset"
+              disabled
             >
               <i class="fas fa-backward-fast"></i>
             </button>
@@ -46,6 +47,7 @@
               <option value="1" selected>1x</option>
               <option value="2">2x</option>
               <option value="3">3x</option>
+              <option value="10">10x</option>
             </select>
             <button
               id="step-forward-button"
@@ -55,7 +57,7 @@
               <i class="fas fa-forward-step"></i>
             </button>
           </div>
-          <div id="right-controls">
+          <div id="right-controls" class="controls-section">
             <button
               id="toggle-settings-button"
               class="square-btn btn-secondary"

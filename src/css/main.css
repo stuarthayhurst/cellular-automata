@@ -9,6 +9,7 @@
   --danger-dark: #cc1818;
   --foreground: black;
   --foreground-light: #636363;
+  --foreground-very-light: #c4c4c4;
   --background: white;
   --very-light-grey: #f7f7f7;
 }
@@ -43,7 +44,7 @@ body.canvas-dragging {
   grid-template-areas:
     "controls"
     "canvas";
-  grid-template-columns: auto; 
+  grid-template-columns: auto;
 }
 
 #canvas-container {
@@ -75,14 +76,17 @@ body.canvas-dragging {
   grid-template-rows: min-content;
 }
 
-#left-controls {
-  align-content: start;
-  text-align: left;
+.controls-section {
+  display: flex;
+  gap: 4px;
+}
+
+#centre-controls {
+  justify-content: center;
 }
 
 #right-controls {
-  align-content: end;
-  text-align: right;
+  justify-content: end;
 }
 
 #settings {

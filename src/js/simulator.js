@@ -2,23 +2,44 @@ import { stateModel } from "./stateModel.js";
 
 /**
  * Take one step forward.
+ * @returns {void}
  */
 export function stepForward() {
     const width = stateModel.cellGridWidth;
     const height = stateModel.cellGridHeight;
     const cells = stateModel.cells;
-    const newCells = new Uint8Array(cells.length);
+    const nextCells = new Uint8Array(cells.length);
+
+    if (stateModel.step === 0) stateModel.saveStartState();
 
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
             const index = x + y * width;
             const neighbourCount = countMooresNeighbours(cells, width, x, y);
-            newCells[index] = conwaysCellState(cells[index], neighbourCount);
+            nextCells[index] = conwaysCellState(cells[index], neighbourCount);
         }
     }
 
-    stateModel.cells = newCells;
-    stateModel.broadcastEvent("onGridUpdated"); // Tell listeners of grid changes
+    stateModel.cells = nextCells;
+    stateModel.step++;
+}
+
+/**
+ * Resize the cell grid.
+ * @param newWidth
+ * @param newHeight
+ * @returns {void}
+ */
+export function resizeCellGrid(newWidth, newHeight) {
+    const resizedCells = new Uint8Array(newWidth * newHeight);
+    stateModel.cells.forEach((cellState, index) => {
+        const [x, y] = indexToPos(index, stateModel.cellGridWidth);
+        const newIndex = posToIndex(x, y, newWidth);
+        if (newIndex < resizedCells.length) resizedCells[newIndex] = cellState;
+    });
+    stateModel.cells = resizedCells;
+    stateModel.cellGridWidth = newWidth;
+    stateModel.cellGridHeight = newHeight;
 }
 
 /**
@@ -70,6 +91,35 @@ export function conwaysCellState(cellState, aliveNeighbours) {
     }
 }
 
+function indexToPos(index, width) {
+    const x = index % width;
+    const y = Math.floor(index / width);
+    return [x, y];
+}
+
+function posToIndex(x, y, width) {
+    return x + width * y;
+}
+
+function life(cells) {
+    return cells.reduce((acc, cellState) => acc + cellState);
+}
+
+function printCells() {
+    const cells = stateModel.cells;
+    const width = stateModel.cellGridWidth;
+    const height = stateModel.cellGridHeight;
+    let result = "";
+    for (let y = 0; y < height; y++) {
+        let row = "";
+        for (let x = 0; x < width; x++) {
+            row += cells[posToIndex(x, y, width)] === 0 ? "□ " : "■ ";
+        }
+        result += row + "\n";
+    }
+    console.log(result);
+}
+
 let simulationInterval = null;
 
 function unPauseSimulation() {
@@ -83,7 +133,7 @@ function pauseSimulation() {
     simulationInterval = null;
 }
 
-stateModel.addEventListener("onPausedChanged", () => {
+stateModel.onChanged("paused", () => {
     if (stateModel.paused) {
         pauseSimulation();
     } else {
@@ -91,7 +141,7 @@ stateModel.addEventListener("onPausedChanged", () => {
     }
 });
 
-stateModel.addEventListener("onSimulationSpeedChanged", () => {
+stateModel.onChanged("simulationSpeed", () => {
     if (stateModel.paused) return;
 
     clearInterval(simulationInterval);
