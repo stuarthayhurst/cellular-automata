@@ -222,11 +222,12 @@ const context = canvas.getContext("webgl2");
 if (!context) {
     console.log("No WebGL2 support detected, good luck");
 } else {
-    const maxSize = context.MAX_TEXTURE_SIZE ** 2 * 4 * 32;
+    stateModel.maxCells = context.MAX_TEXTURE_SIZE ** 2 * 4 * 32;
     console.log(
-        "WebGL2 support detected, width x height must not exceed " + maxSize,
+        "WebGL2 support detected, width x height must not exceed " +
+            stateModel.maxCells,
     );
-    const square = Math.floor(Math.sqrt(maxSize));
+    const square = Math.floor(Math.sqrt(stateModel.maxCells));
     console.log("Maximum square dimensions are " + square + " x " + square);
 }
 
