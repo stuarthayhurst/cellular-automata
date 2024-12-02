@@ -93,7 +93,7 @@ function resetCanvas(context, height, width) {
  */
 function setDataTexture(context, texture, rawData) {
     //Calculate rows and columns required to store the bytes
-    const minPixels = Math.ceil(rawData.length / (4 * 8));
+    const minPixels = Math.ceil(rawData.length / (32 * 4));
     const rows = Math.ceil(minPixels / context.MAX_TEXTURE_SIZE);
     let cols = context.MAX_TEXTURE_SIZE;
     if (rows == 1) {
@@ -107,23 +107,23 @@ function setDataTexture(context, texture, rawData) {
 
     //Resize the buffer to match the rows and columns
     let size = rows * cols * 4;
-    let data = new Uint8Array(size);
+    let data = new Uint32Array(size);
 
     for (let i = 0; i < rawData.length; i++) {
-        data[Math.floor(i / 8)] |= rawData[i] << i % 8;
+        data[Math.floor(i / 32)] |= rawData[i] << i % 32;
     }
 
-    //Data is treated as 4 separate cells per pixel, one per colour channel
+    //Data is treated as 4 separate cells per pixel
     context.bindTexture(context.TEXTURE_2D, texture);
     context.texImage2D(
         context.TEXTURE_2D,
         0,
-        context.RGBA8UI,
+        context.RGBA32UI,
         cols,
         rows,
         0,
         context.RGBA_INTEGER,
-        context.UNSIGNED_BYTE,
+        context.UNSIGNED_INT,
         data,
     );
 }
@@ -222,11 +222,12 @@ const context = canvas.getContext("webgl2");
 if (!context) {
     console.log("No WebGL2 support detected, good luck");
 } else {
-    const maxSize = context.MAX_TEXTURE_SIZE ** 2 * 4 * 8;
+    stateModel.maxCells = context.MAX_TEXTURE_SIZE ** 2 * 4 * 32;
     console.log(
-        "WebGL2 support detected, width x height must not exceed " + maxSize,
+        "WebGL2 support detected, width x height must not exceed " +
+            stateModel.maxCells,
     );
-    const square = Math.floor(Math.sqrt(maxSize));
+    const square = Math.floor(Math.sqrt(stateModel.maxCells));
     console.log("Maximum square dimensions are " + square + " x " + square);
 }
 

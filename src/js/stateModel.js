@@ -12,6 +12,8 @@
  * @property {function():void} saveStartState
  * @property {function():void} resetToStart
  *
+ * @property {Number} maxCells - Maximum number of cells supported by the renderer, not accounting for memory size
+ *
  * @property {vec3} cameraPosition - Location of the camera.
  * @property {Number} fieldOfView - Field of view of the camera.
  *
@@ -62,6 +64,9 @@ export const stateModel = {
         );
         this.notifyChange("resetToStart");
     },
+
+    // Renderer limitations
+    maxCells: 0,
 
     // Camera controls
     cameraPosition: glMatrix.vec3.fromValues(2, 0, 0),
