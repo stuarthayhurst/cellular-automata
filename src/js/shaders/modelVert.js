@@ -4,7 +4,7 @@
 */
 
 export const modelVertSource = `#version 300 es
-precision lowp usampler2D;
+precision highp usampler2D;
 
 in vec3 inPosition;
 in vec3 inNormal;
@@ -21,18 +21,18 @@ uniform usampler2D cellDataTexture;
 void main() {
     int textureWidth = textureSize(cellDataTexture, 0).x;
 
-    //Wrap cellIndexX every 4 * 8 widths (8 cells per byte, 4 bytes per pixel)
-    int cellIndexX = inCellIndex % (textureWidth * 4 * 8);
+    //Wrap cellIndexX every 4 * 32 widths (32 cells per channel, 4 channels per pixel)
+    int cellIndexX = inCellIndex % (textureWidth * 4 * 32);
 
-    //Increment cellIndexY every 4 * 8 widths (8 cells per byte, 4 bytes per pixel)
-    int cellIndexY = inCellIndex / (textureWidth * 4 * 8);
+    //Increment cellIndexY every 4 * 32 widths (32 cells per channel, 4 channels per pixel)
+    int cellIndexY = inCellIndex / (textureWidth * 4 * 32);
 
     //Fetch the pixel the cell is in
-    uvec4 cellQuad = texelFetch(cellDataTexture, ivec2(cellIndexX / (4 * 8), cellIndexY), 0);
+    uvec4 cellQuad = texelFetch(cellDataTexture, ivec2(cellIndexX / (4 * 32), cellIndexY), 0);
 
     //Decide which byte of the pixel to look at
-    int packing = cellIndexX % (4 * 8);
-    int byte = packing / 8;
+    int packing = cellIndexX % (4 * 32);
+    int byte = packing / 32;
 
     //Fetch the specific byte
     //This is slow for a GPU, but packing gives 4x better memory usage
@@ -48,7 +48,7 @@ void main() {
     }
 
     //Decide which bit of the byte to look at and fetch it
-    int bit = packing % 8;
+    int bit = packing % 32;
     alive = fetchedByte & uint((1 << bit));
 
     normal = mat3(transpose(inverse(modelMatrix))) * inNormal;
