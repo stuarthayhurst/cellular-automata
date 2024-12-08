@@ -31,7 +31,7 @@ deploy:
     environment:
         name: $ENVIRONMENT_NAME
         url: https://comp2002.ntaulbut.dev$DEPLOY_BASE_URL
-        on_stop: stop_deploy
+        on_stop: destroy
     stage: deploy
     script:
         - npm install
