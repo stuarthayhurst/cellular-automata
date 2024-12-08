@@ -40,8 +40,10 @@ deploy:
         - mkdir -p $DEPLOY_DIR
         - mv dist/* $DEPLOY_DIR
 
-stop_deploy:
+destroy:
     stage: deploy
+    variables:
+        GIT_STRATEGY: none
     script:
         - rm -rf $DEPLOY_DIR
     when: manual
