@@ -16,6 +16,8 @@ don't need to be 'notified' of its value changing.
  * @property {Number} startCellGridWidth
  * @property {Number} startCellGridHeight
  * @property {Number} maxCells
+ * @property {glMatrix.vec3} baseColour
+ * @property {glMatrix.vec3} cellColour
  * @property {glMatrix.vec3} cameraPosition
  */
 /** @type {SharedState} */
@@ -25,6 +27,8 @@ export const sharedState = {
     startCellGridWidth: undefined,
     startCellGridHeight: undefined,
     maxCells: 0,
+    baseColour: glMatrix.vec3.fromValues(1, 0, 0),
+    cellColour: glMatrix.vec3.fromValues(0, 1, 1),
     cameraPosition: glMatrix.vec3.fromValues(2, 0, 0),
 };
 

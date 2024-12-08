@@ -8,12 +8,12 @@ flat in uint alive;
 out vec4 outColour;
 
 uniform vec3 cameraPos;
+uniform vec3 baseColour;
+uniform vec3 cellColour;
 
 float ambientStrength = 0.3;
 float diffuseStrength = 0.6;
 float specularStrength = 0.1;
-vec3 baseColour = vec3(1, 0, 0);
-vec3 cellColour = vec3(0, 1, 1);
 
 void main() {
     //Check if the cell is active, return early if it is
