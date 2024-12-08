@@ -26,7 +26,4 @@
 2. Use any web server to serve the files in `dist/`.
    An easy way to do this locally is using `npm run preview`.
 
-[^1]:
-
-When you save changes in the project directory, the program will automatically reload the webpage in your browser
-reflecting those changes.
+[^1]: When you save changes in the project directory, the program will automatically reload the webpage in your browser reflecting those changes.
