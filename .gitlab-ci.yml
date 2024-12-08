@@ -1,0 +1,50 @@
+# https://docs.gitlab.com/ee/ci/yaml/index.html
+
+image: node:latest
+
+cache:
+    paths:
+        - node_modules/
+
+stages:
+    - test
+    - deploy
+
+variables:
+    DEPLOY_BASE_URL: /$CI_COMMIT_REF_SLUG/
+    DEPLOY_DIR: /var/www/comp2002/$CI_COMMIT_REF_SLUG/
+    ENVIRONMENT_NAME: review/$CI_COMMIT_REF_SLUG
+
+test_job:
+    stage: test
+    script:
+        - npm install
+        - npm run test
+
+check_formatting_job:
+    stage: test
+    script:
+        - npm install
+        - npm run check-formatting
+
+deploy:
+    environment:
+        name: $ENVIRONMENT_NAME
+        url: https://comp2002.ntaulbut.dev$DEPLOY_BASE_URL
+        on_stop: stop_deploy
+    stage: deploy
+    script:
+        - npm install
+        - VITE_CI_COMMIT_SHORT_SHA=@$CI_COMMIT_SHORT_SHA npm run build -- --base=$DEPLOY_BASE_URL
+        - rm -rf $DEPLOY_DIR
+        - mkdir -p $DEPLOY_DIR
+        - mv dist/* $DEPLOY_DIR
+
+stop_deploy:
+    stage: deploy
+    script:
+        - rm -rf $DEPLOY_DIR
+    when: manual
+    environment:
+        name: $ENVIRONMENT_NAME
+        action: stop

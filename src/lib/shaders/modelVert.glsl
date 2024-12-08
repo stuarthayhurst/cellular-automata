@@ -1,9 +1,4 @@
-/*
- * This is treated as an ES6 module that exports a single string for easy file loading
- * This is actually a GLSL vertex shader, treated as JavaScript by the browser
-*/
-
-export const modelVertSource = `#version 300 es
+#version 300 es
 precision highp usampler2D;
 
 in vec3 inPosition;
@@ -55,5 +50,3 @@ void main() {
     fragPos = vec3(modelMatrix * vec4(inPosition, 1.0));
     gl_Position = MVP * vec4(inPosition, 1.0);
 }
-
-`;

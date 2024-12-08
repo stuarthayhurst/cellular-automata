@@ -1,4 +1,0 @@
-[submodule "src/js/gl-matrix"]
-	path = src/js/gl-matrix
-	url = https://github.com/toji/gl-matrix.git
-	branch = v3.4.x
