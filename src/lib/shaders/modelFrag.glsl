@@ -1,9 +1,4 @@
-/*
- * This is treated as an ES6 module that exports a single string for easy file loading
- * This is actually a GLSL fragment shader, treated as JavaScript by the browser
-*/
-
-export const modelFragSource = `#version 300 es
+#version 300 es
 precision mediump float;
 
 in vec3 fragPos;
@@ -44,5 +39,3 @@ void main() {
     //Combine results
     outColour = vec4((ambientStrength + diffuse + specular) * baseColour, 1.0);
 }
-
-`;

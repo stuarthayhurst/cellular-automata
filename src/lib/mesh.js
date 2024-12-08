@@ -1,4 +1,15 @@
-//Return a list of points of the volume rings and a list of their origins
+import * as glMatrix from "gl-matrix";
+
+/**
+ * Return a list of points of the volume rings and a list of their origins.
+ * @param {Number} width
+ * @param {Number} height
+ * @param {Number} ringRadius
+ * @param {Number} volumeDiameter
+ * @param {Number} meshWidthScale
+ * @param {Number} meshHeightScale
+ * @returns {[Array<glMatrix.vec3>, Array<glMatrix.vec3>]}
+ */
 export function generateSkeleton(
     width,
     height,
@@ -7,7 +18,9 @@ export function generateSkeleton(
     meshWidthScale,
     meshHeightScale,
 ) {
+    /** @type {Array<glMatrix.vec3>} */
     let skeleton = [];
+    /** @type {Array<glMatrix.vec3>} */
     let skeletonOrigins = [];
 
     //Generate extra points according to the scale
@@ -49,12 +62,26 @@ export function generateSkeleton(
     return [skeleton, skeletonOrigins];
 }
 
-//Return the index of the previous point, within the same ring
+/**
+ * Return the index of the previous point, within the same ring.
+ * @param {Number} index
+ * @param {Number} height
+ * @returns {Number}
+ */
 function previousPointWrapped(index, height) {
     return index - (index % height) + ((index - 1 + height) % height);
 }
 
-//Return a list of vertices in the mesh, and per-triangle lists of origins and indices
+/**
+ * Return a list of vertices in the mesh, and per-triangle lists of origins and indices.
+ * @param {Array<glMatrix.vec3>} skeleton
+ * @param {Array<glMatrix.vec3>} skeletonOrigins
+ * @param {Number} width
+ * @param {Number} height
+ * @param {Number} meshWidthScale
+ * @param {Number} meshHeightScale
+ * @returns {[Array<glMatrix.vec3>, Array<glMatrix.vec3>, Array<Number>]}
+ */
 export function calculateMesh(
     skeleton,
     skeletonOrigins,
@@ -63,8 +90,11 @@ export function calculateMesh(
     meshWidthScale,
     meshHeightScale,
 ) {
+    /** @type {Array<glMatrix.vec3>} */
     let mesh = [];
+    /** @type {Array<glMatrix.vec3>} */
     let origins = [];
+    /** @type {Array<Number>} */
     let indices = [];
 
     //Handle scaled skeletons
@@ -114,8 +144,14 @@ export function calculateMesh(
     return [mesh, origins, indices];
 }
 
-//Return per-vertex, smoothed normals
+/**
+ * Return per-vertex, smoothed normals.
+ * @param {Array<glMatrix.vec3>} mesh
+ * @param {Array<glMatrix.vec3>} origins
+ * @returns {Array<glMatrix.vec3>}
+ */
 export function calculateNormals(mesh, origins) {
+    /** @type {Array<glMatrix.vec3>} */
     let normals = [];
     for (let i = 0; i < origins.length; i++) {
         let normal = glMatrix.vec3.create();

@@ -1,0 +1,50 @@
+import * as glMatrix from "gl-matrix";
+import { reactiveState } from "./reactiveState.svelte.js";
+
+/*
+`sharedState` contains state that needs to be shared between components but
+doesn't need the reactivity provided by Svelte. Camera position for example,
+relates to the user interface, but its value is read every frame: components
+don't need to be 'notified' of its value changing.
+ */
+
+/**
+ * @typedef SharedState
+ * @type {object}
+ * @property {Uint8Array} cells
+ * @property {Uint8Array} startCells
+ * @property {Number} startCellGridWidth
+ * @property {Number} startCellGridHeight
+ * @property {Number} maxCells
+ * @property {glMatrix.vec3} cameraPosition
+ */
+/** @type {SharedState} */
+export const sharedState = {
+    cells: new Uint8Array(100),
+    startCells: null,
+    startCellGridWidth: undefined,
+    startCellGridHeight: undefined,
+    maxCells: 0,
+    cameraPosition: glMatrix.vec3.fromValues(2, 0, 0),
+};
+
+export function saveStartState() {
+    sharedState.startCells = new Uint8Array(sharedState.cells);
+    sharedState.startCellGridWidth = reactiveState.cellGridWidth;
+    sharedState.startCellGridHeight = reactiveState.cellGridHeight;
+}
+
+export function resetToStart() {
+    if (reactiveState.atStart) return;
+    sharedState.cells = new Uint8Array(sharedState.startCells);
+    reactiveState.atStart = true;
+    reactiveState.cellGridWidth = sharedState.startCellGridWidth;
+    reactiveState.cellGridHeight = sharedState.startCellGridHeight;
+}
+
+sharedState.cells[2] =
+    sharedState.cells[10] =
+    sharedState.cells[12] =
+    sharedState.cells[21] =
+    sharedState.cells[22] =
+        1;

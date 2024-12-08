@@ -7,6 +7,10 @@ button.square-btn {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 input:invalid {
@@ -70,4 +74,9 @@ select.dropdown-btn {
   height: 45px;
   cursor: pointer;
   outline: none;
+}
+
+select.dropdown-btn:focus {
+  border: 3px solid var(--foreground);
+  padding: 9px 13px;
 }
