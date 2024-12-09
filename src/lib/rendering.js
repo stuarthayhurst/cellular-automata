@@ -104,6 +104,14 @@ export function startRenderer(context) {
         modelProgram,
         "cellDataTexture",
     );
+    const baseColourLocation = context.getUniformLocation(
+        modelProgram,
+        "baseColour",
+    );
+    const cellColourLocation = context.getUniformLocation(
+        modelProgram,
+        "cellColour",
+    );
 
     //Enable depth testing
     context.enable(context.DEPTH_TEST);
@@ -126,6 +134,8 @@ export function startRenderer(context) {
         const cameraPosition = sharedState.cameraPosition;
         const canvasHeight = context.canvas.height;
         const canvasWidth = context.canvas.width;
+        const baseColour = sharedState.baseColour;
+        const cellColour = sharedState.cellColour;
 
         //Fetch simulation data
         const cellWidth = reactiveState.cellGridWidth;
@@ -200,10 +210,13 @@ export function startRenderer(context) {
         context.uniform1i(cellDataTexLocation, 0);
 
         //Send the remaining uniforms and draw the mesh
-        //TODO: Swap to using element buffers and index the meshes
         context.uniform3fv(cameraPosLocation, cameraPosition);
         context.uniformMatrix4fv(MVPLocation, false, MVP);
         context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
+        context.uniform3fv(baseColourLocation, baseColour);
+        context.uniform3fv(cellColourLocation, cellColour);
+
+        //TODO: Swap to using element buffers and index the meshes
         context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
         context.drawArrays(context.TRIANGLES, 0, vertexCount);
 
