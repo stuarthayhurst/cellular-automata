@@ -1,11 +1,13 @@
 import * as glMatrix from "gl-matrix";
 import { sharedState } from "./sharedState.js";
 import { reactiveState } from "./reactiveState.svelte.js";
+import { absMod } from "./tools.js";
 
 const primaryButton = 0;
 const thetaMax = 2 * Math.PI; // Full rotation around the horizontal axis (360 degrees)
 const phiMax = Math.PI; // Vertical rotation limited to half a sphere (180 degrees)
 const dragSensitivity = 0.005;
+const zoomSpeed = 0.002;
 const minCameraDistance = 0.1;
 
 let dragRefTheta = 0;
@@ -61,7 +63,7 @@ export function setUpCamera(canvas) {
         const thetaNew = dragRefTheta + deltaX * dragSensitivity;
         const phiNew = dragRefPhi + deltaY * dragSensitivity;
 
-        theta = ((thetaNew % thetaMax) + thetaMax) % thetaMax; // Wrap theta around 0–2π
+        theta = absMod(thetaNew, thetaMax);
         phi = clamp(0.00000000001, phiNew, phiMax);
         // Prevents phi from being 0 to prevent a bug with lookAt
 
@@ -73,7 +75,7 @@ export function setUpCamera(canvas) {
         if (wheelEvent.target !== canvas && !reactiveState.dragging) return;
         cameraDistance = Math.max(
             minCameraDistance, // Ensures the zoom level does not go below minCameraDistance (0.1)
-            cameraDistance + wheelEvent.deltaY * 0.002,
+            cameraDistance + wheelEvent.deltaY * zoomSpeed,
         );
         sharedState.cameraPosition = cameraPosition(theta, phi, cameraDistance);
     };
