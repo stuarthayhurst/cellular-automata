@@ -186,6 +186,14 @@ export function startRenderer(context) {
         gridProgram,
         "cellDataTexture",
     );
+    const gridBaseColourLocation = context.getUniformLocation(
+        gridProgram,
+        "baseColour",
+    );
+    const gridCellColourLocation = context.getUniformLocation(
+        gridProgram,
+        "cellColour",
+    );
 
     //Setup the vertices for the grid
     const gridData = new Float32Array([
@@ -273,6 +281,8 @@ export function startRenderer(context) {
      * param {Number} gridOffsetX
      * param {Number} gridOffsetY
      * param {Number} aspectRatio
+     * param {glMatrix.vec3} baseColour
+     * param {glMatrix.vec3} cellColour
      * @returns {void}
      */
     function drawGrid(
@@ -282,6 +292,8 @@ export function startRenderer(context) {
         gridOffsetX,
         gridOffsetY,
         aspectRatio,
+        baseColour,
+        cellColour,
     ) {
         //Use the grid shader and the vertex array object
         context.useProgram(gridProgram);
@@ -298,6 +310,8 @@ export function startRenderer(context) {
         context.uniform1f(gridOffsetXLocation, gridOffsetX);
         context.uniform1f(gridOffsetYLocation, gridOffsetY);
         context.uniform1f(aspectRatioLocation, aspectRatio);
+        context.uniform3fv(gridBaseColourLocation, baseColour);
+        context.uniform3fv(gridCellColourLocation, cellColour);
 
         context.bindBuffer(context.ARRAY_BUFFER, gridBuffer);
         context.drawArrays(context.TRIANGLES, 0, 6);
@@ -379,6 +393,8 @@ export function startRenderer(context) {
                 gridOffsetX,
                 gridOffsetY,
                 canvasWidth / canvasHeight,
+                baseColour,
+                cellColour,
             );
         }
         window.requestAnimationFrame(drawFrame);

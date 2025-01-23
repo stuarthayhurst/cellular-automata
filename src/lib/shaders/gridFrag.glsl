@@ -10,6 +10,9 @@ uniform float gridOffsetY;
 uniform float aspectRatio;
 uniform usampler2D gridCellDataTexture;
 
+uniform vec3 baseColour;
+uniform vec3 cellColour;
+
 in vec2 position;
 out vec4 outColour;
 
@@ -75,8 +78,8 @@ void main() {
     int index = gridIndexX + ((gridCellHeight - gridIndexY) * gridCellWidth);
     uint alive = fetchDataBit(index, gridCellDataTexture);
     if (alive > uint(0)) {
-      outColour = vec4(0.0, 1.0, 1.0, 1.0);
+      outColour = vec4(cellColour, 1.0);
     } else {
-      outColour = vec4(1.0, 0.0, 0.0, 1.0);
+      outColour = vec4(baseColour, 1.0);
     }
 }
