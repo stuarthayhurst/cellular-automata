@@ -1,17 +1,17 @@
 #version 300 es
+precision mediump float;
 precision highp usampler2D;
 
-in vec3 inPosition;
-in vec3 inNormal;
-in int inCellIndex;
+uniform int gridCellWidth;
+uniform int gridCellHeight;
+uniform float gridCellsPerWidth;
+uniform float gridOffsetX;
+uniform float gridOffsetY;
+uniform float aspectRatio;
+uniform usampler2D gridCellDataTexture;
 
-out vec3 fragPos;
-out vec3 normal;
-flat out uint alive;
-
-uniform mat4 MVP;
-uniform mat4 modelMatrix;
-uniform usampler2D cellDataTexture;
+in vec2 position;
+out vec4 outColour;
 
 //Shared between modelVert.glsl and gridFrag.glsl
 uint fetchDataBit(int cellIndex, usampler2D dataTexture) {
@@ -49,9 +49,35 @@ uint fetchDataBit(int cellIndex, usampler2D dataTexture) {
 }
 
 void main() {
-    alive = fetchDataBit(inCellIndex, cellDataTexture);
+    //Convert from [-1, 1] to [0, 1]
+    float x = (position.x + 1.0) / 2.0;
+    float y = (position.y + 1.0) / 2.0;
 
-    normal = mat3(transpose(inverse(modelMatrix))) * inNormal;
-    fragPos = vec3(modelMatrix * vec4(inPosition, 1.0));
-    gl_Position = MVP * vec4(inPosition, 1.0);
+    //Calculate the number of cells in
+    x *= gridCellsPerWidth;
+    y *= gridCellsPerWidth / aspectRatio;
+
+    //Apply the grid offset
+    x -= gridOffsetX;
+    y -= gridOffsetY;
+
+    //Convert to a cell coordinate
+    int gridIndexX = int(floor(x));
+    int gridIndexY = int(floor(y));
+
+    //Check for grid boundaries
+    if (gridIndexX < 0 || gridIndexY < 0 ||
+        gridIndexX >= gridCellWidth || gridIndexY >= gridCellHeight) {
+        outColour = vec4(1.0, 1.0, 1.0, 1.0);
+        return;
+    }
+
+    //Convert coordinate into an index, look up in the data texture
+    int index = gridIndexX + ((gridCellHeight - gridIndexY) * gridCellWidth);
+    uint alive = fetchDataBit(index, gridCellDataTexture);
+    if (alive > uint(0)) {
+      outColour = vec4(0.0, 1.0, 1.0, 1.0);
+    } else {
+      outColour = vec4(1.0, 0.0, 0.0, 1.0);
+    }
 }
