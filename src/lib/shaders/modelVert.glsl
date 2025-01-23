@@ -13,17 +13,17 @@ uniform mat4 MVP;
 uniform mat4 modelMatrix;
 uniform usampler2D cellDataTexture;
 
-void main() {
-    int textureWidth = textureSize(cellDataTexture, 0).x;
+uint fetchDataBit(int cellIndex, usampler2D dataTexture) {
+    int textureWidth = textureSize(dataTexture, 0).x;
 
     //Wrap cellIndexX every 4 * 32 widths (32 cells per channel, 4 channels per pixel)
-    int cellIndexX = inCellIndex % (textureWidth * 4 * 32);
+    int cellIndexX = cellIndex % (textureWidth * 4 * 32);
 
     //Increment cellIndexY every 4 * 32 widths (32 cells per channel, 4 channels per pixel)
-    int cellIndexY = inCellIndex / (textureWidth * 4 * 32);
+    int cellIndexY = cellIndex / (textureWidth * 4 * 32);
 
     //Fetch the pixel the cell is in
-    uvec4 cellQuad = texelFetch(cellDataTexture, ivec2(cellIndexX / (4 * 32), cellIndexY), 0);
+    uvec4 cellQuad = texelFetch(dataTexture, ivec2(cellIndexX / (4 * 32), cellIndexY), 0);
 
     //Decide which byte of the pixel to look at
     int packing = cellIndexX % (4 * 32);
@@ -44,7 +44,11 @@ void main() {
 
     //Decide which bit of the byte to look at and fetch it
     int bit = packing % 32;
-    alive = fetchedByte & uint((1 << bit));
+    return fetchedByte & uint((1 << bit));
+}
+
+void main() {
+    alive = fetchDataBit(inCellIndex, cellDataTexture);
 
     normal = mat3(transpose(inverse(modelMatrix))) * inNormal;
     fragPos = vec3(modelMatrix * vec4(inPosition, 1.0));
