@@ -68,8 +68,7 @@ void main() {
     //Check for grid boundaries
     if (gridIndexX < 0 || gridIndexY < 0 ||
         gridIndexX >= gridCellWidth || gridIndexY >= gridCellHeight) {
-        outColour = vec4(1.0, 1.0, 1.0, 1.0);
-        return;
+        discard;
     }
 
     //Convert coordinate into an index, look up in the data texture
