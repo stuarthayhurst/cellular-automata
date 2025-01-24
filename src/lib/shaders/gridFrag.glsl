@@ -13,6 +13,9 @@ uniform usampler2D gridCellDataTexture;
 uniform vec3 baseColour;
 uniform vec3 cellColour;
 
+uniform float borderSize;
+uniform vec3 borderColour;
+
 in vec2 position;
 out vec4 outColour;
 
@@ -64,14 +67,29 @@ void main() {
     x -= gridOffsetX;
     y -= gridOffsetY;
 
-    //Convert to a cell coordinate
+    //Get progress into each cell and its coordinate
+    float cellProgressX = x - floor(x);
+    float cellProgressY = y - floor(y);
     int gridIndexX = int(floor(x));
     int gridIndexY = int(floor(y));
 
+    //Check for grid border
+    bool isBorder = false;
+    if (cellProgressX < borderSize || cellProgressY < borderSize ||
+        cellProgressX > (1.0 - borderSize) || cellProgressY > (1.0 - borderSize)) {
+        outColour = vec4(borderColour, 1.0);
+        isBorder = true;
+    }
+
     //Check for grid boundaries
-    if (gridIndexX < 0 || gridIndexY < 0 ||
-        gridIndexX >= gridCellWidth || gridIndexY >= gridCellHeight) {
+    if (x < -borderSize || y < -borderSize ||
+        x > float(gridCellWidth) + borderSize || y > float(gridCellHeight) + borderSize) {
         discard;
+    } else {
+      //Return if we already have the colour
+      if (isBorder) {
+        return;
+      }
     }
 
     //Convert coordinate into an index, look up in the data texture

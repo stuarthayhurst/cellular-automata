@@ -38,6 +38,8 @@ export const sharedState = {
     gridCellsPerWidth: 20.0,
     gridOffsetX: 0.0,
     gridOffsetY: 0.0,
+    borderSize: 0.05,
+    borderColour: glMatrix.vec3.fromValues(0, 0, 0),
 };
 
 export function saveStartState() {

@@ -194,6 +194,14 @@ export function startRenderer(context) {
         gridProgram,
         "cellColour",
     );
+    const gridBorderSizeLocation = context.getUniformLocation(
+        gridProgram,
+        "borderSize",
+    );
+    const gridBorderColourLocation = context.getUniformLocation(
+        gridProgram,
+        "borderColour",
+    );
 
     //Setup the vertices for the grid
     const gridData = new Float32Array([
@@ -294,6 +302,8 @@ export function startRenderer(context) {
         aspectRatio,
         baseColour,
         cellColour,
+        borderSize,
+        borderColour,
     ) {
         //Use the grid shader and the vertex array object
         context.useProgram(gridProgram);
@@ -312,6 +322,8 @@ export function startRenderer(context) {
         context.uniform1f(aspectRatioLocation, aspectRatio);
         context.uniform3fv(gridBaseColourLocation, baseColour);
         context.uniform3fv(gridCellColourLocation, cellColour);
+        context.uniform1f(gridBorderSizeLocation, borderSize);
+        context.uniform3fv(gridBorderColourLocation, borderColour);
 
         context.bindBuffer(context.ARRAY_BUFFER, gridBuffer);
         context.drawArrays(context.TRIANGLES, 0, 6);
@@ -331,6 +343,8 @@ export function startRenderer(context) {
         const gridCellsPerWidth = sharedState.gridCellsPerWidth;
         const gridOffsetX = sharedState.gridOffsetX;
         const gridOffsetY = sharedState.gridOffsetY;
+        const borderSize = sharedState.borderSize;
+        const borderColour = sharedState.borderColour;
 
         //Fetch simulation data
         const cellWidth = reactiveState.cellGridWidth;
@@ -395,6 +409,8 @@ export function startRenderer(context) {
                 canvasWidth / canvasHeight,
                 baseColour,
                 cellColour,
+                borderSize,
+                borderColour,
             );
         }
         window.requestAnimationFrame(drawFrame);
