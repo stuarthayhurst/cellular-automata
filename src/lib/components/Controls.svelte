@@ -10,18 +10,25 @@
 <div id="controls-bar">
     <div id="left-controls" class="controls-section">
         <button
-            aria-label="2D/3D"
             class="square-btn btn-secondary"
-            title="2D/3D"
-            disabled
+            title={reactiveState.renderMode === "3D" ? "Edit Cells" : "3D View"}
+            onclick={() => {
+                reactiveState.renderMode =
+                    reactiveState.renderMode === "2D" ? "3D" : "2D";
+            }}
         >
-            <Icon icon="fa-solid:pen" width="20" height="20" />
+            <Icon
+                icon={reactiveState.renderMode === "3D"
+                    ? "fa-solid:pen"
+                    : "fa-solid:cube"}
+                width="20"
+                height="20"
+            />
         </button>
     </div>
     <div id="centre-controls" class="controls-section">
         <button
             id="reset-button"
-            aria-label="Reset"
             class="square-btn btn-secondary"
             title="Reset"
             disabled={reactiveState.atStart}
@@ -58,7 +65,6 @@
         </select>
         <button
             id="step-forward-button"
-            aria-label="Step Forward"
             class="square-btn btn-secondary"
             title="Step Forward"
             onclick={stepForward}
