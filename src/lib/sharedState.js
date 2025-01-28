@@ -19,7 +19,7 @@ don't need to be 'notified' of its value changing.
  * @property {glMatrix.vec3} baseColour
  * @property {glMatrix.vec3} cellColour
  * @property {glMatrix.vec3} cameraPosition
- * @property {String} renderMode
+
  * @property {Number} gridCellsPerWidth
  * @property {Number} gridOffsetX - A value of -1 indicates 1 cell is offscreen, to the left
  * @property {Number} gridOffsetY - A value of -1 indicates 1 cell is offscreen, to the bottom
@@ -36,7 +36,6 @@ export const sharedState = {
     baseColour: glMatrix.vec3.fromValues(1, 0, 0),
     cellColour: glMatrix.vec3.fromValues(0, 1, 1),
     cameraPosition: glMatrix.vec3.fromValues(2, 0, 0),
-    renderMode: "3D",
     gridCellsPerWidth: 20.0,
     gridOffsetX: 0.0,
     gridOffsetY: 0.0,

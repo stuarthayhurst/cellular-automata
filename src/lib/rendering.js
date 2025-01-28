@@ -338,7 +338,7 @@ export function startRenderer(context) {
         const canvasWidth = context.canvas.width;
         const baseColour = sharedState.baseColour;
         const cellColour = sharedState.cellColour;
-        const renderMode = sharedState.renderMode;
+        const renderMode = reactiveState.renderMode;
 
         const gridCellsPerWidth = sharedState.gridCellsPerWidth;
         const gridOffsetX = sharedState.gridOffsetX;
