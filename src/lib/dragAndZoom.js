@@ -94,14 +94,21 @@ export function setUpCamera(canvas) {
 
     // Zooming
     onwheel = (wheelEvent) => {
-        if (reactiveState.renderMode === "2D") return; // @Temp -ntaulbut
-
         if (wheelEvent.target !== canvas && !reactiveState.dragging) return;
-        cameraDistance = Math.max(
-            minCameraDistance, // Ensures the zoom level does not go below minCameraDistance (0.1)
-            cameraDistance + wheelEvent.deltaY * zoomSpeed,
-        );
-        sharedState.cameraPosition = cameraPosition(theta, phi, cameraDistance);
+
+        if (reactiveState.renderMode === "2D") {
+            sharedState.gridCellsPerWidth += wheelEvent.deltaY * 0.01;
+        } else {
+            cameraDistance = Math.max(
+                minCameraDistance, // Ensures the zoom level does not go below minCameraDistance (0.1)
+                cameraDistance + wheelEvent.deltaY * zoomSpeed,
+            );
+            sharedState.cameraPosition = cameraPosition(
+                theta,
+                phi,
+                cameraDistance,
+            );
+        }
     };
 }
 
