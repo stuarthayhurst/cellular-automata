@@ -3,7 +3,6 @@ import { sharedState } from "./sharedState.js";
 import { reactiveState } from "./reactiveState.svelte.js";
 import { absMod } from "./tools.js";
 
-const primaryButton = 0;
 const secondaryButton = 2;
 
 const thetaMax = 2 * Math.PI; // Full rotation around the horizontal axis (360 degrees)
@@ -55,13 +54,13 @@ export function setUpCamera(canvas) {
     };
 
     // While dragging
-    const onmousemove_3D = (mouseEvent, deltaX, deltaY) => {
+    const onmousemove_3D = (mouseScreenY, deltaX, deltaY) => {
         const deltaYMin = -dragRefPhi / dragSensitivity;
         const deltaYMax = (phiMax - dragRefPhi) / dragSensitivity;
 
         if (deltaY < deltaYMin || deltaY > deltaYMax) {
             dragRefPhi = phi;
-            dragRefMouseY = mouseEvent.screenY;
+            dragRefMouseY = mouseScreenY;
         }
 
         const thetaNew = dragRefTheta + deltaX * dragSensitivity;
@@ -74,7 +73,7 @@ export function setUpCamera(canvas) {
         sharedState.cameraPosition = cameraPosition(theta, phi, cameraDistance);
     };
 
-    const onmousemove_2D = (mouseEvent, deltaX, deltaY) => {
+    const onmousemove_2D = (deltaX, deltaY) => {
         sharedState.gridOffsetX = dragRefGridOffsetX + deltaX * -0.01;
         sharedState.gridOffsetY = dragRefGridOffsetY + deltaY * 0.01;
     };
@@ -86,9 +85,9 @@ export function setUpCamera(canvas) {
         const deltaY = dragRefMouseY - mouseEvent.screenY;
 
         if (reactiveState.renderMode === "2D") {
-            onmousemove_2D(mouseEvent, deltaX, deltaY);
+            onmousemove_2D(deltaX, deltaY);
         } else {
-            onmousemove_3D(mouseEvent, deltaX, deltaY);
+            onmousemove_3D(mouseEvent.screenY, deltaX, deltaY);
         }
     };
 
