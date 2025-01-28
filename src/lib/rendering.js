@@ -6,6 +6,11 @@ import modelVertSource from "./shaders/modelVert.glsl?raw";
 /** @type {String} */
 import modelFragSource from "./shaders/modelFrag.glsl?raw";
 
+/** @type {String} */
+import gridVertSource from "./shaders/gridVert.glsl?raw";
+/** @type {String} */
+import gridFragSource from "./shaders/gridFrag.glsl?raw";
+
 import { sharedState } from "./sharedState.js";
 import { reactiveState } from "./reactiveState.svelte.js";
 
@@ -26,7 +31,7 @@ export function startRenderer(context) {
     //Reset canvas while loading
     resetCanvas(context, context.canvas.height, context.canvas.width);
 
-    //Compile the shaders
+    //Compile the model shaders
     const modelVertShader = compileShader(
         context,
         context.VERTEX_SHADER,
@@ -38,7 +43,7 @@ export function startRenderer(context) {
         modelFragSource,
     );
 
-    //Link shaders into a program
+    //Link model shaders into a program
     const modelProgram = linkProgram(context, modelVertShader, modelFragShader);
     context.useProgram(modelProgram);
 
@@ -46,7 +51,7 @@ export function startRenderer(context) {
     let meshBuffer = context.createBuffer();
     context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
 
-    //Fetch shader attribute locations
+    //Fetch model shader attribute locations
     const meshAttribLocation = context.getAttribLocation(
         modelProgram,
         "inPosition",
@@ -113,6 +118,97 @@ export function startRenderer(context) {
         "cellColour",
     );
 
+    //Compile the grid shaders
+    const gridVertShader = compileShader(
+        context,
+        context.VERTEX_SHADER,
+        gridVertSource,
+    );
+    const gridFragShader = compileShader(
+        context,
+        context.FRAGMENT_SHADER,
+        gridFragSource,
+    );
+
+    //Link grid shaders into a program
+    const gridProgram = linkProgram(context, gridVertShader, gridFragShader);
+    context.useProgram(gridProgram);
+
+    //Create and bind a buffer for the grid
+    let gridBuffer = context.createBuffer();
+    context.bindBuffer(context.ARRAY_BUFFER, gridBuffer);
+
+    //Fetch grid shader attribute locations
+    const gridMeshAttribLocation = context.getAttribLocation(
+        gridProgram,
+        "inPosition",
+    );
+
+    //Create a vertex array object for the grid's mesh
+    let gridVAO = context.createVertexArray();
+    context.bindVertexArray(gridVAO);
+    context.vertexAttribPointer(
+        gridMeshAttribLocation,
+        2, //Number of components
+        context.FLOAT, //Data type
+        false, //Normalisation toggle
+        2 * 4, //Stride - (1 * 2) * sizeof(float)
+        0, //Data offset
+    );
+    context.enableVertexAttribArray(gridMeshAttribLocation);
+
+    //Get grid shader uniform locations
+    const gridCellWidthLocation = context.getUniformLocation(
+        gridProgram,
+        "gridCellWidth",
+    );
+    const gridCellHeightLocation = context.getUniformLocation(
+        gridProgram,
+        "gridCellHeight",
+    );
+    const gridCellsPerWidthLocation = context.getUniformLocation(
+        gridProgram,
+        "gridCellsPerWidth",
+    );
+    const gridOffsetXLocation = context.getUniformLocation(
+        gridProgram,
+        "gridOffsetX",
+    );
+    const gridOffsetYLocation = context.getUniformLocation(
+        gridProgram,
+        "gridOffsetY",
+    );
+    const aspectRatioLocation = context.getUniformLocation(
+        gridProgram,
+        "aspectRatio",
+    );
+    const gridCellDataTexLocation = context.getUniformLocation(
+        gridProgram,
+        "cellDataTexture",
+    );
+    const gridBaseColourLocation = context.getUniformLocation(
+        gridProgram,
+        "baseColour",
+    );
+    const gridCellColourLocation = context.getUniformLocation(
+        gridProgram,
+        "cellColour",
+    );
+    const gridBorderSizeLocation = context.getUniformLocation(
+        gridProgram,
+        "borderSize",
+    );
+    const gridBorderColourLocation = context.getUniformLocation(
+        gridProgram,
+        "borderColour",
+    );
+
+    //Setup the vertices for the grid
+    const gridData = new Float32Array([
+        -1, 1, -1, -1, 1, -1, -1, 1, 1, -1, 1, 1,
+    ]);
+    fillMeshBuffer(context, gridBuffer, gridData.buffer);
+
     //Enable depth testing
     context.enable(context.DEPTH_TEST);
     context.depthFunc(context.LEQUAL);
@@ -127,6 +223,112 @@ export function startRenderer(context) {
     let cellDataTexture = null;
     let vertexCount = 0;
 
+    /**
+     * Render the selected model to the framebuffer
+     * param {Number} fieldOfView
+     * param {glMatrix.vec3} cameraPosition
+     * param {Number} cavasWidth
+     * param {Number} cavasHeight
+     * param {glMatrix.vec3} baseColour
+     * param {glMatrix.vec3} cellColour
+     * @returns {void}
+     */
+    function drawMesh(
+        fieldOfView,
+        cameraPosition,
+        canvasWidth,
+        canvasHeight,
+        baseColour,
+        cellColour,
+    ) {
+        //Use the model shader and the vertex array object
+        context.useProgram(modelProgram);
+        context.bindVertexArray(meshVAO);
+
+        //Calculate the projection matrix
+        const projectionMatrix = calculateProjectionMatrix(
+            fieldOfView,
+            canvasHeight,
+            canvasWidth,
+        );
+
+        //Calculate the view matrix
+        const viewMatrix = calculateViewMatrix(cameraPosition);
+
+        /* Calculate the model matrix
+         * For a single model, rotation and translation are better handled by a camera
+         */
+        const modelMatrix = calculateModelMatrix(1.0);
+
+        //Combine matrices into a precalculated MVP matrix
+        const MVP = glMatrix.mat4.create();
+        glMatrix.mat4.multiply(MVP, projectionMatrix, viewMatrix);
+        glMatrix.mat4.multiply(MVP, MVP, modelMatrix);
+
+        //Enable the data texture
+        context.activeTexture(context.TEXTURE0);
+        context.uniform1i(cellDataTexLocation, 0);
+
+        //Send the uniforms and draw the mesh
+        context.uniform3fv(cameraPosLocation, cameraPosition);
+        context.uniformMatrix4fv(MVPLocation, false, MVP);
+        context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
+        context.uniform3fv(baseColourLocation, baseColour);
+        context.uniform3fv(cellColourLocation, cellColour);
+
+        //TODO: Swap to using element buffers and index the meshes
+        context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
+        context.drawArrays(context.TRIANGLES, 0, vertexCount);
+    }
+
+    /**
+     * Render the grid to the framebuffer
+     * param {Number} cellHeight
+     * param {Number} cellHeight
+     * param {Number} gridCellsPerWidth
+     * param {Number} gridOffsetX
+     * param {Number} gridOffsetY
+     * param {Number} aspectRatio
+     * param {glMatrix.vec3} baseColour
+     * param {glMatrix.vec3} cellColour
+     * @returns {void}
+     */
+    function drawGrid(
+        cellWidth,
+        cellHeight,
+        gridCellsPerWidth,
+        gridOffsetX,
+        gridOffsetY,
+        aspectRatio,
+        baseColour,
+        cellColour,
+        borderSize,
+        borderColour,
+    ) {
+        //Use the grid shader and the vertex array object
+        context.useProgram(gridProgram);
+        context.bindVertexArray(gridVAO);
+
+        //Enable the data texture
+        context.activeTexture(context.TEXTURE0);
+        context.uniform1i(gridCellDataTexLocation, 0);
+
+        //Send the uniforms and draw the grid
+        context.uniform1i(gridCellWidthLocation, cellWidth);
+        context.uniform1i(gridCellHeightLocation, cellHeight);
+        context.uniform1f(gridCellsPerWidthLocation, gridCellsPerWidth);
+        context.uniform1f(gridOffsetXLocation, gridOffsetX);
+        context.uniform1f(gridOffsetYLocation, gridOffsetY);
+        context.uniform1f(aspectRatioLocation, aspectRatio);
+        context.uniform3fv(gridBaseColourLocation, baseColour);
+        context.uniform3fv(gridCellColourLocation, cellColour);
+        context.uniform1f(gridBorderSizeLocation, borderSize);
+        context.uniform3fv(gridBorderColourLocation, borderColour);
+
+        context.bindBuffer(context.ARRAY_BUFFER, gridBuffer);
+        context.drawArrays(context.TRIANGLES, 0, 6);
+    }
+
     /** @returns {void} */
     function drawFrame() {
         //Fetch values once to avoid changes during rendering
@@ -136,6 +338,13 @@ export function startRenderer(context) {
         const canvasWidth = context.canvas.width;
         const baseColour = sharedState.baseColour;
         const cellColour = sharedState.cellColour;
+        const renderMode = sharedState.renderMode;
+
+        const gridCellsPerWidth = sharedState.gridCellsPerWidth;
+        const gridOffsetX = sharedState.gridOffsetX;
+        const gridOffsetY = sharedState.gridOffsetY;
+        const borderSize = sharedState.borderSize;
+        const borderColour = sharedState.borderColour;
 
         //Fetch simulation data
         const cellWidth = reactiveState.cellGridWidth;
@@ -150,13 +359,6 @@ export function startRenderer(context) {
             );
             return;
         }
-
-        //Reset the canvas
-        resetCanvas(context, canvasHeight, canvasWidth);
-
-        //Use the model shader and the vertex array object
-        context.useProgram(modelProgram);
-        context.bindVertexArray(meshVAO);
 
         //Dimensions have changed, recreate buffers
         if (lastCellWidth !== cellWidth || lastCellHeight !== cellHeight) {
@@ -185,42 +387,32 @@ export function startRenderer(context) {
             setDataTexture(context, cellDataTexture, cellData);
         }
 
-        //Calculate the projection matrix
-        const projectionMatrix = calculateProjectionMatrix(
-            fieldOfView,
-            canvasHeight,
-            canvasWidth,
-        );
+        //Reset the canvas
+        resetCanvas(context, canvasHeight, canvasWidth);
 
-        //Calculate the view matrix
-        const viewMatrix = calculateViewMatrix(cameraPosition);
-
-        /* Calculate the model matrix
-         * For a single model, rotation and translation are better handled by a camera
-         */
-        const modelMatrix = calculateModelMatrix(1.0);
-
-        //Combine matrices into a precalculated MVP matrix
-        const MVP = glMatrix.mat4.create();
-        glMatrix.mat4.multiply(MVP, projectionMatrix, viewMatrix);
-        glMatrix.mat4.multiply(MVP, MVP, modelMatrix);
-
-        //Enable the data texture
-        context.activeTexture(context.TEXTURE0);
-        context.uniform1i(cellDataTexLocation, 0);
-
-        //Send the remaining uniforms and draw the mesh
-        context.uniform3fv(cameraPosLocation, cameraPosition);
-        context.uniformMatrix4fv(MVPLocation, false, MVP);
-        context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
-        context.uniform3fv(baseColourLocation, baseColour);
-        context.uniform3fv(cellColourLocation, cellColour);
-
-        //TODO: Swap to using element buffers and index the meshes
-        context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
-        context.drawArrays(context.TRIANGLES, 0, vertexCount);
-
-        //Loop
+        if (renderMode == "3D") {
+            drawMesh(
+                fieldOfView,
+                cameraPosition,
+                canvasWidth,
+                canvasHeight,
+                baseColour,
+                cellColour,
+            );
+        } else {
+            drawGrid(
+                cellWidth,
+                cellHeight,
+                gridCellsPerWidth,
+                gridOffsetX,
+                gridOffsetY,
+                canvasWidth / canvasHeight,
+                baseColour,
+                cellColour,
+                borderSize,
+                borderColour,
+            );
+        }
         window.requestAnimationFrame(drawFrame);
     }
 
