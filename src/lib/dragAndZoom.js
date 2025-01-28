@@ -4,6 +4,8 @@ import { reactiveState } from "./reactiveState.svelte.js";
 import { absMod } from "./tools.js";
 
 const primaryButton = 0;
+const secondaryButton = 2;
+
 const thetaMax = 2 * Math.PI; // Full rotation around the horizontal axis (360 degrees)
 const phiMax = Math.PI; // Vertical rotation limited to half a sphere (180 degrees)
 const dragSensitivity = 0.005;
@@ -12,6 +14,8 @@ const minCameraDistance = 0.1;
 
 let dragRefTheta = 0;
 let dragRefPhi = 0;
+let dragRefGridOffsetX = 0;
+let dragRefGridOffsetY = 0;
 let dragRefMouseX = 0;
 let dragRefMouseY = 0;
 
@@ -27,31 +31,31 @@ let cameraDistance = 2.0;
 export function setUpCamera(canvas) {
     // Start dragging
     onmousedown = (mouseEvent) => {
-        if (mouseEvent.button !== primaryButton || !canvas.matches(":hover"))
+        if (mouseEvent.button !== secondaryButton || !canvas.matches(":hover"))
             return;
 
         // Stores the initial mouse position and camera angles for reference
         dragRefMouseX = mouseEvent.screenX;
         dragRefMouseY = mouseEvent.screenY;
-        dragRefTheta = theta;
-        dragRefPhi = phi;
+        if (reactiveState.renderMode === "3D") {
+            dragRefTheta = theta;
+            dragRefPhi = phi;
+        } else {
+            dragRefGridOffsetX = sharedState.gridOffsetX;
+            dragRefGridOffsetY = sharedState.gridOffsetY;
+        }
 
         reactiveState.dragging = true;
     };
 
     // Stop dragging
     onmouseup = (mouseEvent) => {
-        if (mouseEvent.button === primaryButton) reactiveState.dragging = false;
+        if (mouseEvent.button === secondaryButton)
+            reactiveState.dragging = false;
     };
 
     // While dragging
-    onmousemove = (mouseEvent) => {
-        if (!reactiveState.dragging) return;
-
-        // Calculates changes in mouse movement (deltaX and deltaY) to adjust theta and phi
-        const deltaX = dragRefMouseX - mouseEvent.screenX;
-        const deltaY = dragRefMouseY - mouseEvent.screenY;
-
+    const onmousemove_3D = (mouseEvent, deltaX, deltaY) => {
         const deltaYMin = -dragRefPhi / dragSensitivity;
         const deltaYMax = (phiMax - dragRefPhi) / dragSensitivity;
 
@@ -70,8 +74,28 @@ export function setUpCamera(canvas) {
         sharedState.cameraPosition = cameraPosition(theta, phi, cameraDistance);
     };
 
+    const onmousemove_2D = (mouseEvent, deltaX, deltaY) => {
+        sharedState.gridOffsetX = dragRefGridOffsetX + deltaX * -0.01;
+        sharedState.gridOffsetY = dragRefGridOffsetY + deltaY * 0.01;
+    };
+
+    onmousemove = (mouseEvent) => {
+        if (!reactiveState.dragging) return;
+
+        const deltaX = dragRefMouseX - mouseEvent.screenX;
+        const deltaY = dragRefMouseY - mouseEvent.screenY;
+
+        if (reactiveState.renderMode === "2D") {
+            onmousemove_2D(mouseEvent, deltaX, deltaY);
+        } else {
+            onmousemove_3D(mouseEvent, deltaX, deltaY);
+        }
+    };
+
     // Zooming
     onwheel = (wheelEvent) => {
+        if (reactiveState.renderMode === "2D") return; // @Temp -ntaulbut
+
         if (wheelEvent.target !== canvas && !reactiveState.dragging) return;
         cameraDistance = Math.max(
             minCameraDistance, // Ensures the zoom level does not go below minCameraDistance (0.1)

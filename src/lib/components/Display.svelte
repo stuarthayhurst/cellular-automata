@@ -12,7 +12,7 @@
     import { onMount } from "svelte";
     import { reactiveState } from "../reactiveState.svelte.js";
     import { startRenderer } from "../rendering.js";
-    import { setUpCamera } from "../camera.js";
+    import { setUpCamera } from "../dragAndZoom.js";
 
     onMount(() => {
         const context = canvas.getContext("webgl2");
@@ -29,7 +29,11 @@
     });
 </script>
 
-<canvas bind:this={canvas} class:dragging={reactiveState.dragging}></canvas>
+<canvas
+    bind:this={canvas}
+    class:dragging={reactiveState.dragging}
+    oncontextmenu={(event) => event.preventDefault()}
+></canvas>
 
 <style>
     canvas {
