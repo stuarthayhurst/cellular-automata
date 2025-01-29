@@ -22,8 +22,8 @@ don't need to be 'notified' of its value changing.
  * @property {glMatrix.vec3} cameraPosition
 
  * @property {Number} pixelsPerCell
- * @property {Number} gridOffsetX - A value of -1 indicates 1 cell is offscreen, to the left
- * @property {Number} gridOffsetY - A value of -1 indicates 1 cell is offscreen, to the bottom
+ * @property {Number} gridOffsetX - A value of -1 indicates 1 pixel is offscreen, to the left
+ * @property {Number} gridOffsetY - A value of -1 indicates 1 pixel is offscreen, to the bottom
  * @property {Number} borderSize - 2D mode
  * @property {glMatrix.vec3} borderColour - 2D mode
  */

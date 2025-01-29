@@ -74,8 +74,8 @@ export function setUpCamera(canvas) {
     };
 
     const onmousemove_2D = (deltaX, deltaY) => {
-        sharedState.gridOffsetX = dragRefGridOffsetX + deltaX * -0.01;
-        sharedState.gridOffsetY = dragRefGridOffsetY + deltaY * 0.01;
+        sharedState.gridOffsetX = dragRefGridOffsetX - deltaX;
+        sharedState.gridOffsetY = dragRefGridOffsetY + deltaY;
     };
 
     onmousemove = (mouseEvent) => {
