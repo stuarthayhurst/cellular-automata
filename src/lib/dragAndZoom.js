@@ -92,21 +92,41 @@ export function setUpDragAndZoom(canvas) {
     });
 
     // Zooming
+    const onwheel_2D = (wheel) => {
+        const change = wheel * -0.1;
+
+        const pixels = sharedState.pixelsPerCell;
+        const newPixels = sharedState.pixelsPerCell + change;
+        const Z = newPixels / pixels;
+
+        if (newPixels < 10) return;
+
+        const centreX = canvas.width / 2;
+        const centreY = canvas.height / 2;
+
+        sharedState.gridOffsetX =
+            centreX - (centreX - sharedState.gridOffsetX) * Z;
+        sharedState.gridOffsetY =
+            centreY - (centreY - sharedState.gridOffsetY) * Z;
+
+        sharedState.pixelsPerCell = Math.max(10, newPixels);
+    };
+
+    const onwheel_3D = (wheel) => {
+        cameraDistance = Math.max(
+            minCameraDistance, // Ensures the zoom level does not go below minCameraDistance (0.1)
+            cameraDistance + wheel * zoomSpeed,
+        );
+        sharedState.cameraPosition = cameraPosition(theta, phi, cameraDistance);
+    };
+
     document.addEventListener("wheel", (wheelEvent) => {
         if (wheelEvent.target !== canvas && !reactiveState.dragging) return;
 
         if (reactiveState.renderMode === "2D") {
-            sharedState.pixelsPerCell *= 1 - wheelEvent.deltaY * 0.001;
+            onwheel_2D(wheelEvent.deltaY);
         } else {
-            cameraDistance = Math.max(
-                minCameraDistance, // Ensures the zoom level does not go below minCameraDistance (0.1)
-                cameraDistance + wheelEvent.deltaY * zoomSpeed,
-            );
-            sharedState.cameraPosition = cameraPosition(
-                theta,
-                phi,
-                cameraDistance,
-            );
+            onwheel_3D(wheelEvent.deltaY);
         }
     });
 }

@@ -23,7 +23,7 @@
 
 <main
     class:settings-hidden={!showSettings}
-    class:dragging={reactiveState.dragging}
+    class:dragging={reactiveState.dragging && reactiveState.renderMode === "3D"}
 >
     <div id="canvas-container">
         <Display />

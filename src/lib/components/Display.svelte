@@ -33,7 +33,7 @@
 
 <canvas
     bind:this={canvas}
-    class:dragging={reactiveState.dragging}
+    class:grab={!reactiveState.dragging && reactiveState.renderMode === "3D"}
     oncontextmenu={(event) => event.preventDefault()}
 ></canvas>
 
@@ -45,7 +45,7 @@
         background-color: var(--very-light-grey);
     }
 
-    canvas:not(.dragging) {
+    canvas.grab {
         cursor: grab;
     }
 </style>

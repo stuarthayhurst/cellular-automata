@@ -8,7 +8,7 @@ let drawStroke = false;
 /** @type {Number} */
 let drawStrokeValue;
 /** @type {Set} */
-let drawStrokeGridCells = new Set([]);
+let drawStrokeGridCells = new Set([]); // For undo later
 
 export function setUpCellEditor(canvas) {
     const flip = (i) => 1 - i;
