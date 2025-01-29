@@ -96,7 +96,7 @@ export function setUpCamera(canvas) {
         if (wheelEvent.target !== canvas && !reactiveState.dragging) return;
 
         if (reactiveState.renderMode === "2D") {
-            sharedState.gridCellsPerWidth += wheelEvent.deltaY * 0.01;
+            sharedState.pixelsPerCell *= 1 - wheelEvent.deltaY * 0.001;
         } else {
             cameraDistance = Math.max(
                 minCameraDistance, // Ensures the zoom level does not go below minCameraDistance (0.1)

@@ -340,7 +340,7 @@ export function startRenderer(context) {
         const cellColour = sharedState.cellColour;
         const renderMode = reactiveState.renderMode;
 
-        const gridCellsPerWidth = sharedState.gridCellsPerWidth;
+        const pixelsPerCell = sharedState.pixelsPerCell;
         const gridOffsetX = sharedState.gridOffsetX;
         const gridOffsetY = sharedState.gridOffsetY;
         const borderSize = sharedState.borderSize;
@@ -403,7 +403,7 @@ export function startRenderer(context) {
             drawGrid(
                 cellWidth,
                 cellHeight,
-                gridCellsPerWidth,
+                canvasWidth / pixelsPerCell,
                 gridOffsetX,
                 gridOffsetY,
                 canvasWidth / canvasHeight,

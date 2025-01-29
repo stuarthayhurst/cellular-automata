@@ -21,7 +21,7 @@ don't need to be 'notified' of its value changing.
  * @property {glMatrix.vec3} cellColour
  * @property {glMatrix.vec3} cameraPosition
 
- * @property {Number} gridCellsPerWidth
+ * @property {Number} pixelsPerCell
  * @property {Number} gridOffsetX - A value of -1 indicates 1 cell is offscreen, to the left
  * @property {Number} gridOffsetY - A value of -1 indicates 1 cell is offscreen, to the bottom
  * @property {Number} borderSize - 2D mode
@@ -37,7 +37,7 @@ export const sharedState = {
     baseColour: colour_rgb(12, 56, 102),
     cellColour: colour_rgb(30, 144, 255),
     cameraPosition: glMatrix.vec3.fromValues(2, 0, 0),
-    gridCellsPerWidth: 20.0,
+    pixelsPerCell: 70.0,
     gridOffsetX: 0.0,
     gridOffsetY: 0.0,
     borderSize: 0.02,
