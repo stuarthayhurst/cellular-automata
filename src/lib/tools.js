@@ -9,7 +9,7 @@ import * as glMatrix from "gl-matrix";
 export const absMod = (x, m) => ((x % m) + m) % m;
 
 /**
- * Convert 0-255 RGB to 0-1 Vec3 RGB
+ * Convert 0-255 RGB to 0-1 Vec3 RGB.
  * @param {Number} r
  * @param {Number} g
  * @param {Number} b

@@ -8,11 +8,26 @@ let drawStroke = false;
 /** @type {Number} */
 let drawStrokeValue;
 /** @type {Set<Number>} */
-let drawStrokeChangedCells = new Set([]); // For undo later
+let drawStrokeChangedCells = new Set([]);
 
 const flip = (i) => 1 - i;
 
+/**
+ * Add event listeners for cell editor.
+ * @param {HTMLCanvasElement} canvas
+ * @returns {void}
+ */
 export function setUpCellEditor(canvas) {
+    /*
+        Drawing
+     */
+
+    /**
+     * @param {Boolean} initialClick
+     * @param {Number} mouseX
+     * @param {Number} mouseY
+     * @returns {Number|void}
+     */
     const draw = (initialClick, mouseX, mouseY) => {
         const canvasMousePos = clientToCanvasSpace(canvas, mouseX, mouseY);
         const clickGridCoord = canvasToGridCoord(...canvasMousePos);
@@ -45,6 +60,7 @@ export function setUpCellEditor(canvas) {
         return sharedState.cells[gridIndex];
     };
 
+    // Start Drawing
     document.addEventListener("mousedown", (mouseEvent) => {
         if (
             mouseEvent.button !== primaryButton ||
@@ -57,6 +73,7 @@ export function setUpCellEditor(canvas) {
         drawStrokeValue = draw(true, mouseEvent.clientX, mouseEvent.clientY);
     });
 
+    // Stop Drawing
     document.addEventListener("mouseup", () => {
         drawStroke = false;
         if (drawStrokeChangedCells.size > 0) {
@@ -69,9 +86,14 @@ export function setUpCellEditor(canvas) {
         drawStrokeChangedCells = new Set([]);
     });
 
+    // While Drawing
     document.addEventListener("mousemove", (mouseEvent) => {
         if (drawStroke) draw(false, mouseEvent.clientX, mouseEvent.clientY);
     });
+
+    /*
+        Keyboard Shortcuts
+     */
 
     document.addEventListener("keydown", (keyboardEvent) => {
         // keyboardEvent.key === "A" if shift else "a"
@@ -90,6 +112,10 @@ export function setUpCellEditor(canvas) {
     });
 }
 
+/**
+ * Undo last editor action.
+ * @returns {void}
+ */
 export function editorUndo() {
     if (drawStroke) return;
 
@@ -113,6 +139,10 @@ export function editorUndo() {
 export const mayUndo = (historyStackLength, atStart) =>
     historyStackLength > 0 && atStart;
 
+/**
+ * Redo last editor action.
+ * @returns {void}
+ */
 export function editorRedo() {
     if (drawStroke) return;
 
@@ -158,7 +188,7 @@ const canvasToGridCoord = (canvasX, canvasY) => {
  * @param {HTMLCanvasElement} canvas
  * @param {Number} clientX
  * @param {Number} clientY
- * @returns {number[2]}
+ * @returns {[Number, Number]}
  */
 const clientToCanvasSpace = (canvas, clientX, clientY) => {
     const rect = canvas.getBoundingClientRect();

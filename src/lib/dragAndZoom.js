@@ -26,8 +26,13 @@ let cameraDistance = 2.0;
 /**
  * Set up camera event handlers.
  * @param {HTMLCanvasElement} canvas
+ * @returns {void}
  */
 export function setUpDragAndZoom(canvas) {
+    /*
+        Drag
+     */
+
     // Start dragging
     document.addEventListener("mousedown", (mouseEvent) => {
         if (mouseEvent.button !== secondaryButton || !canvas.matches(":hover"))
@@ -54,6 +59,12 @@ export function setUpDragAndZoom(canvas) {
     });
 
     // While dragging
+    /**
+     * @param {Number} mouseScreenY
+     * @param {Number} deltaX
+     * @param {Number} deltaY
+     * @returns {void}
+     */
     const onmousemove_3D = (mouseScreenY, deltaX, deltaY) => {
         const deltaYMin = -dragRefPhi / dragSensitivity;
         const deltaYMax = (phiMax - dragRefPhi) / dragSensitivity;
@@ -73,6 +84,11 @@ export function setUpDragAndZoom(canvas) {
         sharedState.cameraPosition = cameraPosition(theta, phi, cameraDistance);
     };
 
+    /**
+     * @param {Number} deltaX
+     * @param {Number} deltaY
+     * @returns {void}
+     */
     const onmousemove_2D = (deltaX, deltaY) => {
         sharedState.gridOffsetX = dragRefGridOffsetX - deltaX;
         sharedState.gridOffsetY = dragRefGridOffsetY + deltaY;
@@ -91,7 +107,14 @@ export function setUpDragAndZoom(canvas) {
         }
     });
 
-    // Zooming
+    /*
+        Zoom
+     */
+
+    /**
+     * @param {Number} wheel
+     * @returns {void}
+     */
     const onwheel_2D = (wheel) => {
         const change = wheel * -0.1;
 
@@ -112,6 +135,10 @@ export function setUpDragAndZoom(canvas) {
         sharedState.pixelsPerCell = Math.max(10, newPixels);
     };
 
+    /**
+     * @param {Number} wheel
+     * @returns {void}
+     */
     const onwheel_3D = (wheel) => {
         cameraDistance = Math.max(
             minCameraDistance, // Ensures the zoom level does not go below minCameraDistance (0.1)

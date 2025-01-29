@@ -20,7 +20,6 @@ don't need to be 'notified' of its value changing.
  * @property {glMatrix.vec3} baseColour
  * @property {glMatrix.vec3} cellColour
  * @property {glMatrix.vec3} cameraPosition
-
  * @property {Number} pixelsPerCell
  * @property {Number} gridOffsetX - A value of -1 indicates 1 pixel is offscreen, to the left
  * @property {Number} gridOffsetY - A value of -1 indicates 1 pixel is offscreen, to the bottom
