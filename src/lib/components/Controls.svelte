@@ -3,6 +3,7 @@
     import { reactiveState } from "../reactiveState.svelte.js";
     import { resetToStart } from "../sharedState.js";
     import { pauseSimulation } from "../simulation.js";
+    import { editorUndo, mayUndo, editorRedo, mayRedo } from "../cellEditor.js";
 
     let { togglePaused, stepForward, toggleShowSettings } = $props();
 </script>
@@ -25,6 +26,30 @@
                 height="20"
             />
         </button>
+        {#if reactiveState.renderMode === "2D"}
+            <button
+                class="square-btn btn-secondary"
+                title="Undo (CTRL+Z)"
+                onclick={() => editorUndo()}
+                disabled={!mayUndo(
+                    reactiveState.historyStack.length,
+                    reactiveState.atStart,
+                )}
+            >
+                <Icon icon="fa-solid:undo" width="20" height="20" />
+            </button>
+            <button
+                class="square-btn btn-secondary"
+                title="Redo (CTRL+SHIFT+Z)"
+                onclick={() => editorRedo()}
+                disabled={!mayRedo(
+                    reactiveState.redoStack.length,
+                    reactiveState.atStart,
+                )}
+            >
+                <Icon icon="fa-solid:redo" width="20" height="20" />
+            </button>
+        {/if}
     </div>
     <div id="centre-controls" class="controls-section">
         <button

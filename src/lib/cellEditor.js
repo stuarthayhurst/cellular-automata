@@ -7,12 +7,12 @@ const primaryButton = 0;
 let drawStroke = false;
 /** @type {Number} */
 let drawStrokeValue;
-/** @type {Set} */
-let drawStrokeGridCells = new Set([]); // For undo later
+/** @type {Set<Number>} */
+let drawStrokeChangedCells = new Set([]); // For undo later
+
+const flip = (i) => 1 - i;
 
 export function setUpCellEditor(canvas) {
-    const flip = (i) => 1 - i;
-
     const draw = (initialClick, mouseX, mouseY) => {
         const canvasMousePos = clientToCanvasSpace(canvas, mouseX, mouseY);
         const clickGridCoord = canvasToGridCoord(...canvasMousePos);
@@ -32,14 +32,15 @@ export function setUpCellEditor(canvas) {
             reactiveState.cellGridHeight,
         );
 
-        if (drawStrokeGridCells.has(gridIndex)) return;
+        if (drawStrokeChangedCells.has(gridIndex)) return;
 
         if (initialClick) {
             sharedState.cells[gridIndex] = flip(sharedState.cells[gridIndex]);
-        } else {
+            drawStrokeChangedCells.add(gridIndex);
+        } else if (sharedState.cells[gridIndex] !== drawStrokeValue) {
             sharedState.cells[gridIndex] = drawStrokeValue;
+            drawStrokeChangedCells.add(gridIndex);
         }
-        drawStrokeGridCells.add(gridIndex);
 
         return sharedState.cells[gridIndex];
     };
@@ -58,13 +59,80 @@ export function setUpCellEditor(canvas) {
 
     document.addEventListener("mouseup", () => {
         drawStroke = false;
-        drawStrokeGridCells = new Set([]);
+        if (drawStrokeChangedCells.size > 0) {
+            reactiveState.historyStack.push({
+                cells: drawStrokeChangedCells,
+                value: drawStrokeValue,
+            });
+            reactiveState.redoStack = [];
+        }
+        drawStrokeChangedCells = new Set([]);
     });
 
     document.addEventListener("mousemove", (mouseEvent) => {
         if (drawStroke) draw(false, mouseEvent.clientX, mouseEvent.clientY);
     });
+
+    document.addEventListener("keydown", (keyboardEvent) => {
+        // keyboardEvent.key === "A" if shift else "a"
+        if (
+            keyboardEvent.ctrlKey &&
+            keyboardEvent.key === "z" &&
+            mayUndo(reactiveState.historyStack.length, reactiveState.atStart)
+        ) {
+            editorUndo();
+        } else if (
+            keyboardEvent.ctrlKey &&
+            keyboardEvent.key === "Z" &&
+            mayRedo(reactiveState.redoStack.length, reactiveState.atStart)
+        )
+            editorRedo();
+    });
 }
+
+export function editorUndo() {
+    if (drawStroke) return;
+
+    const change = reactiveState.historyStack.pop();
+    change.cells.forEach(
+        (cell) => (sharedState.cells[cell] = flip(change.value)),
+    );
+    reactiveState.redoStack.push(change);
+}
+
+/**
+ * If we are allowed to undo.
+ *
+ * Takes in these arguments instead of checking reactiveState directly
+ * so that its reactivity can be determined.
+ *
+ * @param {Number} historyStackLength
+ * @param {Boolean} atStart
+ * @returns {Boolean}
+ */
+export const mayUndo = (historyStackLength, atStart) =>
+    historyStackLength > 0 && atStart;
+
+export function editorRedo() {
+    if (drawStroke) return;
+
+    const change = reactiveState.redoStack.pop();
+    change.cells.forEach((cell) => (sharedState.cells[cell] = change.value));
+    reactiveState.historyStack.push(change);
+}
+
+/**
+ * If we are allowed to redo.
+ *
+ * Takes in these arguments instead of checking reactiveState directly
+ * so that its reactivity can be determined.
+ *
+ * @param {Number} redoStackLength
+ * @param {Boolean} atStart
+ * @returns {Boolean}
+ */
+export const mayRedo = (redoStackLength, atStart) =>
+    redoStackLength > 0 && atStart;
 
 /**
  * Convert canvas coordinates into grid coordinates
