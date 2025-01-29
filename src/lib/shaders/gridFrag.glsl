@@ -73,7 +73,7 @@ void main() {
     int gridIndexX = int(floor(x));
     int gridIndexY = int(floor(y));
 
-    //Check for grid border
+    //Detect grid lines
     bool isBorder = false;
     if (cellProgressX < borderSize || cellProgressY < borderSize ||
         cellProgressX > (1.0 - borderSize) || cellProgressY > (1.0 - borderSize)) {
@@ -81,23 +81,61 @@ void main() {
         isBorder = true;
     }
 
-    //Check for grid boundaries
+    //TODO: Allow configuring
+    bool tileBackground = true;
+
+    //Detect canvas background
+    bool isBackground = false;
     if (x < -borderSize || y < -borderSize ||
         x > float(gridCellWidth) + borderSize || y > float(gridCellHeight) + borderSize) {
-        discard;
-    } else {
-      //Return if we already have the colour
-      if (isBorder) {
+        //Use background grid colour and return if we're not aliasing
+        if (!tileBackground) {
+          if (isBorder) {
+              //TODO: Allow configuring
+              outColour = vec4(0.3, 0.3, 0.3, 1.0);
+          }
+          return;
+        }
+
+        isBackground = true;
+    }
+
+    //Return if we already have the colour
+    if (isBorder) {
         return;
-      }
+    }
+
+    //Alias tiles, handle negative indices
+    if (gridIndexX < 0) {
+        gridIndexX = (-gridIndexX - 1) % gridCellWidth;
+        gridIndexX = (gridCellWidth - 1) - gridIndexX;
+    } else {
+        gridIndexX %= gridCellWidth;
+    }
+
+    if (gridIndexY < 0) {
+        gridIndexY = (-gridIndexY - 1) % gridCellHeight;
+        gridIndexY = (gridCellHeight - 1) - gridIndexY;
+    } else {
+        gridIndexY %= gridCellHeight;
     }
 
     //Convert coordinate into an index, look up in the data texture
     int index = gridIndexX + (((gridCellHeight - 1) - gridIndexY) * gridCellWidth);
     uint alive = fetchDataBit(index, gridCellDataTexture);
     if (alive > uint(0)) {
-      outColour = vec4(cellColour, 1.0);
+        if (isBackground) {
+            //TODO: Allow configuring
+            outColour = vec4(0.5, 0.5, 0.5, 1.0);
+        } else {
+            outColour = vec4(cellColour, 1.0);
+        }
     } else {
-      outColour = vec4(baseColour, 1.0);
+        if (isBackground) {
+            //TODO: Allow configuring
+            outColour = vec4(0.4, 0.4, 0.4, 1.0);
+        } else {
+            outColour = vec4(baseColour, 1.0);
+        }
     }
 }
