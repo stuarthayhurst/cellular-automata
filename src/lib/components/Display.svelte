@@ -12,7 +12,8 @@
     import { onMount } from "svelte";
     import { reactiveState } from "../reactiveState.svelte.js";
     import { startRenderer } from "../rendering.js";
-    import { setUpCamera } from "../dragAndZoom.js";
+    import { setUpDragAndZoom } from "../dragAndZoom.js";
+    import { setUpCellEditor } from "../cellEditor.js";
 
     onMount(() => {
         const context = canvas.getContext("webgl2");
@@ -22,7 +23,8 @@
         }
 
         startRenderer(context);
-        setUpCamera(canvas);
+        setUpDragAndZoom(canvas);
+        setUpCellEditor(canvas);
 
         updateCanvasResolution();
         onresize = () => updateCanvasResolution();

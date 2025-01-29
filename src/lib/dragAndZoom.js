@@ -27,9 +27,9 @@ let cameraDistance = 2.0;
  * Set up camera event handlers.
  * @param {HTMLCanvasElement} canvas
  */
-export function setUpCamera(canvas) {
+export function setUpDragAndZoom(canvas) {
     // Start dragging
-    onmousedown = (mouseEvent) => {
+    document.addEventListener("mousedown", (mouseEvent) => {
         if (mouseEvent.button !== secondaryButton || !canvas.matches(":hover"))
             return;
 
@@ -45,13 +45,13 @@ export function setUpCamera(canvas) {
         }
 
         reactiveState.dragging = true;
-    };
+    });
 
     // Stop dragging
-    onmouseup = (mouseEvent) => {
+    document.addEventListener("mouseup", (mouseEvent) => {
         if (mouseEvent.button === secondaryButton)
             reactiveState.dragging = false;
-    };
+    });
 
     // While dragging
     const onmousemove_3D = (mouseScreenY, deltaX, deltaY) => {
@@ -78,13 +78,7 @@ export function setUpCamera(canvas) {
         sharedState.gridOffsetY = dragRefGridOffsetY + deltaY;
     };
 
-    // Get mouse coordinates in the canvas, matching grid conventions
-    const getCanvasCoords = (clientX, clientY) => {
-        const rect = canvas.getBoundingClientRect();
-        return [clientX - rect.x, rect.height - (clientY - rect.y)];
-    };
-
-    onmousemove = (mouseEvent) => {
+    document.addEventListener("mousemove", (mouseEvent) => {
         if (!reactiveState.dragging) return;
 
         const deltaX = dragRefMouseX - mouseEvent.screenX;
@@ -95,10 +89,10 @@ export function setUpCamera(canvas) {
         } else {
             onmousemove_3D(mouseEvent.screenY, deltaX, deltaY);
         }
-    };
+    });
 
     // Zooming
-    onwheel = (wheelEvent) => {
+    document.addEventListener("wheel", (wheelEvent) => {
         if (wheelEvent.target !== canvas && !reactiveState.dragging) return;
 
         if (reactiveState.renderMode === "2D") {
@@ -114,27 +108,8 @@ export function setUpCamera(canvas) {
                 cameraDistance,
             );
         }
-    };
+    });
 }
-
-/**
- * Convert canvas coordinates into grid coordinates
- * No validation is done, this just convert values
- * @param {Number} canvasX
- * @param {Number} canvasY
- * @returns {[Number, Number]}
- */
-const pixelToCoord = (canvasX, canvasY) => {
-    const gridX = canvasX - sharedState.gridOffsetX;
-    const gridY = canvasY - sharedState.gridOffsetY;
-
-    const gridHeight = reactiveState.cellGridHeight * sharedState.pixelsPerCell;
-
-    return [
-        Math.floor(gridX / sharedState.pixelsPerCell),
-        Math.floor((gridHeight - gridY) / sharedState.pixelsPerCell),
-    ];
-};
 
 /**
  * Calculate camera position.

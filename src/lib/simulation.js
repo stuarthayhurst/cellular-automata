@@ -1,6 +1,6 @@
 import { reactiveState } from "./reactiveState.svelte.js";
 import { sharedState, saveStartState } from "./sharedState.js";
-import { absMod } from "./tools.js";
+import { indexToPos, posToIndex } from "./tools.js";
 
 const baseStepIntervalMillis = 200;
 
@@ -150,32 +150,6 @@ export function pauseSimulation() {
     clearInterval(simulationInterval);
     simulationInterval = null;
 }
-
-/**
- * Convert 1D array index to 2D position.
- * @param {Number} i - Index
- * @param {Number} w - Cell Grid width
- * @returns {[Number, Number]}
- */
-const indexToPos = (i, w) => [i % w, Math.floor(i / w)];
-
-/**
- * Convert 2D position to 1D array index.
- * @param {Number} x
- * @param {Number} y
- * @param {Number} w - Cell Grid width
- * @param {Number} h - Cell Grid height
- * @returns {Number}
- */
-const posToIndex = (x, y, w, h) => absMod(x + y * w, w * h);
-
-// noinspection JSUnusedLocalSymbols
-/**
- * Count living cells.
- * @param {Uint8Array} cells
- * @returns {Number}
- */
-const population = (cells) => cells.reduce((acc, cellState) => acc + cellState);
 
 // noinspection JSUnusedLocalSymbols
 /**
