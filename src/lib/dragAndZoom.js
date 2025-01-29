@@ -78,6 +78,12 @@ export function setUpCamera(canvas) {
         sharedState.gridOffsetY = dragRefGridOffsetY + deltaY;
     };
 
+    // Get mouse coordinates in the canvas, matching grid conventions
+    const getCanvasCoords = (clientX, clientY) => {
+        const rect = canvas.getBoundingClientRect();
+        return [clientX - rect.x, rect.height - (clientY - rect.y)];
+    };
+
     onmousemove = (mouseEvent) => {
         if (!reactiveState.dragging) return;
 
@@ -110,6 +116,25 @@ export function setUpCamera(canvas) {
         }
     };
 }
+
+/**
+ * Convert canvas coordinates into grid coordinates
+ * No validation is done, this just convert values
+ * @param {Number} canvasX
+ * @param {Number} canvasY
+ * @returns {[Number, Number]}
+ */
+const pixelToCoord = (canvasX, canvasY) => {
+    const gridX = canvasX - sharedState.gridOffsetX;
+    const gridY = canvasY - sharedState.gridOffsetY;
+
+    const gridHeight = reactiveState.cellGridHeight * sharedState.pixelsPerCell;
+
+    return [
+        Math.floor(gridX / sharedState.pixelsPerCell),
+        Math.floor((gridHeight - gridY) / sharedState.pixelsPerCell),
+    ];
+};
 
 /**
  * Calculate camera position.
