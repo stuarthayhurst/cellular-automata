@@ -78,13 +78,15 @@ export function setUpCellEditor(canvas) {
         drawStroke = false;
         drawStrokeChangedCells = new Set([]);
 
-        if (drawStrokeChangedCells.size === 0 || !reactiveState.atStart) return;
+        if (drawStrokeChangedCells.size > 0 && reactiveState.atStart) {
+            reactiveState.historyStack.push({
+                cells: drawStrokeChangedCells,
+                value: drawStrokeValue,
+            });
+            reactiveState.redoStack = [];
+        }
 
-        reactiveState.historyStack.push({
-            cells: drawStrokeChangedCells,
-            value: drawStrokeValue,
-        });
-        reactiveState.redoStack = [];
+        drawStrokeChangedCells = new Set([]);
     });
 
     // While Drawing
