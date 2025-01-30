@@ -134,10 +134,16 @@ export function setUpDragAndZoom(canvas) {
         const centreX = canvas.width / 2;
         const centreY = canvas.height / 2;
 
-        sharedState.gridOffsetX =
+        const newGridOffsetX =
             centreX - (centreX - sharedState.gridOffsetX) * zoomFactor;
-        sharedState.gridOffsetY =
+        const newGridOffsetY =
             centreY - (centreY - sharedState.gridOffsetY) * zoomFactor;
+
+        dragRefGridOffsetX += newGridOffsetX - sharedState.gridOffsetX;
+        dragRefGridOffsetY += newGridOffsetY - sharedState.gridOffsetY;
+
+        sharedState.gridOffsetX = newGridOffsetX;
+        sharedState.gridOffsetY = newGridOffsetY;
 
         sharedState.pixelsPerCell = Math.max(10, newPixels);
     };
