@@ -225,12 +225,12 @@ export function startRenderer(context) {
 
     /**
      * Render the selected model to the framebuffer
-     * param {Number} fieldOfView
-     * param {glMatrix.vec3} cameraPosition
-     * param {Number} cavasWidth
-     * param {Number} cavasHeight
-     * param {glMatrix.vec3} baseColour
-     * param {glMatrix.vec3} cellColour
+     * @param {Number} fieldOfView
+     * @param {glMatrix.vec3} cameraPosition
+     * @param {Number} canvasWidth
+     * @param {Number} canvasHeight
+     * @param {glMatrix.vec3} baseColour
+     * @param {glMatrix.vec3} cellColour
      * @returns {void}
      */
     function drawMesh(
@@ -283,14 +283,16 @@ export function startRenderer(context) {
 
     /**
      * Render the grid to the framebuffer
-     * param {Number} cellHeight
-     * param {Number} cellHeight
-     * param {Number} gridCellsPerWidth
-     * param {Number} gridOffsetX
-     * param {Number} gridOffsetY
-     * param {Number} aspectRatio
-     * param {glMatrix.vec3} baseColour
-     * param {glMatrix.vec3} cellColour
+     * @param {Number} cellWidth
+     * @param {Number} cellHeight
+     * @param {Number} gridCellsPerWidth
+     * @param {Number} gridOffsetX
+     * @param {Number} gridOffsetY
+     * @param {Number} aspectRatio
+     * @param {glMatrix.vec3} baseColour
+     * @param {glMatrix.vec3} cellColour
+     * @param {Number} borderSize
+     * @param {glMatrix.vec3} borderColour
      * @returns {void}
      */
     function drawGrid(
@@ -315,9 +317,11 @@ export function startRenderer(context) {
 
         //Send the uniforms and draw the grid
         context.uniform1i(gridCellWidthLocation, cellWidth);
+        // noinspection JSSuspiciousNameCombination
         context.uniform1i(gridCellHeightLocation, cellHeight);
         context.uniform1f(gridCellsPerWidthLocation, gridCellsPerWidth);
         context.uniform1f(gridOffsetXLocation, gridOffsetX);
+        // noinspection JSSuspiciousNameCombination
         context.uniform1f(gridOffsetYLocation, gridOffsetY);
         context.uniform1f(aspectRatioLocation, aspectRatio);
         context.uniform3fv(gridBaseColourLocation, baseColour);
@@ -338,9 +342,9 @@ export function startRenderer(context) {
         const canvasWidth = context.canvas.width;
         const baseColour = sharedState.baseColour;
         const cellColour = sharedState.cellColour;
-        const renderMode = sharedState.renderMode;
+        const interfaceMode = reactiveState.interfaceMode;
 
-        const gridCellsPerWidth = sharedState.gridCellsPerWidth;
+        const pixelsPerCell = sharedState.pixelsPerCell;
         const gridOffsetX = sharedState.gridOffsetX;
         const gridOffsetY = sharedState.gridOffsetY;
         const borderSize = sharedState.borderSize;
@@ -390,7 +394,7 @@ export function startRenderer(context) {
         //Reset the canvas
         resetCanvas(context, canvasHeight, canvasWidth);
 
-        if (renderMode == "3D") {
+        if (interfaceMode === "3D View") {
             drawMesh(
                 fieldOfView,
                 cameraPosition,
@@ -403,9 +407,9 @@ export function startRenderer(context) {
             drawGrid(
                 cellWidth,
                 cellHeight,
-                gridCellsPerWidth,
-                gridOffsetX,
-                gridOffsetY,
+                canvasWidth / pixelsPerCell,
+                gridOffsetX / pixelsPerCell,
+                gridOffsetY / pixelsPerCell,
                 canvasWidth / canvasHeight,
                 baseColour,
                 cellColour,
@@ -421,7 +425,7 @@ export function startRenderer(context) {
 }
 
 /**
- *
+ * Compile shader.
  * @param {WebGL2RenderingContext} context
  * @param {Number} shaderType
  * @param {String} shaderSource
@@ -444,7 +448,7 @@ function compileShader(context, shaderType, shaderSource) {
 }
 
 /**
- *
+ * Link program.
  * @param {WebGL2RenderingContext} context
  * @param {WebGLShader} vertexShader
  * @param {WebGLShader} fragShader
@@ -491,7 +495,7 @@ function calculateProjectionMatrix(fieldOfView, height, width) {
 }
 
 /**
- * Calculate vew matrix.
+ * Calculate view matrix.
  * @param {glMatrix.vec3} cameraPosition
  * @returns {glMatrix.mat4}
  */

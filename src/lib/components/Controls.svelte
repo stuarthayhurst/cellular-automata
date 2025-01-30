@@ -3,6 +3,7 @@
     import { reactiveState } from "../reactiveState.svelte.js";
     import { resetToStart } from "../sharedState.js";
     import { pauseSimulation } from "../simulation.js";
+    import { editorUndo, mayUndo, editorRedo, mayRedo } from "../cellEditor.js";
 
     let { togglePaused, stepForward, toggleShowSettings } = $props();
 </script>
@@ -10,18 +11,53 @@
 <div id="controls-bar">
     <div id="left-controls" class="controls-section">
         <button
-            aria-label="2D/3D"
             class="square-btn btn-secondary"
-            title="2D/3D"
-            disabled
+            title={reactiveState.interfaceMode === "3D View"
+                ? "Edit Cells"
+                : "3D View"}
+            onclick={() => {
+                reactiveState.interfaceMode =
+                    reactiveState.interfaceMode === "Editor"
+                        ? "3D View"
+                        : "Editor";
+            }}
         >
-            <Icon icon="fa-solid:pen" width="20" height="20" />
+            <Icon
+                icon={reactiveState.interfaceMode === "3D View"
+                    ? "fa-solid:pen"
+                    : "fa-solid:cube"}
+                width="20"
+                height="20"
+            />
         </button>
+        {#if reactiveState.interfaceMode === "Editor"}
+            <button
+                class="square-btn btn-secondary"
+                title="Undo (CTRL+Z)"
+                onclick={() => editorUndo()}
+                disabled={!mayUndo(
+                    reactiveState.historyStack.length,
+                    reactiveState.atStart,
+                )}
+            >
+                <Icon icon="fa-solid:undo" width="20" height="20" />
+            </button>
+            <button
+                class="square-btn btn-secondary"
+                title="Redo (CTRL+SHIFT+Z)"
+                onclick={() => editorRedo()}
+                disabled={!mayRedo(
+                    reactiveState.redoStack.length,
+                    reactiveState.atStart,
+                )}
+            >
+                <Icon icon="fa-solid:redo" width="20" height="20" />
+            </button>
+        {/if}
     </div>
     <div id="centre-controls" class="controls-section">
         <button
             id="reset-button"
-            aria-label="Reset"
             class="square-btn btn-secondary"
             title="Reset"
             disabled={reactiveState.atStart}
@@ -58,7 +94,6 @@
         </select>
         <button
             id="step-forward-button"
-            aria-label="Step Forward"
             class="square-btn btn-secondary"
             title="Step Forward"
             onclick={stepForward}

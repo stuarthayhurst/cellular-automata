@@ -12,7 +12,8 @@
     import { onMount } from "svelte";
     import { reactiveState } from "../reactiveState.svelte.js";
     import { startRenderer } from "../rendering.js";
-    import { setUpCamera } from "../camera.js";
+    import { setUpDragAndZoom } from "../dragAndZoom.js";
+    import { setUpCellEditor } from "../cellEditor.js";
 
     onMount(() => {
         const context = canvas.getContext("webgl2");
@@ -21,15 +22,21 @@
             return;
         }
 
-        startRenderer(context);
-        setUpCamera(canvas);
-
         updateCanvasResolution();
         onresize = () => updateCanvasResolution();
+
+        startRenderer(context);
+        setUpDragAndZoom(canvas);
+        setUpCellEditor(canvas);
     });
 </script>
 
-<canvas bind:this={canvas} class:dragging={reactiveState.dragging}></canvas>
+<canvas
+    bind:this={canvas}
+    class:grab={!reactiveState.dragging &&
+        reactiveState.interfaceMode === "3D View"}
+    oncontextmenu={(event) => event.preventDefault()}
+></canvas>
 
 <style>
     canvas {
@@ -39,7 +46,7 @@
         background-color: var(--very-light-grey);
     }
 
-    canvas:not(.dragging) {
+    canvas.grab {
         cursor: grab;
     }
 </style>

@@ -1,5 +1,6 @@
 import * as glMatrix from "gl-matrix";
 import { reactiveState } from "./reactiveState.svelte.js";
+import { colour_rgb } from "./tools.js";
 
 /*
 `sharedState` contains state that needs to be shared between components but
@@ -19,10 +20,9 @@ don't need to be 'notified' of its value changing.
  * @property {glMatrix.vec3} baseColour
  * @property {glMatrix.vec3} cellColour
  * @property {glMatrix.vec3} cameraPosition
- * @property {String} renderMode
- * @property {Number} gridCellsPerWidth
- * @property {Number} gridOffsetX - A value of -1 indicates 1 cell is offscreen, to the left
- * @property {Number} gridOffsetY - A value of -1 indicates 1 cell is offscreen, to the bottom
+ * @property {Number} pixelsPerCell
+ * @property {Number} gridOffsetX - A value of -1 indicates 1 pixel is offscreen, to the left
+ * @property {Number} gridOffsetY - A value of -1 indicates 1 pixel is offscreen, to the bottom
  * @property {Number} borderSize - 2D mode
  * @property {glMatrix.vec3} borderColour - 2D mode
  */
@@ -33,15 +33,14 @@ export const sharedState = {
     startCellGridWidth: undefined,
     startCellGridHeight: undefined,
     maxCells: 0,
-    baseColour: glMatrix.vec3.fromValues(1, 0, 0),
-    cellColour: glMatrix.vec3.fromValues(0, 1, 1),
+    baseColour: colour_rgb(12, 56, 102),
+    cellColour: colour_rgb(30, 144, 255),
     cameraPosition: glMatrix.vec3.fromValues(2, 0, 0),
-    renderMode: "3D",
-    gridCellsPerWidth: 20.0,
+    pixelsPerCell: 70.0,
     gridOffsetX: 0.0,
     gridOffsetY: 0.0,
-    borderSize: 0.05,
-    borderColour: glMatrix.vec3.fromValues(0, 0, 0),
+    borderSize: 0.02,
+    borderColour: colour_rgb(0, 0, 0),
 };
 
 export function saveStartState() {
@@ -58,6 +57,7 @@ export function resetToStart() {
     reactiveState.cellGridHeight = sharedState.startCellGridHeight;
 }
 
+// @Temp
 sharedState.cells[2] =
     sharedState.cells[10] =
     sharedState.cells[12] =
