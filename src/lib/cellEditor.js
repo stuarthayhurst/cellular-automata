@@ -76,13 +76,13 @@ export function setUpCellEditor(canvas) {
     // Stop Drawing
     document.addEventListener("mouseup", () => {
         drawStroke = false;
-        if (drawStrokeChangedCells.size > 0) {
-            reactiveState.historyStack.push({
-                cells: drawStrokeChangedCells,
-                value: drawStrokeValue,
-            });
-            reactiveState.redoStack = [];
-        }
+        if (drawStrokeChangedCells.size === 0 || !reactiveState.atStart) return;
+
+        reactiveState.historyStack.push({
+            cells: drawStrokeChangedCells,
+            value: drawStrokeValue,
+        });
+        reactiveState.redoStack = [];
         drawStrokeChangedCells = new Set([]);
     });
 
