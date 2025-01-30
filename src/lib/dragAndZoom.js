@@ -29,6 +29,13 @@ let cameraDistance = 2.0;
  * @returns {void}
  */
 export function setUpDragAndZoom(canvas) {
+    const gridWidth = () =>
+        reactiveState.cellGridWidth * sharedState.pixelsPerCell;
+    const gridHeight = () =>
+        reactiveState.cellGridHeight * sharedState.pixelsPerCell;
+    sharedState.gridOffsetX = canvas.width / 2 - gridWidth() / 2;
+    sharedState.gridOffsetY = canvas.height / 2 - gridHeight() / 2;
+
     /*
         Drag
      */

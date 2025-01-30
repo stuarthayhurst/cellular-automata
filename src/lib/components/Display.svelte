@@ -22,12 +22,12 @@
             return;
         }
 
+        updateCanvasResolution();
+        onresize = () => updateCanvasResolution();
+
         startRenderer(context);
         setUpDragAndZoom(canvas);
         setUpCellEditor(canvas);
-
-        updateCanvasResolution();
-        onresize = () => updateCanvasResolution();
     });
 </script>
 
