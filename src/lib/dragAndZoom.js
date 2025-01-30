@@ -41,7 +41,7 @@ export function setUpDragAndZoom(canvas) {
         // Stores the initial mouse position and camera angles for reference
         dragRefMouseX = mouseEvent.screenX;
         dragRefMouseY = mouseEvent.screenY;
-        if (reactiveState.renderMode === "3D") {
+        if (reactiveState.interfaceMode === "3D View") {
             dragRefTheta = theta;
             dragRefPhi = phi;
         } else {
@@ -65,7 +65,7 @@ export function setUpDragAndZoom(canvas) {
      * @param {Number} deltaY
      * @returns {void}
      */
-    const onmousemove_3D = (mouseScreenY, deltaX, deltaY) => {
+    const onmousemove_3d_view = (mouseScreenY, deltaX, deltaY) => {
         const deltaYMin = -dragRefPhi / dragSensitivity;
         const deltaYMax = (phiMax - dragRefPhi) / dragSensitivity;
 
@@ -89,7 +89,7 @@ export function setUpDragAndZoom(canvas) {
      * @param {Number} deltaY
      * @returns {void}
      */
-    const onmousemove_2D = (deltaX, deltaY) => {
+    const onmousemove_editor = (deltaX, deltaY) => {
         sharedState.gridOffsetX = dragRefGridOffsetX - deltaX;
         sharedState.gridOffsetY = dragRefGridOffsetY + deltaY;
     };
@@ -100,10 +100,10 @@ export function setUpDragAndZoom(canvas) {
         const deltaX = dragRefMouseX - mouseEvent.screenX;
         const deltaY = dragRefMouseY - mouseEvent.screenY;
 
-        if (reactiveState.renderMode === "2D") {
-            onmousemove_2D(deltaX, deltaY);
+        if (reactiveState.interfaceMode === "Editor") {
+            onmousemove_editor(deltaX, deltaY);
         } else {
-            onmousemove_3D(mouseEvent.screenY, deltaX, deltaY);
+            onmousemove_3d_view(mouseEvent.screenY, deltaX, deltaY);
         }
     });
 
@@ -115,22 +115,22 @@ export function setUpDragAndZoom(canvas) {
      * @param {Number} wheel
      * @returns {void}
      */
-    const onwheel_2D = (wheel) => {
+    const onwheel_editor = (wheel) => {
         const change = wheel * -0.1;
 
         const pixels = sharedState.pixelsPerCell;
         const newPixels = sharedState.pixelsPerCell + change;
-        const Z = newPixels / pixels;
+        const zoomFactor = newPixels / pixels;
 
-        if (newPixels < 10) return;
+        if (newPixels < 10) return; // @Improve
 
         const centreX = canvas.width / 2;
         const centreY = canvas.height / 2;
 
         sharedState.gridOffsetX =
-            centreX - (centreX - sharedState.gridOffsetX) * Z;
+            centreX - (centreX - sharedState.gridOffsetX) * zoomFactor;
         sharedState.gridOffsetY =
-            centreY - (centreY - sharedState.gridOffsetY) * Z;
+            centreY - (centreY - sharedState.gridOffsetY) * zoomFactor;
 
         sharedState.pixelsPerCell = Math.max(10, newPixels);
     };
@@ -139,9 +139,9 @@ export function setUpDragAndZoom(canvas) {
      * @param {Number} wheel
      * @returns {void}
      */
-    const onwheel_3D = (wheel) => {
+    const onwheel_3d_view = (wheel) => {
         cameraDistance = Math.max(
-            minCameraDistance, // Ensures the zoom level does not go below minCameraDistance (0.1)
+            minCameraDistance,
             cameraDistance + wheel * zoomSpeed,
         );
         sharedState.cameraPosition = cameraPosition(theta, phi, cameraDistance);
@@ -150,10 +150,10 @@ export function setUpDragAndZoom(canvas) {
     document.addEventListener("wheel", (wheelEvent) => {
         if (wheelEvent.target !== canvas && !reactiveState.dragging) return;
 
-        if (reactiveState.renderMode === "2D") {
-            onwheel_2D(wheelEvent.deltaY);
+        if (reactiveState.interfaceMode === "Editor") {
+            onwheel_editor(wheelEvent.deltaY);
         } else {
-            onwheel_3D(wheelEvent.deltaY);
+            onwheel_3d_view(wheelEvent.deltaY);
         }
     });
 }

@@ -57,6 +57,7 @@ export function resetToStart() {
     reactiveState.cellGridHeight = sharedState.startCellGridHeight;
 }
 
+// @Temp
 sharedState.cells[2] =
     sharedState.cells[10] =
     sharedState.cells[12] =

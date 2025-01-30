@@ -65,7 +65,7 @@ export function setUpCellEditor(canvas) {
         if (
             mouseEvent.button !== primaryButton ||
             reactiveState.dragging ||
-            reactiveState.renderMode !== "2D"
+            reactiveState.interfaceMode !== "Editor"
         )
             return;
 

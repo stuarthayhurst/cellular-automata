@@ -12,7 +12,7 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
  * @typedef ReactiveState
  * @type {object}
  * @property {Boolean} paused
- * @property {"2D"|"3D"} renderMode
+ * @property {"Editor"|"3D View"} interfaceMode
  * @property {Number} simulationSpeed
  * @property {Boolean} atStart
  * @property {Number} cellGridWidth
@@ -24,7 +24,7 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
 /** @type {ReactiveState} */
 export const reactiveState = $state({
     paused: true,
-    renderMode: "3D",
+    interfaceMode: "3D View",
     simulationSpeed: 1,
     atStart: true,
     cellGridWidth: 10,

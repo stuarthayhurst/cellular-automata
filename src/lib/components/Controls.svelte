@@ -12,21 +12,25 @@
     <div id="left-controls" class="controls-section">
         <button
             class="square-btn btn-secondary"
-            title={reactiveState.renderMode === "3D" ? "Edit Cells" : "3D View"}
+            title={reactiveState.interfaceMode === "3D View"
+                ? "Edit Cells"
+                : "3D View"}
             onclick={() => {
-                reactiveState.renderMode =
-                    reactiveState.renderMode === "2D" ? "3D" : "2D";
+                reactiveState.interfaceMode =
+                    reactiveState.interfaceMode === "Editor"
+                        ? "3D View"
+                        : "Editor";
             }}
         >
             <Icon
-                icon={reactiveState.renderMode === "3D"
+                icon={reactiveState.interfaceMode === "3D View"
                     ? "fa-solid:pen"
                     : "fa-solid:cube"}
                 width="20"
                 height="20"
             />
         </button>
-        {#if reactiveState.renderMode === "2D"}
+        {#if reactiveState.interfaceMode === "Editor"}
             <button
                 class="square-btn btn-secondary"
                 title="Undo (CTRL+Z)"

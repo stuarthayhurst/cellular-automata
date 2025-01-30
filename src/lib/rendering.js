@@ -342,7 +342,7 @@ export function startRenderer(context) {
         const canvasWidth = context.canvas.width;
         const baseColour = sharedState.baseColour;
         const cellColour = sharedState.cellColour;
-        const renderMode = reactiveState.renderMode;
+        const interfaceMode = reactiveState.interfaceMode;
 
         const pixelsPerCell = sharedState.pixelsPerCell;
         const gridOffsetX = sharedState.gridOffsetX;
@@ -394,7 +394,7 @@ export function startRenderer(context) {
         //Reset the canvas
         resetCanvas(context, canvasHeight, canvasWidth);
 
-        if (renderMode === "3D") {
+        if (interfaceMode === "3D View") {
             drawMesh(
                 fieldOfView,
                 cameraPosition,
