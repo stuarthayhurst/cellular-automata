@@ -194,6 +194,14 @@ export function startRenderer(context) {
         gridProgram,
         "cellColour",
     );
+    const gridAliasBaseColourLocation = context.getUniformLocation(
+        gridProgram,
+        "aliasBaseColour",
+    );
+    const gridAliasCellColourLocation = context.getUniformLocation(
+        gridProgram,
+        "aliasCellColour",
+    );
     const gridBorderSizeLocation = context.getUniformLocation(
         gridProgram,
         "borderSize",
@@ -201,6 +209,14 @@ export function startRenderer(context) {
     const gridBorderColourLocation = context.getUniformLocation(
         gridProgram,
         "borderColour",
+    );
+    const gridBackgroundBorderColourLocation = context.getUniformLocation(
+        gridProgram,
+        "backgroundBorderColour",
+    );
+    const gridAliasBackgroundLocation = context.getUniformLocation(
+        gridProgram,
+        "aliasBackground",
     );
 
     //Setup the vertices for the grid
@@ -291,8 +307,12 @@ export function startRenderer(context) {
      * @param {Number} aspectRatio
      * @param {glMatrix.vec3} baseColour
      * @param {glMatrix.vec3} cellColour
+     * @param {glMatrix.vec3} aliasBaseColour
+     * @param {glMatrix.vec3} aliasCellColour
      * @param {Number} borderSize
      * @param {glMatrix.vec3} borderColour
+     * @param {glMatrix.vec3} backgroundBorderColour
+     * @param {Boolean} aliasBackground
      * @returns {void}
      */
     function drawGrid(
@@ -304,8 +324,12 @@ export function startRenderer(context) {
         aspectRatio,
         baseColour,
         cellColour,
+        aliasBaseColour,
+        aliasCellColour,
         borderSize,
         borderColour,
+        backgroundBorderColour,
+        aliasBackground,
     ) {
         //Use the grid shader and the vertex array object
         context.useProgram(gridProgram);
@@ -326,8 +350,15 @@ export function startRenderer(context) {
         context.uniform1f(aspectRatioLocation, aspectRatio);
         context.uniform3fv(gridBaseColourLocation, baseColour);
         context.uniform3fv(gridCellColourLocation, cellColour);
+        context.uniform3fv(gridAliasBaseColourLocation, aliasBaseColour);
+        context.uniform3fv(gridAliasCellColourLocation, aliasCellColour);
         context.uniform1f(gridBorderSizeLocation, borderSize);
         context.uniform3fv(gridBorderColourLocation, borderColour);
+        context.uniform3fv(
+            gridBackgroundBorderColourLocation,
+            backgroundBorderColour,
+        );
+        context.uniform1i(gridAliasBackgroundLocation, aliasBackground);
 
         context.bindBuffer(context.ARRAY_BUFFER, gridBuffer);
         context.drawArrays(context.TRIANGLES, 0, 6);
@@ -342,6 +373,8 @@ export function startRenderer(context) {
         const canvasWidth = context.canvas.width;
         const baseColour = sharedState.baseColour;
         const cellColour = sharedState.cellColour;
+        const aliasBaseColour = sharedState.aliasBaseColour;
+        const aliasCellColour = sharedState.aliasCellColour;
         const interfaceMode = reactiveState.interfaceMode;
 
         const pixelsPerCell = sharedState.pixelsPerCell;
@@ -349,6 +382,8 @@ export function startRenderer(context) {
         const gridOffsetY = sharedState.gridOffsetY;
         const borderSize = sharedState.borderSize;
         const borderColour = sharedState.borderColour;
+        const backgroundBorderColour = sharedState.backgroundBorderColour;
+        const aliasBackground = sharedState.aliasBackground;
 
         //Fetch simulation data
         const cellWidth = reactiveState.cellGridWidth;
@@ -413,8 +448,12 @@ export function startRenderer(context) {
                 canvasWidth / canvasHeight,
                 baseColour,
                 cellColour,
+                aliasBaseColour,
+                aliasCellColour,
                 borderSize,
                 borderColour,
+                backgroundBorderColour,
+                aliasBackground,
             );
         }
         window.requestAnimationFrame(drawFrame);
