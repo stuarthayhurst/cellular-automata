@@ -214,6 +214,10 @@ export function startRenderer(context) {
         gridProgram,
         "backgroundBorderColour",
     );
+    const gridAliasBackgroundLocation = context.getUniformLocation(
+        gridProgram,
+        "aliasBackground",
+    );
 
     //Setup the vertices for the grid
     const gridData = new Float32Array([
@@ -308,6 +312,7 @@ export function startRenderer(context) {
      * @param {Number} borderSize
      * @param {glMatrix.vec3} borderColour
      * @param {glMatrix.vec3} backgroundBorderColour
+     * @param {Boolean} aliasBackground
      * @returns {void}
      */
     function drawGrid(
@@ -324,6 +329,7 @@ export function startRenderer(context) {
         borderSize,
         borderColour,
         backgroundBorderColour,
+        aliasBackground,
     ) {
         //Use the grid shader and the vertex array object
         context.useProgram(gridProgram);
@@ -352,6 +358,7 @@ export function startRenderer(context) {
             gridBackgroundBorderColourLocation,
             backgroundBorderColour,
         );
+        context.uniform1i(gridAliasBackgroundLocation, aliasBackground);
 
         context.bindBuffer(context.ARRAY_BUFFER, gridBuffer);
         context.drawArrays(context.TRIANGLES, 0, 6);
@@ -376,6 +383,7 @@ export function startRenderer(context) {
         const borderSize = sharedState.borderSize;
         const borderColour = sharedState.borderColour;
         const backgroundBorderColour = sharedState.backgroundBorderColour;
+        const aliasBackground = sharedState.aliasBackground;
 
         //Fetch simulation data
         const cellWidth = reactiveState.cellGridWidth;
@@ -445,6 +453,7 @@ export function startRenderer(context) {
                 borderSize,
                 borderColour,
                 backgroundBorderColour,
+                aliasBackground,
             );
         }
         window.requestAnimationFrame(drawFrame);

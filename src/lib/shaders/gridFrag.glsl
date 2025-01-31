@@ -18,6 +18,7 @@ uniform vec3 aliasCellColour;
 uniform float borderSize;
 uniform vec3 borderColour;
 uniform vec3 backgroundBorderColour;
+uniform bool aliasBackground;
 
 in vec2 position;
 out vec4 outColour;
@@ -84,15 +85,12 @@ void main() {
         isBorder = true;
     }
 
-    //TODO: Allow configuring
-    bool tileBackground = true;
-
     //Detect canvas background
     bool isBackground = false;
     if (x < -borderSize || y < -borderSize ||
         x > float(gridCellWidth) + borderSize || y > float(gridCellHeight) + borderSize) {
         //Use background grid colour and return if we're not aliasing
-        if (!tileBackground) {
+        if (!aliasBackground) {
           if (isBorder) {
               outColour = vec4(backgroundBorderColour, 1.0);
           }
