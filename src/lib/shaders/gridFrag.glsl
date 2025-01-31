@@ -12,9 +12,12 @@ uniform usampler2D gridCellDataTexture;
 
 uniform vec3 baseColour;
 uniform vec3 cellColour;
+uniform vec3 aliasBaseColour;
+uniform vec3 aliasCellColour;
 
 uniform float borderSize;
 uniform vec3 borderColour;
+uniform vec3 backgroundBorderColour;
 
 in vec2 position;
 out vec4 outColour;
@@ -91,8 +94,7 @@ void main() {
         //Use background grid colour and return if we're not aliasing
         if (!tileBackground) {
           if (isBorder) {
-              //TODO: Allow configuring
-              outColour = vec4(0.3, 0.3, 0.3, 1.0);
+              outColour = vec4(backgroundBorderColour, 1.0);
           }
           return;
         }
@@ -125,15 +127,13 @@ void main() {
     uint alive = fetchDataBit(index, gridCellDataTexture);
     if (alive > uint(0)) {
         if (isBackground) {
-            //TODO: Allow configuring
-            outColour = vec4(0.5, 0.5, 0.5, 1.0);
+            outColour = vec4(aliasCellColour, 1.0);
         } else {
             outColour = vec4(cellColour, 1.0);
         }
     } else {
         if (isBackground) {
-            //TODO: Allow configuring
-            outColour = vec4(0.4, 0.4, 0.4, 1.0);
+            outColour = vec4(aliasBaseColour, 1.0);
         } else {
             outColour = vec4(baseColour, 1.0);
         }

@@ -19,12 +19,15 @@ don't need to be 'notified' of its value changing.
  * @property {Number} maxCells
  * @property {glMatrix.vec3} baseColour
  * @property {glMatrix.vec3} cellColour
+ * @property {glMatrix.vec3} aliasBaseColour
+ * @property {glMatrix.vec3} aliasCellColour
  * @property {glMatrix.vec3} cameraPosition
  * @property {Number} pixelsPerCell
  * @property {Number} gridOffsetX - A value of -1 indicates 1 pixel is offscreen, to the left
  * @property {Number} gridOffsetY - A value of -1 indicates 1 pixel is offscreen, to the bottom
  * @property {Number} borderSize - 2D mode
  * @property {glMatrix.vec3} borderColour - 2D mode
+ * @property {glMatrix.vec3} backgroundBorderColour - 2D mode
  */
 /** @type {SharedState} */
 export const sharedState = {
@@ -35,12 +38,15 @@ export const sharedState = {
     maxCells: 0,
     baseColour: colour_rgb(12, 56, 102),
     cellColour: colour_rgb(30, 144, 255),
+    aliasBaseColour: colour_rgb(102, 102, 102),
+    aliasCellColour: colour_rgb(128, 128, 128),
     cameraPosition: glMatrix.vec3.fromValues(2, 0, 0),
     pixelsPerCell: 70.0,
     gridOffsetX: 0.0,
     gridOffsetY: 0.0,
     borderSize: 0.02,
     borderColour: colour_rgb(0, 0, 0),
+    backgroundBorderColour: colour_rgb(77, 77, 77),
 };
 
 export function saveStartState() {
