@@ -77,32 +77,10 @@ void main() {
     int gridIndexX = int(floor(x));
     int gridIndexY = int(floor(y));
 
-    //Detect grid lines
-    bool isBorder = false;
-    if (cellProgressX < borderSize || cellProgressY < borderSize ||
-        cellProgressX > (1.0 - borderSize) || cellProgressY > (1.0 - borderSize)) {
-        outColour = vec4(borderColour, 1.0);
-        isBorder = true;
-    }
-
     //Detect canvas background
     bool isBackground = false;
-    if (x < -borderSize || y < -borderSize ||
-        x > float(gridCellWidth) + borderSize || y > float(gridCellHeight) + borderSize) {
-        //Use background grid colour and return if we're not aliasing
-        if (!aliasBackground) {
-          if (isBorder) {
-              outColour = vec4(backgroundBorderColour, 1.0);
-          }
-          return;
-        }
-
+    if (x < 0.0 || y < 0.0 || x > float(gridCellWidth) || y > float(gridCellHeight)) {
         isBackground = true;
-    }
-
-    //Return if we already have the colour
-    if (isBorder) {
-        return;
     }
 
     //Alias tiles, handle negative indices
@@ -135,5 +113,31 @@ void main() {
         } else {
             outColour = vec4(baseColour, 1.0);
         }
+    }
+
+    //Detect grid lines
+    float borderDistanceX = min(1.0 - cellProgressX, cellProgressX);
+    float borderDistanceY = min(1.0 - cellProgressY, cellProgressY);
+    float borderDistance = min(borderDistanceX, borderDistanceY);
+
+    //Convert borderDistance into a coefficient for the border component
+    float overCorrection = 2.0;
+    if (borderDistance > borderSize * overCorrection) {
+        borderDistance = 1.0;
+    } else {
+        borderDistance /= (borderSize * overCorrection);
+        if (borderDistance > 0.6) {
+            borderDistance = 1.0;
+        }
+    }
+
+    if (isBackground && !aliasBackground) {
+        //Render grid lines over the canvas background
+        outColour = vec4(backgroundBorderColour, 1.0) * (1.0 - borderDistance);
+    } else {
+        //Render grid lines over existing outColour
+        vec4 colourComponent = outColour * borderDistance;
+        vec4 borderComponent = vec4(borderColour, 1.0) * (1.0 - borderDistance);
+        outColour = colourComponent + borderComponent;
     }
 }
