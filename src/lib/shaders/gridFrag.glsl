@@ -19,6 +19,7 @@ uniform float borderSize;
 uniform vec3 borderColour;
 uniform vec3 backgroundBorderColour;
 uniform bool aliasBackground;
+uniform int widthPixels;
 
 in vec2 position;
 out vec4 outColour;
@@ -77,34 +78,6 @@ void main() {
     int gridIndexX = int(floor(x));
     int gridIndexY = int(floor(y));
 
-    //Detect grid lines
-    bool isBorder = false;
-    if (cellProgressX < borderSize || cellProgressY < borderSize ||
-        cellProgressX > (1.0 - borderSize) || cellProgressY > (1.0 - borderSize)) {
-        outColour = vec4(borderColour, 1.0);
-        isBorder = true;
-    }
-
-    //Detect canvas background
-    bool isBackground = false;
-    if (x < -borderSize || y < -borderSize ||
-        x > float(gridCellWidth) + borderSize || y > float(gridCellHeight) + borderSize) {
-        //Use background grid colour and return if we're not aliasing
-        if (!aliasBackground) {
-          if (isBorder) {
-              outColour = vec4(backgroundBorderColour, 1.0);
-          }
-          return;
-        }
-
-        isBackground = true;
-    }
-
-    //Return if we already have the colour
-    if (isBorder) {
-        return;
-    }
-
     //Alias tiles, handle negative indices
     if (gridIndexX < 0) {
         gridIndexX = (-gridIndexX - 1) % gridCellWidth;
@@ -119,6 +92,9 @@ void main() {
     } else {
         gridIndexY %= gridCellHeight;
     }
+
+    //Detect canvas background
+    bool isBackground = x < 0.0 || y < 0.0 || x > float(gridCellWidth) || y > float(gridCellHeight);
 
     //Convert coordinate into an index, look up in the data texture
     int index = gridIndexX + (((gridCellHeight - 1) - gridIndexY) * gridCellWidth);
@@ -135,5 +111,35 @@ void main() {
         } else {
             outColour = vec4(baseColour, 1.0);
         }
+    }
+
+    //Detect grid lines
+    float borderDistanceX = min(1.0 - cellProgressX, cellProgressX);
+    float borderDistanceY = min(1.0 - cellProgressY, cellProgressY);
+    float borderDistance = min(borderDistanceX, borderDistanceY);
+
+    //Smooth grid lines over pixels
+    float pixelSize = gridCellsPerWidth / float(widthPixels);
+    float borderCoeff = 0.0;
+    if (borderSize >= borderDistance + pixelSize) {
+        borderCoeff = 1.0;
+    } else {
+        float distanceOut = borderDistance - borderSize;
+        if (distanceOut > pixelSize) {
+          borderCoeff = 0.0;
+        } else {
+          borderCoeff = (pixelSize - distanceOut) / pixelSize;
+        }
+    }
+
+    //Combine grid lines, grid display and background modes
+    if (isBackground && !aliasBackground) {
+        //Render grid lines over the canvas background
+        outColour = vec4(backgroundBorderColour, 1.0) * borderCoeff;
+    } else {
+        //Render grid lines over existing outColour
+        vec4 colourComponent = outColour * (1.0 - borderCoeff);
+        vec4 borderComponent = vec4(borderColour, 1.0) * borderCoeff;
+        outColour = colourComponent + borderComponent;
     }
 }

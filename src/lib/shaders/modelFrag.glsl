@@ -18,8 +18,8 @@ float specularStrength = 0.1;
 void main() {
     //Check if the cell is active, return early if it is
     if (alive > uint(0)) {
-      outColour = vec4(cellColour, 1.0);
-      return;
+        outColour = vec4(cellColour, 1.0);
+        return;
     }
 
     vec3 lightPos = cameraPos;
