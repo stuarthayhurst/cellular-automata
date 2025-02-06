@@ -218,6 +218,10 @@ export function startRenderer(context) {
         gridProgram,
         "aliasBackground",
     );
+    const gridWidthPixelsLocation = context.getUniformLocation(
+        gridProgram,
+        "widthPixels",
+    );
 
     //Setup the vertices for the grid
     const gridData = new Float32Array([
@@ -313,6 +317,7 @@ export function startRenderer(context) {
      * @param {glMatrix.vec3} borderColour
      * @param {glMatrix.vec3} backgroundBorderColour
      * @param {Boolean} aliasBackground
+     * @param {Number} canvasWidth
      * @returns {void}
      */
     function drawGrid(
@@ -330,6 +335,7 @@ export function startRenderer(context) {
         borderColour,
         backgroundBorderColour,
         aliasBackground,
+        canvasWidth,
     ) {
         //Use the grid shader and the vertex array object
         context.useProgram(gridProgram);
@@ -359,6 +365,7 @@ export function startRenderer(context) {
             backgroundBorderColour,
         );
         context.uniform1i(gridAliasBackgroundLocation, aliasBackground);
+        context.uniform1i(gridWidthPixelsLocation, canvasWidth);
 
         context.bindBuffer(context.ARRAY_BUFFER, gridBuffer);
         context.drawArrays(context.TRIANGLES, 0, 6);
@@ -459,6 +466,7 @@ export function startRenderer(context) {
                 borderColour,
                 backgroundBorderColour,
                 aliasBackground,
+                canvasWidth,
             );
         }
         window.requestAnimationFrame(drawFrame);

@@ -19,6 +19,7 @@ uniform float borderSize;
 uniform vec3 borderColour;
 uniform vec3 backgroundBorderColour;
 uniform bool aliasBackground;
+uniform int widthPixels;
 
 in vec2 position;
 out vec4 outColour;
@@ -120,24 +121,27 @@ void main() {
     float borderDistanceY = min(1.0 - cellProgressY, cellProgressY);
     float borderDistance = min(borderDistanceX, borderDistanceY);
 
-    //Convert borderDistance into a coefficient for the border component
-    float overCorrection = 2.0;
-    if (borderDistance > borderSize * overCorrection) {
-        borderDistance = 1.0;
+    //Smooth grid lines over pixels
+    float pixelSize = 1.0 / (float(widthPixels) / gridCellsPerWidth);
+    float borderCoeff = 0.0;
+    if (borderSize >= borderDistance) {
+        borderCoeff = 1.0;
     } else {
-        borderDistance /= (borderSize * overCorrection);
-        if (borderDistance > 0.6) {
-            borderDistance = 1.0;
+        float distanceOut = borderDistance - borderSize;
+        if (distanceOut > pixelSize) {
+          borderCoeff = 0.0;
+        } else {
+          borderCoeff = (pixelSize - distanceOut) / pixelSize;
         }
     }
 
     if (isBackground && !aliasBackground) {
         //Render grid lines over the canvas background
-        outColour = vec4(backgroundBorderColour, 1.0) * (1.0 - borderDistance);
+        outColour = vec4(backgroundBorderColour, 1.0) * borderCoeff;
     } else {
         //Render grid lines over existing outColour
-        vec4 colourComponent = outColour * borderDistance;
-        vec4 borderComponent = vec4(borderColour, 1.0) * (1.0 - borderDistance);
+        vec4 colourComponent = outColour * (1.0 - borderCoeff);
+        vec4 borderComponent = vec4(borderColour, 1.0) * borderCoeff;
         outColour = colourComponent + borderComponent;
     }
 }
