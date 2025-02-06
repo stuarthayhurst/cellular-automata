@@ -78,12 +78,6 @@ void main() {
     int gridIndexX = int(floor(x));
     int gridIndexY = int(floor(y));
 
-    //Detect canvas background
-    bool isBackground = false;
-    if (x < 0.0 || y < 0.0 || x > float(gridCellWidth) || y > float(gridCellHeight)) {
-        isBackground = true;
-    }
-
     //Alias tiles, handle negative indices
     if (gridIndexX < 0) {
         gridIndexX = (-gridIndexX - 1) % gridCellWidth;
@@ -98,6 +92,9 @@ void main() {
     } else {
         gridIndexY %= gridCellHeight;
     }
+
+    //Detect canvas background
+    bool isBackground = x < 0.0 || y < 0.0 || x > float(gridCellWidth) || y > float(gridCellHeight);
 
     //Convert coordinate into an index, look up in the data texture
     int index = gridIndexX + (((gridCellHeight - 1) - gridIndexY) * gridCellWidth);
@@ -122,7 +119,7 @@ void main() {
     float borderDistance = min(borderDistanceX, borderDistanceY);
 
     //Smooth grid lines over pixels
-    float pixelSize = 1.0 / (float(widthPixels) / gridCellsPerWidth);
+    float pixelSize = gridCellsPerWidth / float(widthPixels);
     float borderCoeff = 0.0;
     if (borderSize >= borderDistance + pixelSize) {
         borderCoeff = 1.0;
@@ -135,6 +132,7 @@ void main() {
         }
     }
 
+    //Combine grid lines, grid display and background modes
     if (isBackground && !aliasBackground) {
         //Render grid lines over the canvas background
         outColour = vec4(backgroundBorderColour, 1.0) * borderCoeff;
