@@ -124,7 +124,7 @@ void main() {
     //Smooth grid lines over pixels
     float pixelSize = 1.0 / (float(widthPixels) / gridCellsPerWidth);
     float borderCoeff = 0.0;
-    if (borderSize >= borderDistance) {
+    if (borderSize >= borderDistance + pixelSize) {
         borderCoeff = 1.0;
     } else {
         float distanceOut = borderDistance - borderSize;

@@ -387,15 +387,10 @@ export function startRenderer(context) {
         const pixelsPerCell = sharedState.pixelsPerCell;
         const gridOffsetX = sharedState.gridOffsetX;
         const gridOffsetY = sharedState.gridOffsetY;
+        const borderSize = sharedState.borderSize;
         const borderColour = sharedState.borderColour;
         const backgroundBorderColour = sharedState.backgroundBorderColour;
         const aliasBackground = sharedState.aliasBackground;
-
-        //Round border size up to at least 1 pixel
-        let borderSize = sharedState.borderSize;
-        if (borderSize * pixelsPerCell < 1.0) {
-            borderSize = 1.0 / pixelsPerCell;
-        }
 
         //Fetch simulation data
         const cellWidth = reactiveState.cellGridWidth;
