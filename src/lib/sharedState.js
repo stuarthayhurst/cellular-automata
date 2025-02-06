@@ -45,7 +45,7 @@ export const sharedState = {
     pixelsPerCell: 70.0,
     gridOffsetX: 0.0,
     gridOffsetY: 0.0,
-    borderSize: 0.02,
+    borderSize: 0.015,
     borderColour: colour_rgb(0, 0, 0),
     backgroundBorderColour: colour_rgb(77, 77, 77),
     aliasBackground: true,
