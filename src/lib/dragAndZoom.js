@@ -1,7 +1,7 @@
 import * as glMatrix from "gl-matrix";
 import { sharedState } from "./sharedState.js";
 import { reactiveState } from "./reactiveState.svelte.js";
-import { absMod } from "./tools.js";
+import { absMod, clientToCanvasSpace } from "./tools.js";
 
 const secondaryButton = 2;
 
@@ -120,24 +120,23 @@ export function setUpDragAndZoom(canvas) {
 
     /**
      * @param {Number} wheel
+     * @param {Number} mouseX
+     * @param {Number} mouseY
      * @returns {void}
      */
-    const onwheel_editor = (wheel) => {
+    const onwheel_editor = (wheel, mouseX, mouseY) => {
         const change = wheel * -0.1;
 
         const pixels = sharedState.pixelsPerCell;
         const newPixels = sharedState.pixelsPerCell + change;
         const zoomFactor = newPixels / pixels;
 
-        if (newPixels < 10) return; // @Improve
-
-        const centreX = canvas.width / 2;
-        const centreY = canvas.height / 2;
+        if (newPixels < 0) return; // @Improve
 
         const newGridOffsetX =
-            centreX - (centreX - sharedState.gridOffsetX) * zoomFactor;
+            mouseX - (mouseX - sharedState.gridOffsetX) * zoomFactor;
         const newGridOffsetY =
-            centreY - (centreY - sharedState.gridOffsetY) * zoomFactor;
+            mouseY - (mouseY - sharedState.gridOffsetY) * zoomFactor;
 
         dragRefGridOffsetX += newGridOffsetX - sharedState.gridOffsetX;
         dragRefGridOffsetY += newGridOffsetY - sharedState.gridOffsetY;
@@ -164,7 +163,14 @@ export function setUpDragAndZoom(canvas) {
         if (wheelEvent.target !== canvas && !reactiveState.dragging) return;
 
         if (reactiveState.interfaceMode === "Editor") {
-            onwheel_editor(wheelEvent.deltaY);
+            onwheel_editor(
+                wheelEvent.deltaY,
+                ...clientToCanvasSpace(
+                    canvas,
+                    wheelEvent.clientX,
+                    wheelEvent.clientY,
+                ),
+            );
         } else {
             onwheel_3d_view(wheelEvent.deltaY);
         }

@@ -1,4 +1,37 @@
 import * as glMatrix from "gl-matrix";
+import { sharedState } from "./sharedState.js";
+import { reactiveState } from "./reactiveState.svelte.js";
+
+/**
+ * Convert canvas coordinates into grid coordinates
+ * No validation is done, this just convert values
+ * @param {Number} canvasX
+ * @param {Number} canvasY
+ * @returns {[Number, Number]}
+ */
+export const canvasToGridCoord = (canvasX, canvasY) => {
+    const gridX = canvasX - sharedState.gridOffsetX;
+    const gridY = canvasY - sharedState.gridOffsetY;
+
+    const gridHeight = reactiveState.cellGridHeight * sharedState.pixelsPerCell;
+
+    return [
+        Math.floor(gridX / sharedState.pixelsPerCell),
+        Math.floor((gridHeight - gridY) / sharedState.pixelsPerCell),
+    ];
+};
+
+/**
+ * Convert client position to canvas space.
+ * @param {HTMLCanvasElement} canvas
+ * @param {Number} clientX
+ * @param {Number} clientY
+ * @returns {[Number, Number]}
+ */
+export const clientToCanvasSpace = (canvas, clientX, clientY) => {
+    const rect = canvas.getBoundingClientRect();
+    return [clientX - rect.x, rect.height - (clientY - rect.y)];
+};
 
 /**
  * Mod a value, looping it around correctly when it becomes negative.

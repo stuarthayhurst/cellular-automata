@@ -24,7 +24,7 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
 /** @type {ReactiveState} */
 export const reactiveState = $state({
     paused: true,
-    interfaceMode: "3D View",
+    interfaceMode: "Editor",
     simulationSpeed: 1,
     atStart: true,
     cellGridWidth: 10,

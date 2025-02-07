@@ -1,6 +1,6 @@
 import { sharedState } from "./sharedState.js";
 import { reactiveState } from "./reactiveState.svelte.js";
-import { posToIndex } from "./tools.js";
+import { canvasToGridCoord, clientToCanvasSpace, posToIndex } from "./tools.js";
 
 const primaryButton = 0;
 
@@ -165,34 +165,3 @@ export function editorRedo() {
  */
 export const mayRedo = (redoStackLength, atStart) =>
     redoStackLength > 0 && atStart;
-
-/**
- * Convert canvas coordinates into grid coordinates
- * No validation is done, this just convert values
- * @param {Number} canvasX
- * @param {Number} canvasY
- * @returns {[Number, Number]}
- */
-const canvasToGridCoord = (canvasX, canvasY) => {
-    const gridX = canvasX - sharedState.gridOffsetX;
-    const gridY = canvasY - sharedState.gridOffsetY;
-
-    const gridHeight = reactiveState.cellGridHeight * sharedState.pixelsPerCell;
-
-    return [
-        Math.floor(gridX / sharedState.pixelsPerCell),
-        Math.floor((gridHeight - gridY) / sharedState.pixelsPerCell),
-    ];
-};
-
-/**
- * Convert client position to canvas space.
- * @param {HTMLCanvasElement} canvas
- * @param {Number} clientX
- * @param {Number} clientY
- * @returns {[Number, Number]}
- */
-const clientToCanvasSpace = (canvas, clientX, clientY) => {
-    const rect = canvas.getBoundingClientRect();
-    return [clientX - rect.x, rect.height - (clientY - rect.y)];
-};
