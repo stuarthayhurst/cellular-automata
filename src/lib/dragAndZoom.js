@@ -128,10 +128,8 @@ export function setUpDragAndZoom(canvas) {
         const change = wheel * -0.1;
 
         const pixels = sharedState.pixelsPerCell;
-        const newPixels = sharedState.pixelsPerCell + change;
+        const newPixels = Math.max(10, sharedState.pixelsPerCell + change);
         const zoomFactor = newPixels / pixels;
-
-        if (newPixels < 0) return; // @Improve
 
         const newGridOffsetX =
             mouseX - (mouseX - sharedState.gridOffsetX) * zoomFactor;
@@ -144,7 +142,7 @@ export function setUpDragAndZoom(canvas) {
         sharedState.gridOffsetX = newGridOffsetX;
         sharedState.gridOffsetY = newGridOffsetY;
 
-        sharedState.pixelsPerCell = Math.max(10, newPixels);
+        sharedState.pixelsPerCell = newPixels;
     };
 
     /**

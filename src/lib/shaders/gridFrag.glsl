@@ -68,13 +68,22 @@ void main() {
     x *= gridCellsPerWidth;
     y *= gridCellsPerWidth / aspectRatio;
 
-    //Apply the grid offset
-    x -= gridOffsetX;
-    y -= gridOffsetY;
+    //Split the grid offset into floating point and integer components
+    float iGridOffsetX = 0.0;
+    float iGridOffsetY = 0.0;
+    float fGridOffsetX = modf(gridOffsetX, iGridOffsetX);
+    float fGridOffsetY = modf(gridOffsetY, iGridOffsetY);
 
     //Get progress into each cell and its coordinate
+    //Only apply the floating point offset to reduce size and minmise precision loss
+    x -= fGridOffsetX;
+    y -= fGridOffsetY;
     float cellProgressX = x - floor(x);
     float cellProgressY = y - floor(y);
+
+    //Apply the 'integer' grid offset for indexing and background testing
+    x -= iGridOffsetX;
+    y -= iGridOffsetY;
     int gridIndexX = int(floor(x));
     int gridIndexY = int(floor(y));
 
@@ -93,26 +102,6 @@ void main() {
         gridIndexY %= gridCellHeight;
     }
 
-    //Detect canvas background
-    bool isBackground = x < 0.0 || y < 0.0 || x > float(gridCellWidth) || y > float(gridCellHeight);
-
-    //Convert coordinate into an index, look up in the data texture
-    int index = gridIndexX + (((gridCellHeight - 1) - gridIndexY) * gridCellWidth);
-    uint alive = fetchDataBit(index, gridCellDataTexture);
-    if (alive > uint(0)) {
-        if (isBackground) {
-            outColour = vec4(aliasCellColour, 1.0);
-        } else {
-            outColour = vec4(cellColour, 1.0);
-        }
-    } else {
-        if (isBackground) {
-            outColour = vec4(aliasBaseColour, 1.0);
-        } else {
-            outColour = vec4(baseColour, 1.0);
-        }
-    }
-
     //Detect grid lines
     float borderDistanceX = min(1.0 - cellProgressX, cellProgressX);
     float borderDistanceY = min(1.0 - cellProgressY, cellProgressY);
@@ -129,6 +118,28 @@ void main() {
           borderCoeff = 0.0;
         } else {
           borderCoeff = (pixelSize - distanceOut) / pixelSize;
+        }
+    }
+
+    //Detect canvas background
+    bool isBackground = x < -borderSize || y < -borderSize ||
+                        x > float(gridCellWidth) + borderSize ||
+                        y > float(gridCellHeight) + borderSize;
+
+    //Convert coordinate into an index, look up in the data texture
+    int index = gridIndexX + (((gridCellHeight - 1) - gridIndexY) * gridCellWidth);
+    uint alive = fetchDataBit(index, gridCellDataTexture);
+    if (alive > uint(0)) {
+        if (isBackground) {
+            outColour = vec4(aliasCellColour, 1.0);
+        } else {
+            outColour = vec4(cellColour, 1.0);
+        }
+    } else {
+        if (isBackground) {
+            outColour = vec4(aliasBaseColour, 1.0);
+        } else {
+            outColour = vec4(baseColour, 1.0);
         }
     }
 
