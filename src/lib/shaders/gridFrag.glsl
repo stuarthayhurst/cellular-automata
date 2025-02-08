@@ -102,26 +102,6 @@ void main() {
         gridIndexY %= gridCellHeight;
     }
 
-    //Detect canvas background
-    bool isBackground = x < 0.0 || y < 0.0 || x > float(gridCellWidth) || y > float(gridCellHeight);
-
-    //Convert coordinate into an index, look up in the data texture
-    int index = gridIndexX + (((gridCellHeight - 1) - gridIndexY) * gridCellWidth);
-    uint alive = fetchDataBit(index, gridCellDataTexture);
-    if (alive > uint(0)) {
-        if (isBackground) {
-            outColour = vec4(aliasCellColour, 1.0);
-        } else {
-            outColour = vec4(cellColour, 1.0);
-        }
-    } else {
-        if (isBackground) {
-            outColour = vec4(aliasBaseColour, 1.0);
-        } else {
-            outColour = vec4(baseColour, 1.0);
-        }
-    }
-
     //Detect grid lines
     float borderDistanceX = min(1.0 - cellProgressX, cellProgressX);
     float borderDistanceY = min(1.0 - cellProgressY, cellProgressY);
@@ -138,6 +118,28 @@ void main() {
           borderCoeff = 0.0;
         } else {
           borderCoeff = (pixelSize - distanceOut) / pixelSize;
+        }
+    }
+
+    //Detect canvas background
+    bool isBackground = x < -borderSize || y < -borderSize ||
+                        x > float(gridCellWidth) + borderSize ||
+                        y > float(gridCellHeight) + borderSize;
+
+    //Convert coordinate into an index, look up in the data texture
+    int index = gridIndexX + (((gridCellHeight - 1) - gridIndexY) * gridCellWidth);
+    uint alive = fetchDataBit(index, gridCellDataTexture);
+    if (alive > uint(0)) {
+        if (isBackground) {
+            outColour = vec4(aliasCellColour, 1.0);
+        } else {
+            outColour = vec4(cellColour, 1.0);
+        }
+    } else {
+        if (isBackground) {
+            outColour = vec4(aliasBaseColour, 1.0);
+        } else {
+            outColour = vec4(baseColour, 1.0);
         }
     }
 
