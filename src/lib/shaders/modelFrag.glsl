@@ -13,7 +13,7 @@ uniform vec3 cellColour;
 
 float ambientStrength = 0.3;
 float diffuseStrength = 0.6;
-float specularStrength = 0.1;
+float specularStrength = 0.125;
 
 void main() {
     //Check if the cell is active, return early if it is
@@ -35,6 +35,7 @@ void main() {
     vec3 reflectDir = reflect(-lightDir, normNormal);
     float specular = pow(max(dot(cameraPos, reflectDir), 0.0), 2.0);
     specular *= specularStrength;
+    specular /= distance(fragPos, lightPos);
 
     //Combine results
     outColour = vec4((ambientStrength + diffuse + specular) * baseColour, 1.0);
