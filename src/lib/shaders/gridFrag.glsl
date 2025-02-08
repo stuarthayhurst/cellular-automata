@@ -68,13 +68,22 @@ void main() {
     x *= gridCellsPerWidth;
     y *= gridCellsPerWidth / aspectRatio;
 
-    //Apply the grid offset
-    x -= gridOffsetX;
-    y -= gridOffsetY;
+    //Split the grid offset into floating point and integer components
+    float iGridOffsetX = 0.0;
+    float iGridOffsetY = 0.0;
+    float fGridOffsetX = modf(gridOffsetX, iGridOffsetX);
+    float fGridOffsetY = modf(gridOffsetY, iGridOffsetY);
 
     //Get progress into each cell and its coordinate
+    //Only apply the floating point offset to reduce size and minmise precision loss
+    x -= fGridOffsetX;
+    y -= fGridOffsetY;
     float cellProgressX = x - floor(x);
     float cellProgressY = y - floor(y);
+
+    //Apply the 'integer' grid offset for indexing and background testing
+    x -= iGridOffsetX;
+    y -= iGridOffsetY;
     int gridIndexX = int(floor(x));
     int gridIndexY = int(floor(y));
 
