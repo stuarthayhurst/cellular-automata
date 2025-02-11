@@ -1,6 +1,7 @@
 import * as glMatrix from "gl-matrix";
 import { reactiveState } from "./reactiveState.svelte.js";
 import { colour_rgb } from "./tools.js";
+import { presets } from "./preset.js";
 
 /*
 `sharedState` contains state that needs to be shared between components but
@@ -12,6 +13,7 @@ don't need to be 'notified' of its value changing.
 /**
  * @typedef SharedState
  * @type {object}
+ * @property {Object} presets
  * @property {Uint8Array} cells
  * @property {Uint8Array} startCells
  * @property {Number} startCellGridWidth
@@ -32,6 +34,7 @@ don't need to be 'notified' of its value changing.
  */
 /** @type {SharedState} */
 export const sharedState = {
+    presets,
     cells: new Uint8Array(100),
     startCells: null,
     startCellGridWidth: undefined,
