@@ -8,6 +8,7 @@
         stepForward,
         togglePaused,
         updateSpeed,
+        clearGrid,
     } from "./lib/simulation.js";
 
     let showSettings = $state(false);
@@ -36,6 +37,7 @@
                 showSettings = !showSettings;
             }}
         />
+        <button on:click={clearGrid}>Clear Grid</button>
     </div>
     {#if showSettings}
         <div id="settings">

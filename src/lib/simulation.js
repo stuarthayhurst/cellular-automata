@@ -6,6 +6,12 @@ const baseStepIntervalMillis = 200;
 
 let simulationInterval = null;
 
+export function clearGrid() {
+    saveStartState();
+    sharedState.cells.fill(0);
+    reactiveState.atStart = false;
+}
+
 /**
  * Take one step forward.
  * @returns {void}

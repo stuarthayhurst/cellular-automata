@@ -1,4 +1,4 @@
-import { sharedState } from "./sharedState.js";
+import { resetToStart, sharedState } from "./sharedState.js";
 import { reactiveState } from "./reactiveState.svelte.js";
 import { canvasToGridCoord, clientToCanvasSpace, posToIndex } from "./tools.js";
 
@@ -120,6 +120,11 @@ export function setUpCellEditor(canvas) {
  */
 export function editorUndo() {
     if (drawStroke) return;
+
+    if (reactiveState.historyStack.length === 0) {
+        resetToStart();
+        return;
+    }
 
     const change = reactiveState.historyStack.pop();
     change.cells.forEach(
