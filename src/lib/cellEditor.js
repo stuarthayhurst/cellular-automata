@@ -29,8 +29,6 @@ export function setUpCellEditor(canvas) {
      * @returns {Number|void}
      */
     const draw = (initialClick, mouseX, mouseY) => {
-        if (!canvas.matches(":hover")) return;
-
         const canvasMousePos = clientToCanvasSpace(canvas, mouseX, mouseY);
         const clickGridCoord = canvasToGridCoord(...canvasMousePos);
 
@@ -65,6 +63,7 @@ export function setUpCellEditor(canvas) {
     // Start Drawing
     document.addEventListener("mousedown", (mouseEvent) => {
         if (
+            !canvas.matches(":hover") ||
             mouseEvent.button !== primaryButton ||
             reactiveState.dragging ||
             reactiveState.interfaceMode !== "Editor"
