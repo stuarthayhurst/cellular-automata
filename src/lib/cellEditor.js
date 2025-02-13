@@ -29,6 +29,8 @@ export function setUpCellEditor(canvas) {
      * @returns {Number|void}
      */
     const draw = (initialClick, mouseX, mouseY) => {
+        if (!canvas.matches(":hover")) return;
+
         const canvasMousePos = clientToCanvasSpace(canvas, mouseX, mouseY);
         const clickGridCoord = canvasToGridCoord(...canvasMousePos);
 
