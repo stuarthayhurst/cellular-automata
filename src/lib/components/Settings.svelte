@@ -2,6 +2,9 @@
     import { reactiveState } from "../reactiveState.svelte.js";
     import { setCellGridWidth, setCellGridHeight } from "../simulation.js";
     import GridDimensionInput from "./GridDimensionInput.svelte";
+    import PresetSelector from "./PresetSelector.svelte";
+
+    let selectedPreset = "";
 </script>
 
 <h1>Settings</h1>
@@ -24,4 +27,6 @@
         />
     </div>
 </div>
+<h2>Camera</h2>
+<PresetSelector bind:selectedPreset />
 <h2>Camera</h2>
