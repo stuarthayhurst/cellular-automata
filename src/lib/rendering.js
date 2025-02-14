@@ -619,7 +619,7 @@ function setDataTexture(context, texture, rawData) {
     let data = new Uint32Array(size);
 
     for (let i = 0; i < rawData.length; i++) {
-        data[Math.floor(i / 32)] |= rawData[i] << i % 32;
+        data[Math.floor(i / 32)] |= !!rawData[i] << i % 32;
     }
 
     //Data is treated as 4 separate cells per pixel
