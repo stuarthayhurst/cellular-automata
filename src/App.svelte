@@ -8,7 +8,6 @@
         stepForward,
         togglePaused,
         updateSpeed,
-        clearGrid,
     } from "./lib/simulation.js";
 
     let showSettings = $state(false);
