@@ -2,12 +2,11 @@
     import { reactiveState } from "../reactiveState.svelte.js";
     import { setCellGridWidth, setCellGridHeight } from "../simulation.js";
     import GridDimensionInput from "./GridDimensionInput.svelte";
-    import PresetSelector from "./PresetSelector.svelte";
-
-    let selectedPreset = "";
+    import { applyPreset, presets } from "../preset.js";
 </script>
 
 <h1>Settings</h1>
+
 <h2>Grid</h2>
 <div style="display: flex; flex-direction: column">
     <div>
@@ -27,6 +26,19 @@
         />
     </div>
 </div>
+
+<h2>Presets</h2>
+{#each Object.entries(presets) as [key, preset]}
+    <button on:click={() => applyPreset(key)} class="preset-button"
+        >{preset.name}</button
+    >
+{/each}
+
 <h2>Camera</h2>
-<PresetSelector bind:selectedPreset />
-<h2>Camera</h2>
+
+<style>
+    .preset-button {
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+</style>
