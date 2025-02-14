@@ -108,15 +108,17 @@
         </button>
     </div>
     <div id="right-controls" class="controls-section">
-        <button
-            id="clear-button"
-            aria-label="Clear"
-            class="square-btn btn-danger"
-            title="Clear"
-            onclick={clearGrid}
-        >
-            <Icon icon="fa-solid:eraser" width="20" height="20" />
-        </button>
+        {#if reactiveState.interfaceMode === "Editor"}
+            <button
+                id="clear-button"
+                aria-label="Clear"
+                class="square-btn btn-danger"
+                title="Clear"
+                onclick={clearGrid}
+            >
+                <Icon icon="fa-solid:eraser" width="20" height="20" />
+            </button>
+        {/if}
         <button
             id="toggle-settings-button"
             class="square-btn btn-secondary"
