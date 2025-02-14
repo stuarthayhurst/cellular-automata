@@ -118,7 +118,7 @@ export function setUpCellEditor(canvas) {
  * @returns {void}
  */
 export function pushHistory(change) {
-    if (!reactiveState.atStart) return;
+    if (!reactiveState.atStart || change.cells.size === 0) return;
     reactiveState.historyStack.push(change);
     reactiveState.redoStack = [];
 }
