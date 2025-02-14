@@ -121,11 +121,6 @@ export function setUpCellEditor(canvas) {
 export function editorUndo() {
     if (drawStroke) return;
 
-    if (reactiveState.historyStack.length === 0) {
-        resetToStart();
-        return;
-    }
-
     const change = reactiveState.historyStack.pop();
     change.cells.forEach(
         (cell) => (sharedState.cells[cell] = flip(change.value)),

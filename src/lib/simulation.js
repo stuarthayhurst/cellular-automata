@@ -7,9 +7,18 @@ const baseStepIntervalMillis = 200;
 let simulationInterval = null;
 
 export function clearGrid() {
-    saveStartState();
+    const affectedCells = new Set();
+    sharedState.cells.forEach((value, index) => {
+        if (value === 1) {
+            affectedCells.add(index);
+        }
+    });
+    reactiveState.historyStack.push({
+        cells: affectedCells,
+        value: 0,
+    });
     sharedState.cells.fill(0);
-    reactiveState.atStart = false;
+    reactiveState.redoStack = [];
 }
 
 /**

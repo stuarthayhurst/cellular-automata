@@ -37,7 +37,6 @@
                 showSettings = !showSettings;
             }}
         />
-        <button on:click={clearGrid}>Clear Grid</button>
     </div>
     {#if showSettings}
         <div id="settings">
