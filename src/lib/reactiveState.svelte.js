@@ -5,7 +5,11 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
  */
 
 /**
- * @typedef {{cells: Set<Number>, value: Number}} Change
+ * @typedef {{
+ * setCellsAlive: Set<Number>,
+ * setCellsDead: Set<Number>,
+ * actionName: String
+ * }} ChangeT
  */
 
 /**
@@ -18,8 +22,8 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
  * @property {Number} cellGridWidth
  * @property {Number} cellGridHeight
  * @property {Boolean} dragging
- * @property {Array<Change>} historyStack
- * @property {Array<Change>} redoStack
+ * @property {Array<ChangeT>} historyStack
+ * @property {Array<ChangeT>} redoStack
  */
 /** @type {ReactiveState} */
 export const reactiveState = $state({
