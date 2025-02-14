@@ -78,13 +78,10 @@ export function setUpCellEditor(canvas) {
     document.addEventListener("mouseup", () => {
         drawStroke = false;
 
-        if (drawStrokeChangedCells.size > 0 && reactiveState.atStart) {
-            reactiveState.historyStack.push({
-                cells: drawStrokeChangedCells,
-                value: drawStrokeValue,
-            });
-            reactiveState.redoStack = [];
-        }
+        pushHistory({
+            cells: drawStrokeChangedCells,
+            value: drawStrokeValue,
+        });
 
         drawStrokeChangedCells = new Set([]);
     });
@@ -113,6 +110,17 @@ export function setUpCellEditor(canvas) {
         )
             editorRedo();
     });
+}
+
+/**
+ * Push change to the history stack.
+ * @param {Change} change
+ * @returns {void}
+ */
+export function pushHistory(change) {
+    if (!reactiveState.atStart) return;
+    reactiveState.historyStack.push(change);
+    reactiveState.redoStack = [];
 }
 
 /**
