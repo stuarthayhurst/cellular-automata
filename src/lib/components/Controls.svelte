@@ -111,7 +111,6 @@
         >
             <Icon icon="fa-solid:eraser" width="20" height="20" />
         </button>
-        -->
         <button
             id="toggle-settings-button"
             class="square-btn btn-secondary"
