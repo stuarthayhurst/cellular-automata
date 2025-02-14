@@ -12,6 +12,13 @@
     } from "../cellEditor.js";
 
     let { togglePaused, stepForward, toggleShowSettings } = $props();
+
+    /**
+     * @template T
+     * @param {Array<T>} arr
+     * @returns {T}
+     */
+    const top = (arr) => arr[arr.length - 1];
 </script>
 
 <div id="controls-bar">
@@ -39,7 +46,7 @@
         {#if reactiveState.interfaceMode === "Editor"}
             <button
                 class="square-btn btn-secondary"
-                title="Undo (CTRL+Z)"
+                title={`Undo ${reactiveState.historyStack.length > 0 ? top(reactiveState.historyStack).actionName : ""} (CTRL+Z)`}
                 onclick={() => editorUndo()}
                 disabled={!mayUndo(
                     reactiveState.historyStack.length,
@@ -50,7 +57,7 @@
             </button>
             <button
                 class="square-btn btn-secondary"
-                title="Redo (CTRL+SHIFT+Z)"
+                title={`Redo ${reactiveState.redoStack.length > 0 ? top(reactiveState.redoStack).actionName : ""} (CTRL+SHIFT+Z)`}
                 onclick={() => editorRedo()}
                 disabled={!mayRedo(
                     reactiveState.redoStack.length,
