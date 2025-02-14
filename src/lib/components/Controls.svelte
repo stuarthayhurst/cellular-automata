@@ -3,7 +3,13 @@
     import { reactiveState } from "../reactiveState.svelte.js";
     import { resetToStart } from "../sharedState.js";
     import { pauseSimulation } from "../simulation.js";
-    import { editorUndo, mayUndo, editorRedo, mayRedo } from "../cellEditor.js";
+    import {
+        editorUndo,
+        mayUndo,
+        editorRedo,
+        mayRedo,
+        clearGrid,
+    } from "../cellEditor.js";
 
     let { togglePaused, stepForward, toggleShowSettings } = $props();
 </script>
@@ -102,14 +108,17 @@
         </button>
     </div>
     <div id="right-controls" class="controls-section">
-        <!-- <button
-            id="clear-button"
-            aria-label="Clear"
-            class="square-btn btn-danger"
-            title="Clear"
-        >
-            <Icon icon="fa-solid:eraser" width="20" height="20" />
-        </button> -->
+        {#if reactiveState.interfaceMode === "Editor"}
+            <button
+                id="clear-button"
+                aria-label="Clear"
+                class="square-btn btn-danger"
+                title="Clear"
+                onclick={clearGrid}
+            >
+                <Icon icon="fa-solid:eraser" width="20" height="20" />
+            </button>
+        {/if}
         <button
             id="toggle-settings-button"
             class="square-btn btn-secondary"

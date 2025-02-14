@@ -113,14 +113,21 @@ export function setUpCellEditor(canvas) {
 }
 
 /**
- * Push change to the history stack.
- * @param {Change} change
+ * Clear the cellular automaton
  * @returns {void}
  */
-export function pushHistory(change) {
-    if (!reactiveState.atStart || change.cells.size === 0) return;
-    reactiveState.historyStack.push(change);
-    reactiveState.redoStack = [];
+export function clearGrid() {
+    let aliveCells = new Set();
+    sharedState.cells.forEach((cell, i) => {
+        if (cell === 1) aliveCells.add(i);
+    });
+
+    pushHistory({
+        cells: aliveCells,
+        value: 0,
+    });
+
+    aliveCells.forEach((i) => (sharedState.cells[i] = 0));
 }
 
 /**
@@ -174,3 +181,14 @@ export function editorRedo() {
  */
 export const mayRedo = (redoStackLength, atStart) =>
     redoStackLength > 0 && atStart;
+
+/**
+ * Push change to the history stack.
+ * @param {Change} change
+ * @returns {void}
+ */
+export function pushHistory(change) {
+    if (!reactiveState.atStart || change.cells.size === 0) return;
+    reactiveState.historyStack.push(change);
+    reactiveState.redoStack = [];
+}
