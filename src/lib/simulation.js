@@ -7,25 +7,6 @@ const baseStepIntervalMillis = 200;
 let simulationInterval = null;
 
 /**
- * Clear the cellular automaton
- * @returns {void}
- */
-export function clearGrid() {
-    const affectedCells = new Set();
-    sharedState.cells.forEach((value, index) => {
-        if (value === 1) {
-            affectedCells.add(index);
-        }
-    });
-    reactiveState.historyStack.push({
-        cells: affectedCells,
-        value: 0,
-    });
-    sharedState.cells.fill(0);
-    reactiveState.redoStack = [];
-}
-
-/**
  * Take one step forward.
  * @returns {void}
  */

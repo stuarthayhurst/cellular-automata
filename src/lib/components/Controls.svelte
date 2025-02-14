@@ -2,8 +2,14 @@
     import Icon from "@iconify/svelte";
     import { reactiveState } from "../reactiveState.svelte.js";
     import { resetToStart } from "../sharedState.js";
-    import { pauseSimulation, clearGrid } from "../simulation.js";
-    import { editorUndo, mayUndo, editorRedo, mayRedo } from "../cellEditor.js";
+    import { pauseSimulation } from "../simulation.js";
+    import {
+        editorUndo,
+        mayUndo,
+        editorRedo,
+        mayRedo,
+        clearGrid,
+    } from "../cellEditor.js";
 
     let { togglePaused, stepForward, toggleShowSettings } = $props();
 </script>
