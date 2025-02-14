@@ -1,4 +1,4 @@
-import { resetToStart, sharedState } from "./sharedState.js";
+import { sharedState } from "./sharedState.js";
 import { reactiveState } from "./reactiveState.svelte.js";
 import { canvasToGridCoord, clientToCanvasSpace, posToIndex } from "./tools.js";
 
@@ -117,29 +117,17 @@ export function setUpCellEditor(canvas) {
  * @returns {void}
  */
 export function clearGrid() {
-    const affectedCells = new Set();
-    sharedState.cells.forEach((value, index) => {
-        if (value === 1) {
-            affectedCells.add(index);
-        }
+    let aliveCells = new Set();
+    sharedState.cells.forEach((cell, i) => {
+        if (cell === 1) aliveCells.add(i);
     });
-    reactiveState.historyStack.push({
-        cells: affectedCells,
+
+    pushHistory({
+        cells: aliveCells,
         value: 0,
     });
-    sharedState.cells.fill(0);
-    reactiveState.redoStack = [];
-}
 
-/**
- * Push change to the history stack.
- * @param {Change} change
- * @returns {void}
- */
-export function pushHistory(change) {
-    if (!reactiveState.atStart || change.cells.size === 0) return;
-    reactiveState.historyStack.push(change);
-    reactiveState.redoStack = [];
+    aliveCells.forEach((i) => (sharedState.cells[i] = 0));
 }
 
 /**
@@ -193,3 +181,14 @@ export function editorRedo() {
  */
 export const mayRedo = (redoStackLength, atStart) =>
     redoStackLength > 0 && atStart;
+
+/**
+ * Push change to the history stack.
+ * @param {Change} change
+ * @returns {void}
+ */
+export function pushHistory(change) {
+    if (!reactiveState.atStart || change.cells.size === 0) return;
+    reactiveState.historyStack.push(change);
+    reactiveState.redoStack = [];
+}
