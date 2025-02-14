@@ -117,17 +117,18 @@ export function setUpCellEditor(canvas) {
  * @returns {void}
  */
 export function clearGrid() {
-    let aliveCells = new Set();
+    let clearedCells = new Set();
     sharedState.cells.forEach((cell, i) => {
-        if (cell === 1) aliveCells.add(i);
+        if (cell === 1) {
+            sharedState.cells[i] = 0;
+            clearedCells.add(i);
+        }
     });
 
     pushHistory({
-        cells: aliveCells,
+        cells: clearedCells,
         value: 0,
     });
-
-    aliveCells.forEach((i) => (sharedState.cells[i] = 0));
 }
 
 /**
