@@ -64,11 +64,3 @@ export function resetToStart() {
     reactiveState.cellGridWidth = sharedState.startCellGridWidth;
     reactiveState.cellGridHeight = sharedState.startCellGridHeight;
 }
-
-// @Temp
-sharedState.cells[2] =
-    sharedState.cells[10] =
-    sharedState.cells[12] =
-    sharedState.cells[21] =
-    sharedState.cells[22] =
-        1;
