@@ -32,7 +32,7 @@ don't need to be 'notified' of its value changing.
  */
 /** @type {SharedState} */
 export const sharedState = {
-    cells: new Uint8Array(100),
+    cells: null,
     startCells: null,
     startCellGridWidth: undefined,
     startCellGridHeight: undefined,
@@ -50,6 +50,11 @@ export const sharedState = {
     backgroundBorderColour: colour_rgb(77, 77, 77),
     aliasBackground: true,
 };
+
+// Initialise cells outside of sharedState to avoid non-existent module errors
+sharedState.cells = new Uint8Array(
+    reactiveState.cellGridWidth * reactiveState.cellGridHeight,
+);
 
 export function saveStartState() {
     sharedState.startCells = new Uint8Array(sharedState.cells);
