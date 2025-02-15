@@ -3,6 +3,7 @@ import { sharedState } from "./sharedState.js";
 import { reactiveState } from "./reactiveState.svelte.js";
 import { absMod, clientToCanvasSpace } from "./tools.js";
 
+const primaryButton = 0;
 const secondaryButton = 2;
 
 const thetaMax = 2 * Math.PI; // Full rotation around the horizontal axis (360 degrees)
@@ -40,10 +41,18 @@ export function setUpDragAndZoom(canvas) {
         Drag
      */
 
+    /**
+     * @param {Number} button
+     * @returns {Boolean}
+     */
+    const dragButton = (button) =>
+        reactiveState.interfaceMode === "3D View"
+            ? button === primaryButton || button === secondaryButton
+            : button === secondaryButton;
+
     // Start dragging
     document.addEventListener("mousedown", (mouseEvent) => {
-        if (mouseEvent.button !== secondaryButton || !canvas.matches(":hover"))
-            return;
+        if (!dragButton(mouseEvent.button) || !canvas.matches(":hover")) return;
 
         // Stores the initial mouse position and camera angles for reference
         dragRefMouseX = mouseEvent.screenX;
@@ -61,8 +70,7 @@ export function setUpDragAndZoom(canvas) {
 
     // Stop dragging
     document.addEventListener("mouseup", (mouseEvent) => {
-        if (mouseEvent.button === secondaryButton)
-            reactiveState.dragging = false;
+        if (dragButton(mouseEvent.button)) reactiveState.dragging = false;
     });
 
     // While dragging
