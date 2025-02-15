@@ -32,7 +32,9 @@ don't need to be 'notified' of its value changing.
  */
 /** @type {SharedState} */
 export const sharedState = {
-    cells: new Uint8Array(100),
+    cells: new Uint8Array(
+        reactiveState.cellGridWidth * reactiveState.cellGridHeight,
+    ),
     startCells: null,
     startCellGridWidth: undefined,
     startCellGridHeight: undefined,
@@ -42,7 +44,7 @@ export const sharedState = {
     aliasBaseColour: colour_rgb(102, 102, 102),
     aliasCellColour: colour_rgb(128, 128, 128),
     cameraPosition: glMatrix.vec3.fromValues(2, 0, 0),
-    pixelsPerCell: 70.0,
+    pixelsPerCell: 10.0,
     gridOffsetX: 0.0,
     gridOffsetY: 0.0,
     borderSize: 0.015,
