@@ -136,7 +136,7 @@ export function setUpDragAndZoom(canvas) {
         const change = wheel * -0.1;
 
         const pixels = sharedState.pixelsPerCell;
-        const newPixels = Math.max(10, sharedState.pixelsPerCell + change);
+        const newPixels = Math.max(7, sharedState.pixelsPerCell + change);
         const zoomFactor = newPixels / pixels;
 
         const newGridOffsetX =
