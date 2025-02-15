@@ -1,12 +1,14 @@
 import { sharedState } from "./sharedState.js";
 import { reactiveState } from "./reactiveState.svelte.js";
+import { pushHistory } from "./cellEditor.js";
 
 /**
  * @typedef {Object} Preset
  * @property {string} name
- * @property {number[][]} cells
+ * @property {Number[][]} cells
  */
 
+/** @type {Object.<string, Preset>} */
 export const presets = {
     block: {
         name: "Block (Still)",
@@ -37,31 +39,14 @@ export const presets = {
     },
     random: {
         name: "Random",
+        cells: [],
     },
 };
 
-function generateCells(width, height, aliveCells = []) {
-    let cells = Array.from({ length: height }, () => Array(width).fill(0));
-    aliveCells.forEach(([x, y]) => {
-        if (x >= 0 && x < width && y >= 0 && y < height) {
-            cells[y][x] = 1;
-        }
-    });
-    return cells;
-}
-
-function generateRandomCells(width, height) {
-    return Array.from({ length: height }, () =>
-        Array.from({ length: width }, () => (Math.random() > 0.5 ? 1 : 0)),
-    );
-}
-
 /**
- * @param {string} presetKey -("block", "blinker", "glider", "random")
- * @param {Object} sharedState
- * @param {Object} reactiveState
+ * @param {string} presetKey
+ * @returns {void}
  */
-
 export function applyPreset(presetKey) {
     let preset = presets[presetKey];
     if (!preset) return;
@@ -95,5 +80,51 @@ export function applyPreset(presetKey) {
         newCells = generateCells(width, height, adjustedCells);
     }
 
-    sharedState.cells = new Uint8Array(newCells.flat());
+    const newCellsFlat = new Uint8Array(newCells.flat());
+    let changedCellsAlive = new Set();
+    let changedCellsDead = new Set();
+
+    // Calculate difference
+    sharedState.cells.forEach((cell, i) => {
+        if (cell === 0 && newCellsFlat[i] === 1) {
+            changedCellsAlive.add(i);
+        } else if (cell === 1 && newCellsFlat[i] === 0) {
+            changedCellsDead.add(i);
+        }
+    });
+
+    pushHistory({
+        setCellsAlive: changedCellsAlive,
+        setCellsDead: changedCellsDead,
+        actionName: "Apply Preset",
+    });
+
+    sharedState.cells = newCellsFlat;
+}
+
+/**
+ * @param {Number} width
+ * @param {Number} height
+ * @param {Number[][]} aliveCells
+ * @returns {Number[][]}
+ */
+function generateCells(width, height, aliveCells = []) {
+    let cells = Array.from({ length: height }, () => Array(width).fill(0));
+    aliveCells.forEach(([x, y]) => {
+        if (x >= 0 && x < width && y >= 0 && y < height) {
+            cells[y][x] = 1;
+        }
+    });
+    return cells;
+}
+
+/**
+ * @param {Number} width
+ * @param {Number} height
+ * @returns {Number[][]}
+ */
+function generateRandomCells(width, height) {
+    return Array.from({ length: height }, () =>
+        Array.from({ length: width }, () => (Math.random() > 0.5 ? 1 : 0)),
+    );
 }
