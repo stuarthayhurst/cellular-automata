@@ -62,7 +62,7 @@ main.dragging {
 #settings {
   grid-area: settings;
   padding: 0 20px 20px 20px;
-  background-color: slategray;
+  background-color: rgb(222, 226, 231);
 }
 
 #settings.hidden {
