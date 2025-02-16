@@ -17,6 +17,7 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
  * @type {object}
  * @property {Boolean} paused
  * @property {"Editor"|"3D View"} interfaceMode
+ * @property {"torus"|"sphere"} shape
  * @property {Number} simulationSpeed
  * @property {Boolean} atStart
  * @property {Number} cellGridWidth
@@ -29,6 +30,7 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
 export const reactiveState = $state({
     paused: true,
     interfaceMode: "Editor",
+    shape: "torus",
     simulationSpeed: 1,
     atStart: true,
     cellGridWidth: 160,

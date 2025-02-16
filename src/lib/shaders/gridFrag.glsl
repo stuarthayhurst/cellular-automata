@@ -26,6 +26,11 @@ out vec4 outColour;
 
 //Shared between modelVert.glsl and gridFrag.glsl
 uint fetchDataBit(int cellIndex, usampler2D dataTexture) {
+    //Skip unmapped cells
+    if (cellIndex == -1) {
+      return 0u;
+    }
+
     int textureWidth = textureSize(dataTexture, 0).x;
 
     //Wrap cellIndexX every 4 * 32 widths (32 cells per channel, 4 channels per pixel)
@@ -56,7 +61,7 @@ uint fetchDataBit(int cellIndex, usampler2D dataTexture) {
 
     //Decide which bit of the byte to look at and fetch it
     int bit = packing % 32;
-    return fetchedByte & uint((1 << bit));
+    return fetchedByte & (1u << bit);
 }
 
 void main() {

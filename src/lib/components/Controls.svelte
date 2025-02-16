@@ -66,6 +66,18 @@
             >
                 <Icon icon="fa-solid:redo" width="20" height="20" />
             </button>
+        {:else}
+            <button
+                class="square-btn btn-secondary"
+                title={reactiveState.shape === "sphere"
+                    ? "See Torus"
+                    : "See Sphere"}
+                onclick={() =>
+                    (reactiveState.shape =
+                        reactiveState.shape === "sphere" ? "torus" : "sphere")}
+            >
+                <Icon icon="fa-solid:shapes" width="20" height="20" />
+            </button>
         {/if}
     </div>
     <div id="centre-controls" class="controls-section">
