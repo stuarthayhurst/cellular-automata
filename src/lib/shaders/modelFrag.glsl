@@ -4,12 +4,14 @@ precision mediump float;
 in vec3 fragPos;
 in vec3 normal;
 flat in uint alive;
+flat in uint mapped;
 
 out vec4 outColour;
 
 uniform vec3 cameraPos;
 uniform vec3 baseColour;
 uniform vec3 cellColour;
+uniform vec3 unmappedColour;
 
 float ambientStrength = 0.3;
 float diffuseStrength = 0.6;
@@ -37,6 +39,13 @@ void main() {
     specular *= specularStrength;
     specular /= distance(fragPos, lightPos);
 
+    vec3 fragColour;
+    if (mapped == 1u) {
+        fragColour = baseColour;
+    } else {
+        fragColour = unmappedColour;
+    }
+
     //Combine results
-    outColour = vec4((ambientStrength + diffuse + specular) * baseColour, 1.0);
+    outColour = vec4((ambientStrength + diffuse + specular) * fragColour, 1.0);
 }

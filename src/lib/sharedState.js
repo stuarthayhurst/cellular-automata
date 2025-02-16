@@ -41,6 +41,7 @@ export const sharedState = {
     maxCells: 0,
     baseColour: colour_rgb(12, 56, 102),
     cellColour: colour_rgb(30, 144, 255),
+    unmappedColour: colour_rgb(255, 255, 255),
     aliasBaseColour: colour_rgb(102, 102, 102),
     aliasCellColour: colour_rgb(128, 128, 128),
     cameraPosition: glMatrix.vec3.fromValues(2, 0, 0),

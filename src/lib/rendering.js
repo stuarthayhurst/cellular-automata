@@ -1,5 +1,5 @@
 import * as glMatrix from "gl-matrix";
-import { calculateMesh, calculateNormals, generateSkeleton } from "./mesh.js";
+import { calculateMesh, calculateNormals } from "./mesh.js";
 
 /** @type {String} */
 import modelVertSource from "./shaders/modelVert.glsl?raw";
@@ -116,6 +116,10 @@ export function startRenderer(context) {
     const cellColourLocation = context.getUniformLocation(
         modelProgram,
         "cellColour",
+    );
+    const unmappedColourLocation = context.getUniformLocation(
+        modelProgram,
+        "unmappedColour",
     );
 
     //Compile the grid shaders
@@ -239,6 +243,7 @@ export function startRenderer(context) {
 
     let lastCellWidth = 0;
     let lastCellHeight = 0;
+    let lastShape = "";
     /** @type {WebGLTexture} */
     let cellDataTexture = null;
     let vertexCount = 0;
@@ -251,6 +256,7 @@ export function startRenderer(context) {
      * @param {Number} canvasHeight
      * @param {glMatrix.vec3} baseColour
      * @param {glMatrix.vec3} cellColour
+     * @param {glMatrix.vec3} unmappedColour
      * @returns {void}
      */
     function drawMesh(
@@ -260,6 +266,7 @@ export function startRenderer(context) {
         canvasHeight,
         baseColour,
         cellColour,
+        unmappedColour,
     ) {
         //Use the model shader and the vertex array object
         context.useProgram(modelProgram);
@@ -295,6 +302,7 @@ export function startRenderer(context) {
         context.uniformMatrix4fv(modelMatrixLocation, false, modelMatrix);
         context.uniform3fv(baseColourLocation, baseColour);
         context.uniform3fv(cellColourLocation, cellColour);
+        context.uniform3fv(unmappedColourLocation, unmappedColour);
 
         //TODO: Swap to using element buffers and index the meshes
         context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
@@ -380,8 +388,10 @@ export function startRenderer(context) {
         const canvasWidth = context.canvas.width;
         const baseColour = sharedState.baseColour;
         const cellColour = sharedState.cellColour;
+        const unmappedColour = sharedState.unmappedColour;
         const aliasBaseColour = sharedState.aliasBaseColour;
         const aliasCellColour = sharedState.aliasCellColour;
+        const shape = reactiveState.shape;
         const interfaceMode = reactiveState.interfaceMode;
 
         const pixelsPerCell = sharedState.pixelsPerCell;
@@ -407,11 +417,16 @@ export function startRenderer(context) {
         }
 
         //Dimensions have changed, recreate buffers
-        if (lastCellWidth !== cellWidth || lastCellHeight !== cellHeight) {
+        if (
+            lastCellWidth !== cellWidth ||
+            lastCellHeight !== cellHeight ||
+            lastShape != shape
+        ) {
             //Generate the mesh data and fill its buffer
             let [meshData, vertexBlockSize] = generateMesh(
                 cellHeight,
                 cellWidth,
+                shape,
             );
             fillMeshBuffer(context, meshBuffer, meshData);
             vertexCount = meshData.byteLength / vertexBlockSize;
@@ -428,6 +443,7 @@ export function startRenderer(context) {
 
             lastCellWidth = cellWidth;
             lastCellHeight = cellHeight;
+            lastShape = shape;
         } else {
             //Just update the cell data if the size hasn't changed, then bind the texture
             setDataTexture(context, cellDataTexture, cellData);
@@ -444,6 +460,7 @@ export function startRenderer(context) {
                 canvasHeight,
                 baseColour,
                 cellColour,
+                unmappedColour,
             );
         } else {
             drawGrid(
@@ -668,16 +685,15 @@ function createDataTexture(context, data) {
  * Format: vec3f32(position), vec3f32(normal) int32(index)
  * @param {Number} height
  * @param {Number} width
+ * @param {String} shape
  * @returns {[ArrayBuffer, Number]}
  */
-function generateMesh(height, width) {
-    const volumeDiameter = 0.55;
-    const ringRadius = 1 - volumeDiameter / 2;
-    let meshWidthScale = 1;
-    let meshHeightScale = 1;
-    let minDimension = 100;
+function generateMesh(height, width, shape) {
+    const minDimension = 100;
 
     //Scale the mesh up to handle tiny grids
+    let meshWidthScale = 1;
+    let meshHeightScale = 1;
     if (height < minDimension) {
         meshHeightScale = Math.ceil(minDimension / height);
     }
@@ -686,21 +702,12 @@ function generateMesh(height, width) {
     }
 
     //Generate the mesh, indices and normals
-    const [skeleton, skeletonOrigins] = generateSkeleton(
-        width,
-        height,
-        ringRadius,
-        volumeDiameter,
-        meshWidthScale,
-        meshHeightScale,
-    );
     const [mesh, origins, indices] = calculateMesh(
-        skeleton,
-        skeletonOrigins,
         width,
         height,
         meshWidthScale,
         meshHeightScale,
+        shape,
     );
     const normals = calculateNormals(mesh, origins);
 
