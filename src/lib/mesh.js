@@ -3,16 +3,6 @@ import * as torus from "./meshes/torus.js";
 import * as sphere from "./meshes/sphere.js";
 
 /**
- * Return the index of the previous point, within the same ring.
- * @param {Number} index
- * @param {Number} height
- * @returns {Number}
- */
-function previousPointWrapped(index, height) {
-    return index - (index % height) + ((index - 1 + height) % height);
-}
-
-/**
  * Return a list of vertices in the mesh, and per-triangle lists of origins and indices.
  * @param {Number} width
  * @param {Number} height
@@ -29,9 +19,9 @@ export function calculateMesh(
     shape,
 ) {
     let generator;
-    if (shape == "torus") {
+    if (shape === "torus") {
         generator = torus;
-    } else if (shape == "sphere") {
+    } else if (shape === "sphere") {
         generator = sphere;
     }
 

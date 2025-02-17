@@ -2,7 +2,6 @@ import * as glMatrix from "gl-matrix";
 
 //Mesh generation settings
 const volumeDiameter = 1.0;
-const ringRadius = 1.0;
 
 /**
  * Return a list of points of the volume rings and a list of their origins.
@@ -91,10 +90,10 @@ export function calculateMesh(
         //Handle poles
         const p = i % (height + 3);
         let mapTriangles = true;
-        if (p == 0) {
+        if (p === 0) {
             //Skip internal triangles
             continue;
-        } else if (p == 1 || p == height + 2) {
+        } else if (p === 1 || p === height + 2) {
             //Don't map poles
             mapTriangles = false;
         } else {
@@ -109,9 +108,6 @@ export function calculateMesh(
             nextRingSamePoint,
             height + 3,
         );
-
-        //Fetch the origins for the ring pair
-        let ringIndex = Math.floor(i / (height + 3));
 
         //Save first and second triangles
         mesh.push(

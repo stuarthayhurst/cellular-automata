@@ -69,6 +69,7 @@ export const indexToPos = (i, w) => [i % w, Math.floor(i / w)];
  */
 export const posToIndex = (x, y, w, h) => absMod(x + y * w, w * h);
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Count living cells.
  * @param {Uint8Array} cells
