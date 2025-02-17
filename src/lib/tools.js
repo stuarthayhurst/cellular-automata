@@ -76,3 +76,16 @@ export const posToIndex = (x, y, w, h) => absMod(x + y * w, w * h);
  */
 export const population = (cells) =>
     cells.reduce((acc, cellState) => acc + cellState);
+
+/**
+ * Meter function execution time.
+ * @template V
+ * @param {function:V} func
+ * @returns {[V, Number]}
+ */
+export const meter = (func) => {
+    let startTime = performance.now();
+    let returnValue = func();
+    let endTime = performance.now();
+    return [returnValue, Math.round(endTime - startTime)];
+};

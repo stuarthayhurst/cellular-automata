@@ -13,6 +13,7 @@ import gridFragSource from "./shaders/gridFrag.glsl?raw";
 
 import { sharedState } from "./sharedState.js";
 import { reactiveState } from "./reactiveState.svelte.js";
+import { meter } from "./tools.js";
 
 /**
  * Start the renderer.
@@ -420,7 +421,7 @@ export function startRenderer(context) {
         if (
             lastCellWidth !== cellWidth ||
             lastCellHeight !== cellHeight ||
-            lastShape != shape
+            lastShape !== shape
         ) {
             //Generate the mesh data and fill its buffer
             let [meshData, vertexBlockSize] = generateMesh(
@@ -701,14 +702,13 @@ function generateMesh(height, width, shape) {
     }
 
     //Generate the mesh, indices and normals
-    const [mesh, origins, indices] = calculateMesh(
-        width,
-        height,
-        meshWidthScale,
-        meshHeightScale,
-        shape,
+    const [[mesh, origins, indices], meshT] = meter(() =>
+        calculateMesh(width, height, meshWidthScale, meshHeightScale, shape),
     );
-    const normals = calculateNormals(mesh, origins);
+
+    const [normals, normalsT] = meter(() => calculateNormals(mesh, origins));
+
+    console.log(`Mesh: ${meshT}ms. Normals: ${normalsT}ms.`);
 
     //Size of each buffer * their 3 uses * 4 bytes per element
     const bufferSize = (mesh.length + normals.length + indices.length) * 3 * 4;
