@@ -5,10 +5,6 @@ import { canvasToGridCoord, clientToCanvasSpace, posToIndex } from "./tools.js";
 const primaryButton = 0;
 
 let drawingStroke = false;
-/** @type {Number} */
-let strokeValue;
-/** @type {Set<Number>} */
-let strokeChangedCells = new Set([]);
 
 /**
  * Add event listeners for cell editor.
@@ -16,6 +12,13 @@ let strokeChangedCells = new Set([]);
  * @returns {void}
  */
 export function setUpCellEditor(canvas) {
+    /** @type {Number} */
+    let strokeValue;
+    /** @type {Set<Number>} */
+    let strokeChangedCells = new Set([]);
+    /** @type {Number[2]} */
+    let lastGridPos = undefined;
+
     /*
         Drawing
      */
@@ -28,35 +31,55 @@ export function setUpCellEditor(canvas) {
      */
     const draw = (initialClick, mouseX, mouseY) => {
         const canvasMousePos = clientToCanvasSpace(canvas, mouseX, mouseY);
-        const clickGridCoord = canvasToGridCoord(...canvasMousePos);
+        const gridPos = canvasToGridCoord(...canvasMousePos);
+
+        const w = reactiveState.cellGridWidth;
+        const h = reactiveState.cellGridHeight;
 
         /** @type {Boolean} */
-        const clickNotInGrid =
-            clickGridCoord[0] < 0 ||
-            clickGridCoord[0] >= reactiveState.cellGridWidth ||
-            clickGridCoord[1] < 0 ||
-            clickGridCoord[1] >= reactiveState.cellGridHeight;
+        const mouseNotInGrid =
+            gridPos[0] < 0 ||
+            gridPos[0] >= w ||
+            gridPos[1] < 0 ||
+            gridPos[1] >= h;
 
-        if (clickNotInGrid) return;
+        if (mouseNotInGrid) {
+            lastGridPos = gridPos;
+            return;
+        }
 
-        const gridIndex = posToIndex(
-            ...clickGridCoord,
-            reactiveState.cellGridWidth,
-            reactiveState.cellGridHeight,
-        );
+        const gridIndex = posToIndex(...gridPos, w, h);
 
         if (strokeChangedCells.has(gridIndex)) return;
 
         if (initialClick) {
-            sharedState.cells[gridIndex] = flip(sharedState.cells[gridIndex]);
+            strokeValue = flip(sharedState.cells[gridIndex]);
+            sharedState.cells[gridIndex] = strokeValue;
             strokeChangedCells.add(gridIndex);
         } else if (sharedState.cells[gridIndex] !== strokeValue) {
             sharedState.cells[gridIndex] = strokeValue;
             strokeChangedCells.add(gridIndex);
+
+            const xd = gridPos[0] > lastGridPos[0] ? 1 : -1;
+            const yd = gridPos[1] > lastGridPos[1] ? 1 : -1;
+            let interpPos = lastGridPos;
+
+            while (!eq(interpPos, gridPos)) {
+                if (interpPos[0] !== gridPos[0]) interpPos[0] += xd;
+                if (interpPos[1] !== gridPos[1]) interpPos[1] += yd;
+
+                const interpIndex = posToIndex(...interpPos, w, h);
+                if (sharedState.cells[interpIndex] !== strokeValue) {
+                    sharedState.cells[interpIndex] = strokeValue;
+                    strokeChangedCells.add(interpIndex);
+                }
+            }
         }
 
-        return sharedState.cells[gridIndex];
+        lastGridPos = gridPos;
     };
+
+    const eq = (a, b) => a[0] === b[0] && a[1] === b[1];
 
     // Start Drawing
     document.addEventListener("mousedown", (mouseEvent) => {
@@ -69,7 +92,7 @@ export function setUpCellEditor(canvas) {
             return;
 
         drawingStroke = true;
-        strokeValue = draw(true, mouseEvent.clientX, mouseEvent.clientY);
+        draw(true, mouseEvent.clientX, mouseEvent.clientY);
     });
 
     // Stop Drawing
@@ -82,8 +105,11 @@ export function setUpCellEditor(canvas) {
     });
 
     // While Drawing
-    document.addEventListener("mousemove", (mouseEvent) => {
-        if (drawingStroke) draw(false, mouseEvent.clientX, mouseEvent.clientY);
+    document.addEventListener("pointermove", (pointerEvent) => {
+        if (drawingStroke)
+            pointerEvent
+                .getCoalescedEvents()
+                .forEach((e) => draw(false, e.clientX, e.clientY));
     });
 
     /*
