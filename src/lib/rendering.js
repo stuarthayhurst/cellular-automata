@@ -228,7 +228,7 @@ export function startRenderer(context) {
         "widthPixels",
     );
 
-    //Setup the vertices for the grid
+    //Set up the vertices for the grid
     const gridData = new Float32Array([
         -1, 1, -1, -1, 1, -1, -1, 1, 1, -1, 1, 1,
     ]);
@@ -373,7 +373,7 @@ export function startRenderer(context) {
             gridBackgroundBorderColourLocation,
             backgroundBorderColour,
         );
-        context.uniform1i(gridAliasBackgroundLocation, aliasBackground);
+        context.uniform1i(gridAliasBackgroundLocation, Number(aliasBackground));
         context.uniform1i(gridWidthPixelsLocation, canvasWidth);
 
         context.bindBuffer(context.ARRAY_BUFFER, gridBuffer);

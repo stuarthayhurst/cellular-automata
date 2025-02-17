@@ -84,8 +84,8 @@ export const population = (cells) =>
  * @returns {[V, Number]}
  */
 export const meter = (func) => {
-    let startTime = performance.now();
-    let returnValue = func();
-    let endTime = performance.now();
+    const startTime = performance.now();
+    const returnValue = func();
+    const endTime = performance.now();
     return [returnValue, Math.round(endTime - startTime)];
 };
