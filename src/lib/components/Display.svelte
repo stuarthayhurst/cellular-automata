@@ -3,9 +3,8 @@
     let canvas;
 
     export function updateCanvasResolution() {
-        const bound = canvas.getBoundingClientRect();
-        canvas.width = bound.width - bound.left;
-        canvas.height = bound.height - bound.top;
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight - 5;
     }
 </script>
 
