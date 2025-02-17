@@ -48,15 +48,29 @@ export function calculateMesh(
  * Return per-vertex, smoothed normals.
  * @param {Array<glMatrix.vec3>} mesh
  * @param {Array<glMatrix.vec3>} origins
- * @returns {Array<glMatrix.vec3>}
+ * @returns {Array<Number>}
  */
 export function calculateNormals(mesh, origins) {
-    /** @type {Array<glMatrix.vec3>} */
+    /** @type {Array<Number>} */
     let normals = [];
     for (let i = 0; i < origins.length; i++) {
-        let normal = glMatrix.vec3.create();
-        glMatrix.vec3.sub(normal, mesh[i], origins[i]);
-        glMatrix.vec3.normalize(normal, normal);
+        //Calculate vector from the origin to the point
+        let normal = [
+            mesh[i][0] - origins[i][0],
+            mesh[i][1] - origins[i][1],
+            mesh[i][2] - origins[i][2],
+        ];
+
+        //Normalise the vector
+        const len = Math.sqrt(
+            normal[0] * normal[0] +
+                normal[1] * normal[1] +
+                normal[2] * normal[2],
+        );
+        normal[0] /= len;
+        normal[1] /= len;
+        normal[2] /= len;
+
         normals.push(normal);
     }
 
