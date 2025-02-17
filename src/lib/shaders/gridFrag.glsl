@@ -87,10 +87,13 @@ void main() {
     float cellProgressY = y - floor(y);
 
     //Apply the 'integer' grid offset for indexing and background testing
-    x -= iGridOffsetX;
-    y -= iGridOffsetY;
-    int gridIndexX = int(floor(x));
-    int gridIndexY = int(floor(y));
+    int gridIndexX = int(floor(x)) - int(iGridOffsetX);
+    int gridIndexY = int(floor(y)) - int(iGridOffsetY);
+
+    //Detect canvas background
+    bool isBackground = gridIndexX < 0 || gridIndexY < 0 ||
+                        gridIndexX > (gridCellWidth - 1) ||
+                        gridIndexY > (gridCellHeight - 1);
 
     //Alias tiles, handle negative indices
     if (gridIndexX < 0) {
@@ -125,11 +128,6 @@ void main() {
           borderCoeff = (pixelSize - distanceOut) / pixelSize;
         }
     }
-
-    //Detect canvas background
-    bool isBackground = x < -borderSize || y < -borderSize ||
-                        x > float(gridCellWidth) + borderSize ||
-                        y > float(gridCellHeight) + borderSize;
 
     //Convert coordinate into an index, look up in the data texture
     int index = gridIndexX + (((gridCellHeight - 1) - gridIndexY) * gridCellWidth);
