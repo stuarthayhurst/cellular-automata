@@ -1,4 +1,3 @@
-import * as glMatrix from "gl-matrix";
 import * as torus from "./meshes/torus.js";
 import * as sphere from "./meshes/sphere.js";
 
@@ -48,10 +47,10 @@ export function calculateMesh(
  * Return per-vertex, smoothed normals.
  * @param {Array<glMatrix.vec3>} mesh
  * @param {Array<glMatrix.vec3>} origins
- * @returns {Array<Number>}
+ * @returns {Number[3][]}
  */
 export function calculateNormals(mesh, origins) {
-    /** @type {Array<Number>} */
+    /** @type {Number[3][]} */
     let normals = [];
     for (let i = 0; i < origins.length; i++) {
         //Calculate vector from the origin to the point
