@@ -20,17 +20,10 @@ export function generateSkeleton(
 ) {
     /** @type {Array<glMatrix.vec3>} */
     let skeleton = [];
-    /** @type {Array<glMatrix.vec3>} */
-    let skeletonOrigins = [];
 
     //Generate extra points according to the scale
     width *= meshWidthScale;
     height *= meshHeightScale;
-
-    //Generate local origins
-    for (let i = 0; i < width; i++) {
-        skeletonOrigins.push(glMatrix.vec3.fromValues(0.0, 0.0, 0.0));
-    }
 
     //Generate a vertical half-ring around each point on the origins
     for (let i = 0; i < width; i++) {
@@ -46,13 +39,12 @@ export function generateSkeleton(
                 Math.cos(ringRadians - 2 * Math.PI) * localRadius,
             );
             glMatrix.vec3.scale(point, point, volumeDiameter);
-            glMatrix.vec3.add(point, point, skeletonOrigins[i]);
 
             skeleton.push(point);
         }
     }
 
-    return [skeleton, skeletonOrigins];
+    return [skeleton, []];
 }
 
 /**
@@ -120,24 +112,16 @@ export function calculateMesh(
 
         //Fetch the origins for the ring pair
         let ringIndex = Math.floor(i / (height + 3));
-        let currentOrigin = skeletonOrigins[ringIndex];
-        let nextOrigin = skeletonOrigins[(ringIndex + 1) % width];
 
-        //Save the first triangle and corresponding origins
-        mesh.push(skeleton[i]);
-        origins.push(currentOrigin);
-        mesh.push(skeleton[nextRingSamePoint]);
-        origins.push(nextOrigin);
-        mesh.push(skeleton[nextRingPrevPoint]);
-        origins.push(nextOrigin);
-
-        //Save the second triangle and corresponding origins
-        mesh.push(skeleton[i]);
-        origins.push(currentOrigin);
-        mesh.push(skeleton[nextRingPrevPoint]);
-        origins.push(nextOrigin);
-        mesh.push(skeleton[prevPoint]);
-        origins.push(currentOrigin);
+        //Save first and second triangles
+        mesh.push(
+            skeleton[i],
+            skeleton[nextRingSamePoint],
+            skeleton[nextRingPrevPoint],
+            skeleton[i],
+            skeleton[nextRingPrevPoint],
+            skeleton[prevPoint],
+        );
 
         if (mapTriangles) {
             //Calculate the raw grid index components
@@ -149,12 +133,16 @@ export function calculateMesh(
             y = Math.floor(y / meshHeightScale);
             let gridIndex = y * Math.floor(width / meshWidthScale) + x;
 
-            indices.push(gridIndex);
-            indices.push(gridIndex);
+            indices.push(gridIndex, gridIndex);
         } else {
-            indices.push(-1);
-            indices.push(-1);
+            indices.push(-1, -1);
         }
+    }
+
+    //Generate local origins
+    const zero = glMatrix.vec3.fromValues(0.0, 0.0, 0.0);
+    for (let i = 0; i < mesh.length; i++) {
+        origins.push(zero);
     }
 
     return [mesh, origins, indices];
