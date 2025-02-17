@@ -69,6 +69,7 @@ export const indexToPos = (i, w) => [i % w, Math.floor(i / w)];
  */
 export const posToIndex = (x, y, w, h) => absMod(x + y * w, w * h);
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Count living cells.
  * @param {Uint8Array} cells
@@ -76,3 +77,16 @@ export const posToIndex = (x, y, w, h) => absMod(x + y * w, w * h);
  */
 export const population = (cells) =>
     cells.reduce((acc, cellState) => acc + cellState);
+
+/**
+ * Meter function execution time.
+ * @template V
+ * @param {function:V} func
+ * @returns {[V, Number]}
+ */
+export const meter = (func) => {
+    const startTime = performance.now();
+    const returnValue = func();
+    const endTime = performance.now();
+    return [returnValue, Math.round(endTime - startTime)];
+};

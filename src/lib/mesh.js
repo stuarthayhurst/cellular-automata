@@ -3,16 +3,6 @@ import * as torus from "./meshes/torus.js";
 import * as sphere from "./meshes/sphere.js";
 
 /**
- * Return the index of the previous point, within the same ring.
- * @param {Number} index
- * @param {Number} height
- * @returns {Number}
- */
-function previousPointWrapped(index, height) {
-    return index - (index % height) + ((index - 1 + height) % height);
-}
-
-/**
  * Return a list of vertices in the mesh, and per-triangle lists of origins and indices.
  * @param {Number} width
  * @param {Number} height
@@ -29,9 +19,9 @@ export function calculateMesh(
     shape,
 ) {
     let generator;
-    if (shape == "torus") {
+    if (shape === "torus") {
         generator = torus;
-    } else if (shape == "sphere") {
+    } else if (shape === "sphere") {
         generator = sphere;
     }
 
@@ -58,15 +48,29 @@ export function calculateMesh(
  * Return per-vertex, smoothed normals.
  * @param {Array<glMatrix.vec3>} mesh
  * @param {Array<glMatrix.vec3>} origins
- * @returns {Array<glMatrix.vec3>}
+ * @returns {Array<Number>}
  */
 export function calculateNormals(mesh, origins) {
-    /** @type {Array<glMatrix.vec3>} */
+    /** @type {Array<Number>} */
     let normals = [];
     for (let i = 0; i < origins.length; i++) {
-        let normal = glMatrix.vec3.create();
-        glMatrix.vec3.sub(normal, mesh[i], origins[i]);
-        glMatrix.vec3.normalize(normal, normal);
+        //Calculate vector from the origin to the point
+        let normal = [
+            mesh[i][0] - origins[i][0],
+            mesh[i][1] - origins[i][1],
+            mesh[i][2] - origins[i][2],
+        ];
+
+        //Normalise the vector
+        const len = Math.sqrt(
+            normal[0] * normal[0] +
+                normal[1] * normal[1] +
+                normal[2] * normal[2],
+        );
+        normal[0] /= len;
+        normal[1] /= len;
+        normal[2] /= len;
+
         normals.push(normal);
     }
 

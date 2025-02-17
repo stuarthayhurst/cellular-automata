@@ -13,6 +13,7 @@ import gridFragSource from "./shaders/gridFrag.glsl?raw";
 
 import { sharedState } from "./sharedState.js";
 import { reactiveState } from "./reactiveState.svelte.js";
+import { meter } from "./tools.js";
 
 /**
  * Start the renderer.
@@ -227,7 +228,7 @@ export function startRenderer(context) {
         "widthPixels",
     );
 
-    //Setup the vertices for the grid
+    //Set up the vertices for the grid
     const gridData = new Float32Array([
         -1, 1, -1, -1, 1, -1, -1, 1, 1, -1, 1, 1,
     ]);
@@ -372,7 +373,7 @@ export function startRenderer(context) {
             gridBackgroundBorderColourLocation,
             backgroundBorderColour,
         );
-        context.uniform1i(gridAliasBackgroundLocation, aliasBackground);
+        context.uniform1i(gridAliasBackgroundLocation, Number(aliasBackground));
         context.uniform1i(gridWidthPixelsLocation, canvasWidth);
 
         context.bindBuffer(context.ARRAY_BUFFER, gridBuffer);
@@ -420,7 +421,7 @@ export function startRenderer(context) {
         if (
             lastCellWidth !== cellWidth ||
             lastCellHeight !== cellHeight ||
-            lastShape != shape
+            lastShape !== shape
         ) {
             //Generate the mesh data and fill its buffer
             let [meshData, vertexBlockSize] = generateMesh(
@@ -439,7 +440,6 @@ export function startRenderer(context) {
 
             //Create the texture, fill it with data and bind it
             cellDataTexture = createDataTexture(context, cellData);
-            context.bindTexture(context.TEXTURE_2D, cellDataTexture);
 
             lastCellWidth = cellWidth;
             lastCellHeight = cellHeight;
@@ -636,7 +636,7 @@ function setDataTexture(context, texture, rawData) {
     let data = new Uint32Array(size);
 
     for (let i = 0; i < rawData.length; i++) {
-        data[Math.floor(i / 32)] |= !!rawData[i] << i % 32;
+        data[i >> 5] |= !!rawData[i] << (i & 31);
     }
 
     //Data is treated as 4 separate cells per pixel
@@ -702,14 +702,13 @@ function generateMesh(height, width, shape) {
     }
 
     //Generate the mesh, indices and normals
-    const [mesh, origins, indices] = calculateMesh(
-        width,
-        height,
-        meshWidthScale,
-        meshHeightScale,
-        shape,
+    const [[mesh, origins, indices], meshT] = meter(() =>
+        calculateMesh(width, height, meshWidthScale, meshHeightScale, shape),
     );
-    const normals = calculateNormals(mesh, origins);
+
+    const [normals, normalsT] = meter(() => calculateNormals(mesh, origins));
+
+    console.log(`Mesh: ${meshT}ms. Normals: ${normalsT}ms.`);
 
     //Size of each buffer * their 3 uses * 4 bytes per element
     const bufferSize = (mesh.length + normals.length + indices.length) * 3 * 4;

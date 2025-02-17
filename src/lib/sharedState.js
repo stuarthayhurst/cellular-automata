@@ -19,6 +19,7 @@ don't need to be 'notified' of its value changing.
  * @property {Number} maxCells
  * @property {glMatrix.vec3} baseColour
  * @property {glMatrix.vec3} cellColour
+ * @property {glMatrix.vec3} unmappedColour
  * @property {glMatrix.vec3} aliasBaseColour
  * @property {glMatrix.vec3} aliasCellColour
  * @property {glMatrix.vec3} cameraPosition

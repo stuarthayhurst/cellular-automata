@@ -112,21 +112,25 @@ export function calculateMesh(
         let currentOrigin = skeletonOrigins[ringIndex];
         let nextOrigin = skeletonOrigins[(ringIndex + 1) % width];
 
-        //Save the first triangle and corresponding origins
-        mesh.push(skeleton[i]);
-        origins.push(currentOrigin);
-        mesh.push(skeleton[nextRingSamePoint]);
-        origins.push(nextOrigin);
-        mesh.push(skeleton[nextRingPrevPoint]);
-        origins.push(nextOrigin);
+        //Save first and second triangles
+        mesh.push(
+            skeleton[i],
+            skeleton[nextRingSamePoint],
+            skeleton[nextRingPrevPoint],
+            skeleton[i],
+            skeleton[nextRingPrevPoint],
+            skeleton[prevPoint],
+        );
 
-        //Save the second triangle and corresponding origins
-        mesh.push(skeleton[i]);
-        origins.push(currentOrigin);
-        mesh.push(skeleton[nextRingPrevPoint]);
-        origins.push(nextOrigin);
-        mesh.push(skeleton[prevPoint]);
-        origins.push(currentOrigin);
+        //Save corresponding origins
+        origins.push(
+            currentOrigin,
+            nextOrigin,
+            nextOrigin,
+            currentOrigin,
+            nextOrigin,
+            currentOrigin,
+        );
 
         //Calculate the raw grid index components
         let y = i % height;
@@ -137,8 +141,7 @@ export function calculateMesh(
         y = Math.floor(y / meshHeightScale);
         let gridIndex = y * Math.floor(width / meshWidthScale) + x;
 
-        indices.push(gridIndex);
-        indices.push(gridIndex);
+        indices.push(gridIndex, gridIndex);
     }
 
     return [mesh, origins, indices];
