@@ -439,7 +439,6 @@ export function startRenderer(context) {
 
             //Create the texture, fill it with data and bind it
             cellDataTexture = createDataTexture(context, cellData);
-            context.bindTexture(context.TEXTURE_2D, cellDataTexture);
 
             lastCellWidth = cellWidth;
             lastCellHeight = cellHeight;
