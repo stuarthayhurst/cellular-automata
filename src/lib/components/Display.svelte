@@ -3,8 +3,10 @@
     let canvas;
 
     export function updateCanvasResolution() {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight - 5;
+        const bound = canvas.getBoundingClientRect();
+
+        canvas.width = canvas.clientWidth;
+        canvas.height = window.innerHeight - bound.y;
     }
 </script>
 
