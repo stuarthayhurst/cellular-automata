@@ -14,6 +14,19 @@ let simulationInterval = null;
 let currentRule = gameOfLifeRule;
 
 /**
+ * ChangeRule function allows changing the existing rules dynamically
+ * @returns {void}
+ */
+export function changeRule () {
+    if (currentRule == briansBrainRule)
+    { 
+    currentRule = gameOfLifeRule; 
+    } else {
+    currentRule = briansBrainRule;
+    }
+
+}
+/**
  * Take one step forward.
  * @returns {void}
  */
