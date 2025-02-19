@@ -18,7 +18,7 @@ let currentRule = gameOfLifeRule;
  * @returns {void}
  */
 export function changeRule () {
-    if (currentRule == briansBrainRule)
+    if (currentRule === briansBrainRule)
     { 
     currentRule = gameOfLifeRule; 
     } else {
