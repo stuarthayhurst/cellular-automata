@@ -18,7 +18,11 @@ let currentRule = gameOfLifeRule;
  * @returns {void}
  */
 export function changeRule () {
+    
     currentRule = currentRule === briansBrainRule ? gameOfLifeRule : briansBrainRule;
+
+    //Update the UI using currentRuleState
+    reactiveState.currentRuleState = currentRule === briansBrainRule ? "Brian's Brain" : "Game of Life";
 
 }
 /**
