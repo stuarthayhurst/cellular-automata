@@ -7,8 +7,11 @@ import { gameOfLifeRule } from "./gameOfLife.js";
 const baseStepIntervalMillis = 200;
 let simulationInterval = null;
 
-// Use this to switch between the two rules
-let currentRule = briansBrainRule; // or gameOfLifeRule
+/**
+ * Use this to switch between the two rules
+ * Default rule
+ */
+let currentRule = gameOfLifeRule;
 
 /**
  * Take one step forward.
