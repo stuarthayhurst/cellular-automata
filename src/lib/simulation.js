@@ -18,12 +18,7 @@ let currentRule = gameOfLifeRule;
  * @returns {void}
  */
 export function changeRule () {
-    if (currentRule === briansBrainRule)
-    { 
-    currentRule = gameOfLifeRule; 
-    } else {
-    currentRule = briansBrainRule;
-    }
+    currentRule = currentRule === briansBrainRule ? gameOfLifeRule : briansBrainRule;
 
 }
 /**
@@ -55,7 +50,7 @@ export const nextCells = (cells, w, h, ruleFunction) =>
     cells.map((cellState, i) =>
         ruleFunction(
             cellState,
-            countMooresNeighbours(cells, w, h, ...indexToPos(i, w), ruleFunction),
+            countMooresNeighbours(cells, w, h, ...indexToPos(i, w))
         ),
     );
 
@@ -75,10 +70,13 @@ export function countMooresNeighbours(cells, w, h, x, y, ruleFunction) {
     for (let offsetX = -1; offsetX <= 1; offsetX++) {
         for (let offsetY = -1; offsetY <= 1; offsetY++) {
             if (offsetX === 0 && offsetY === 0) continue;
+
+            const neighbourState = cells[posToIndex(x + offsetX, y + offsetY, w, h)];
+
             if (ruleFunction === briansBrainRule) {
-                neighbours += cells[posToIndex(x + offsetX, y + offsetY, w, h)] === 1 ? 1 : 0;
+                neighbours += neighbourState === 1 ? 1 : 0;
             } else if (ruleFunction === gameOfLifeRule) {
-                neighbours += cells[posToIndex(x + offsetX, y + offsetY, w, h)];
+                neighbours += neighbourState;
             }
         }
     }
