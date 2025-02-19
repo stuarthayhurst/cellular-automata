@@ -56,7 +56,7 @@ export const nextCells = (cells, w, h, ruleFunction) =>
     cells.map((cellState, i) =>
         ruleFunction(
             cellState,
-            countMooresNeighbours(cells, w, h, ...indexToPos(i, w))
+            countMooresNeighbours(cells, w, h, ...indexToPos(i, w), ruleFunction)
         ),
     );
 
