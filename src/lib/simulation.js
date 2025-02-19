@@ -48,8 +48,10 @@ export function stepForward() {
  * @param {Uint8Array} cells - Array of cells.
  * @param {Number} w - Cell grid width.
  * @param {Number} h - Cell grid height.
+ * @param {Function} ruleFunction - The rule function to apply (e,g., gameOfLifeRule, briansBrainRule)
  * @returns {Uint8Array}
  */
+ 
 export const nextCells = (cells, w, h, ruleFunction) =>
     cells.map((cellState, i) =>
         ruleFunction(
@@ -66,8 +68,10 @@ export const nextCells = (cells, w, h, ruleFunction) =>
  * @param {Number} h - Cell grid height.
  * @param {Number} x - Cell X.
  * @param {Number} y - Cell Y.
+ * @param {Function} ruleFunction - The rule function to apply (e,g., gameOfLifeRule, briansBrainRule).
  * @returns {Number} - The number of Moore's Neighbours.
  */
+
 export function countMooresNeighbours(cells, w, h, x, y, ruleFunction) {
     let neighbours = 0;
 
