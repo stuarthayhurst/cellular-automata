@@ -305,7 +305,6 @@ export function startRenderer(context) {
         context.uniform3fv(cellColourLocation, cellColour);
         context.uniform3fv(unmappedColourLocation, unmappedColour);
 
-        //TODO: Swap to using element buffers and index the meshes
         context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
         context.drawArrays(context.TRIANGLES, 0, vertexCount);
     }
