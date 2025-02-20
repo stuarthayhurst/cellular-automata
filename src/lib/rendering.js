@@ -66,6 +66,9 @@ export function startRenderer(context) {
         "inCellIndex",
     );
 
+    //Stride - (1 * 1) * sizeof(int) + (2 * 3) * sizeof(float)
+    const meshStride = 7 * 4;
+
     //Create a vertex array object for the mesh, define the positions and normals
     let meshVAO = context.createVertexArray();
     context.bindVertexArray(meshVAO);
@@ -74,7 +77,7 @@ export function startRenderer(context) {
         3, //Number of components
         context.FLOAT, //Data type
         false, //Normalisation toggle
-        7 * 4, //Stride - (1 * 1) * sizeof(int) + (2 * 3) * sizeof(float)
+        meshStride,
         0, //Data offset - (0 * 3) * sizeof(float)
     );
     context.enableVertexAttribArray(meshAttribLocation);
@@ -83,7 +86,7 @@ export function startRenderer(context) {
         3, //Number of components
         context.FLOAT, //Data type
         false, //Normalisation toggle
-        7 * 4, //Stride - (1 * 1) * sizeof(int) + (2 * 3) * sizeof(float)
+        meshStride,
         3 * 4, //Data offset - (1 * 3) * sizeof(float)
     );
     context.enableVertexAttribArray(normalAttribLocation);
@@ -91,7 +94,7 @@ export function startRenderer(context) {
         cellIndexAttribLocation,
         1, //Number of components
         context.INT, //Data type
-        7 * 4, //Stride - (1 * 1) * sizeof(int) + (2 * 3) * sizeof(float)
+        meshStride,
         6 * 4, //Data offset - (2 * 3) * sizeof(float)
     );
     context.enableVertexAttribArray(cellIndexAttribLocation);
