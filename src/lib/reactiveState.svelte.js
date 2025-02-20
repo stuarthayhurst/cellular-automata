@@ -25,7 +25,7 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
  * @property {Boolean} dragging
  * @property {Array<ChangeT>} historyStack
  * @property {Array<ChangeT>} redoStack
- * @property {String} currentRuleState 
+ * @property {String} currentRuleState
  */
 /** @type {ReactiveState} */
 export const reactiveState = $state({

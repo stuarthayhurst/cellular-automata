@@ -17,13 +17,13 @@ let currentRule = gameOfLifeRule;
  * ChangeRule function allows changing the existing rules dynamically
  * @returns {void}
  */
-export function changeRule () {
-    
-    currentRule = currentRule === briansBrainRule ? gameOfLifeRule : briansBrainRule;
+export function changeRule() {
+    currentRule =
+        currentRule === briansBrainRule ? gameOfLifeRule : briansBrainRule;
 
     //Update the UI using currentRuleState
-    reactiveState.currentRuleState = currentRule === briansBrainRule ? "Brian's Brain" : "Game of Life";
-
+    reactiveState.currentRuleState =
+        currentRule === briansBrainRule ? "Brian's Brain" : "Game of Life";
 }
 /**
  * Take one step forward.
@@ -36,8 +36,7 @@ export function stepForward() {
         sharedState.cells,
         reactiveState.cellGridWidth,
         reactiveState.cellGridHeight,
-        currentRule
-    
+        currentRule,
     );
 
     reactiveState.atStart = false;
@@ -51,15 +50,20 @@ export function stepForward() {
  * @param {Function} ruleFunction - The rule function to apply (e,g., gameOfLifeRule, briansBrainRule)
  * @returns {Uint8Array}
  */
- 
+
 export const nextCells = (cells, w, h, ruleFunction) =>
     cells.map((cellState, i) =>
         ruleFunction(
             cellState,
-            countMooresNeighbours(cells, w, h, ...indexToPos(i, w), ruleFunction)
+            countMooresNeighbours(
+                cells,
+                w,
+                h,
+                ...indexToPos(i, w),
+                ruleFunction,
+            ),
         ),
     );
-
 
 /**
  * Count Moore's Neighbours
@@ -79,7 +83,8 @@ export function countMooresNeighbours(cells, w, h, x, y, ruleFunction) {
         for (let offsetY = -1; offsetY <= 1; offsetY++) {
             if (offsetX === 0 && offsetY === 0) continue;
 
-            const neighbourState = cells[posToIndex(x + offsetX, y + offsetY, w, h)];
+            const neighbourState =
+                cells[posToIndex(x + offsetX, y + offsetY, w, h)];
 
             if (ruleFunction === briansBrainRule) {
                 neighbours += neighbourState === 1 ? 1 : 0;
