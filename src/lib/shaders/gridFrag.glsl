@@ -132,7 +132,7 @@ void main() {
     //Convert coordinate into an index, look up in the data texture
     int index = gridIndexX + (((gridCellHeight - 1) - gridIndexY) * gridCellWidth);
     uint alive = fetchDataBit(index, gridCellDataTexture);
-    if (alive > uint(0)) {
+    if (alive > 0u) {
         if (isBackground) {
             outColour = vec4(aliasCellColour, 1.0);
         } else {

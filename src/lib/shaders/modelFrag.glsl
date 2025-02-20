@@ -19,7 +19,7 @@ float specularStrength = 0.125;
 
 void main() {
     //Check if the cell is active, return early if it is
-    if (alive > uint(0)) {
+    if (alive > 0u) {
         outColour = vec4(cellColour, 1.0);
         return;
     }
