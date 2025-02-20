@@ -61,13 +61,17 @@ export function startRenderer(context) {
         modelProgram,
         "inNormal",
     );
+    const originAttribLocation = context.getAttribLocation(
+        modelProgram,
+        "inOrigin",
+    );
     const cellIndexAttribLocation = context.getAttribLocation(
         modelProgram,
         "inCellIndex",
     );
 
-    //Stride - (1 * 1) * sizeof(int) + (2 * 3) * sizeof(float)
-    const meshStride = 7 * 4;
+    //Stride - (1 * 1) * sizeof(int) + (3 * 3) * sizeof(float)
+    const meshStride = 10 * 4;
 
     //Create a vertex array object for the mesh, define the positions and normals
     let meshVAO = context.createVertexArray();
@@ -90,12 +94,21 @@ export function startRenderer(context) {
         3 * 4, //Data offset - (1 * 3) * sizeof(float)
     );
     context.enableVertexAttribArray(normalAttribLocation);
+    context.vertexAttribPointer(
+        originAttribLocation,
+        3, //Number of components
+        context.FLOAT, //Data type
+        false, //Normalisation toggle
+        meshStride,
+        6 * 4, //Data offset - (2 * 3) * sizeof(float)
+    );
+    context.enableVertexAttribArray(originAttribLocation);
     context.vertexAttribIPointer(
         cellIndexAttribLocation,
         1, //Number of components
         context.INT, //Data type
         meshStride,
-        6 * 4, //Data offset - (2 * 3) * sizeof(float)
+        9 * 4, //Data offset - (3 * 3) * sizeof(float)
     );
     context.enableVertexAttribArray(cellIndexAttribLocation);
 
@@ -124,6 +137,14 @@ export function startRenderer(context) {
     const unmappedColourLocation = context.getUniformLocation(
         modelProgram,
         "unmappedColour",
+    );
+    const activeCellModeLocation = context.getUniformLocation(
+        modelProgram,
+        "activeCellMode",
+    );
+    const raisedCellHeightLocation = context.getUniformLocation(
+        modelProgram,
+        "raisedCellHeight",
     );
 
     //Compile the grid shaders
@@ -261,6 +282,8 @@ export function startRenderer(context) {
      * @param {glMatrix.vec3} baseColour
      * @param {glMatrix.vec3} cellColour
      * @param {glMatrix.vec3} unmappedColour
+     * @param {Boolean} raiseCells
+     * @param {Number} raisedCellHeight
      * @returns {void}
      */
     function drawMesh(
@@ -271,6 +294,8 @@ export function startRenderer(context) {
         baseColour,
         cellColour,
         unmappedColour,
+        raiseCells,
+        raisedCellHeight,
     ) {
         //Use the model shader and the vertex array object
         context.useProgram(modelProgram);
@@ -307,8 +332,22 @@ export function startRenderer(context) {
         context.uniform3fv(baseColourLocation, baseColour);
         context.uniform3fv(cellColourLocation, cellColour);
         context.uniform3fv(unmappedColourLocation, unmappedColour);
+        context.uniform1f(raisedCellHeightLocation, raisedCellHeight);
 
+        /*
+         * Tell shaders what to do with active cells and then render
+         * activeCellMode 0 - Render active cells as normal
+         * activeCellMode 1 - Render active cells as a shadow
+         * activeCellMode 2 - Render active cells as normal, but raised
+         *   - Skip dead cells entirely
+         */
         context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
+        context.uniform1i(activeCellModeLocation, 0);
+        if (raiseCells) {
+            context.uniform1i(activeCellModeLocation, 1);
+            context.drawArrays(context.TRIANGLES, 0, vertexCount);
+            context.uniform1i(activeCellModeLocation, 2);
+        }
         context.drawArrays(context.TRIANGLES, 0, vertexCount);
     }
 
@@ -394,6 +433,8 @@ export function startRenderer(context) {
         const unmappedColour = sharedState.unmappedColour;
         const aliasBaseColour = sharedState.aliasBaseColour;
         const aliasCellColour = sharedState.aliasCellColour;
+        const raiseCells = sharedState.raiseCells;
+        const raisedCellHeight = sharedState.raisedCellHeight;
         const shape = reactiveState.shape;
         const interfaceMode = reactiveState.interfaceMode;
 
@@ -463,6 +504,8 @@ export function startRenderer(context) {
                 baseColour,
                 cellColour,
                 unmappedColour,
+                raiseCells,
+                raisedCellHeight,
             );
         } else {
             drawGrid(
@@ -684,7 +727,7 @@ function createDataTexture(context, data) {
 
 /**
  * Generate interleaved mesh, normal and index data for rendering
- * Format: vec3f32(position), vec3f32(normal) int32(index)
+ * Format: vec3f32(position), vec3f32(normal), vec3f32(origin), int32(index)
  * @param {Number} height
  * @param {Number} width
  * @param {String} shape
@@ -703,7 +746,7 @@ function generateMesh(height, width, shape) {
         meshWidthScale = Math.ceil(minDimension / width);
     }
 
-    //Generate the mesh, indices and normals
+    //Generate the mesh, origins, indices and normals
     const [[mesh, origins, indices], meshT] = meter(() =>
         calculateMesh(width, height, meshWidthScale, meshHeightScale, shape),
     );
@@ -713,8 +756,11 @@ function generateMesh(height, width, shape) {
     console.log(`Mesh: ${meshT}ms. Normals: ${normalsT}ms.`);
 
     //Size of each buffer * their 3 uses * 4 bytes per element
-    const bufferSize = (mesh.length + normals.length + indices.length) * 3 * 4;
-    const vertexBlockSize = 4 * 7;
+    const bufferSize =
+        (mesh.length + normals.length + origins.length + indices.length) *
+        3 *
+        4;
+    const vertexBlockSize = 4 * 10;
 
     let meshData = new ArrayBuffer(bufferSize);
     let floatView = new Float32Array(meshData);
@@ -723,14 +769,18 @@ function generateMesh(height, width, shape) {
     //Write the data to the mesh array using a correctly typed buffer view
     for (let i = 0; i < mesh.length; i++) {
         for (let j = 0; j < 3; j++) {
-            floatView[i * 7 + j] = mesh[i][j];
+            floatView[i * 10 + j] = mesh[i][j];
         }
 
         for (let j = 0; j < 3; j++) {
-            floatView[i * 7 + j + 3] = normals[i][j];
+            floatView[i * 10 + j + 3] = normals[i][j];
         }
 
-        intView[i * 7 + 6] = indices[Math.floor(i / 3)];
+        for (let j = 0; j < 3; j++) {
+            floatView[i * 10 + j + 6] = origins[i][j];
+        }
+
+        intView[i * 10 + 9] = indices[Math.floor(i / 3)];
     }
 
     return [meshData, vertexBlockSize];

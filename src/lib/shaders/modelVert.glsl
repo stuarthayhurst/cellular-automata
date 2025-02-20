@@ -1,8 +1,10 @@
 #version 300 es
 precision highp usampler2D;
+precision highp int;
 
 in vec3 inPosition;
 in vec3 inNormal;
+in vec3 inOrigin;
 in int inCellIndex;
 
 out vec3 fragPos;
@@ -13,6 +15,8 @@ flat out uint mapped;
 uniform mat4 MVP;
 uniform mat4 modelMatrix;
 uniform usampler2D cellDataTexture;
+uniform int activeCellMode;
+uniform float raisedCellHeight;
 
 //Shared between modelVert.glsl and gridFrag.glsl
 uint fetchDataBit(int cellIndex, usampler2D dataTexture) {
@@ -62,7 +66,13 @@ void main() {
         mapped = 1u;
     }
 
+    //Raise the cells if we're in the second pass
+    vec3 position = inPosition;
+    if (activeCellMode == 2 && alive > 0u) {
+        position = position + normalize(position - inOrigin) * raisedCellHeight;
+    }
+
     normal = mat3(transpose(inverse(modelMatrix))) * inNormal;
-    fragPos = vec3(modelMatrix * vec4(inPosition, 1.0));
-    gl_Position = MVP * vec4(inPosition, 1.0);
+    fragPos = vec3(modelMatrix * vec4(position, 1.0));
+    gl_Position = MVP * vec4(position, 1.0);
 }
