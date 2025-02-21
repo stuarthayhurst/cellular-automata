@@ -27,11 +27,6 @@ void main() {
         return;
     }
 
-    //Discard non-raised cells in the second pass
-    if (activeCellMode == 2 && alive == 0u) {
-        discard;
-    }
-
     vec3 lightPos = cameraPos;
 
     //Diffuse lighting

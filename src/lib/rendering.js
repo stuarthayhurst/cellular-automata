@@ -260,7 +260,7 @@ export function startRenderer(context) {
 
     //Enable depth testing
     context.enable(context.DEPTH_TEST);
-    context.depthFunc(context.LEQUAL);
+    context.depthFunc(context.LESS);
 
     //Enable back-face culling
     context.enable(context.CULL_FACE);
