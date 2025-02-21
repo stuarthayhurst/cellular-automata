@@ -1,11 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { nextCellState } from '../src/lib/gameOfLife.js';
-
-import {
-    stepForward,
-    nextCellState,
-    countMooresNeighbours,
-} from "../src/lib/simulation.js";
+import { nextCellState } from "../src/lib/gameOfLife.js";
+import { stepForward, countMooresNeighbours } from "../src/lib/simulation.js";
 import { sharedState } from "../src/lib/sharedState.js";
 import { reactiveState } from "../src/lib/reactiveState.svelte.js";
 
