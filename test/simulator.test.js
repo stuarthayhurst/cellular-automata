@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { nextCellState } from '../src/lib/gameOfLife.js';
 
 import {
     stepForward,
