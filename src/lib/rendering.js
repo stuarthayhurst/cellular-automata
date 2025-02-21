@@ -342,13 +342,19 @@ export function startRenderer(context) {
          *   - Skip dead cells entirely
          */
         context.bindBuffer(context.ARRAY_BUFFER, meshBuffer);
-        context.uniform1i(activeCellModeLocation, 0);
         if (raiseCells) {
             context.uniform1i(activeCellModeLocation, 1);
             context.drawArrays(context.TRIANGLES, 0, vertexCount);
+
+            //Disable backface culling for second pass
+            context.disable(context.CULL_FACE);
             context.uniform1i(activeCellModeLocation, 2);
+            context.drawArrays(context.TRIANGLES, 0, vertexCount);
+            context.enable(context.CULL_FACE);
+        } else {
+            context.uniform1i(activeCellModeLocation, 0);
+            context.drawArrays(context.TRIANGLES, 0, vertexCount);
         }
-        context.drawArrays(context.TRIANGLES, 0, vertexCount);
     }
 
     /**
