@@ -1,11 +1,30 @@
 import { reactiveState } from "./reactiveState.svelte.js";
 import { sharedState, saveStartState } from "./sharedState.js";
 import { indexToPos, posToIndex } from "./tools.js";
+import { briansBrainRule } from "./briansBrain.js";
+import { gameOfLifeRule } from "./gameOfLife.js";
 
 const baseStepIntervalMillis = 200;
-
 let simulationInterval = null;
 
+/**
+ * Use this to switch between the two rules
+ * Default rule
+ */
+let currentRule = gameOfLifeRule;
+
+/**
+ * ChangeRule function allows changing the existing rules dynamically
+ * @returns {void}
+ */
+export function changeRule() {
+    currentRule =
+        currentRule === briansBrainRule ? gameOfLifeRule : briansBrainRule;
+
+    //Update the UI using currentRuleState
+    reactiveState.currentRuleState =
+        currentRule === briansBrainRule ? "Brian's Brain" : "Game of Life";
+}
 /**
  * Take one step forward.
  * @returns {void}
@@ -17,6 +36,7 @@ export function stepForward() {
         sharedState.cells,
         reactiveState.cellGridWidth,
         reactiveState.cellGridHeight,
+        currentRule,
     );
 
     reactiveState.atStart = false;
@@ -27,27 +47,23 @@ export function stepForward() {
  * @param {Uint8Array} cells - Array of cells.
  * @param {Number} w - Cell grid width.
  * @param {Number} h - Cell grid height.
+ * @param {Function} ruleFunction - The rule function to apply (e,g., gameOfLifeRule, briansBrainRule)
  * @returns {Uint8Array}
  */
-export const nextCells = (cells, w, h) =>
+
+export const nextCells = (cells, w, h, ruleFunction) =>
     cells.map((cellState, i) =>
-        nextCellState(
+        ruleFunction(
             cellState,
-            countMooresNeighbours(cells, w, h, ...indexToPos(i, w)),
+            countMooresNeighbours(
+                cells,
+                w,
+                h,
+                ...indexToPos(i, w),
+                ruleFunction,
+            ),
         ),
     );
-
-/**
- * Calculate the next state of a cell in Conway's game of life.
- * @param {0|1} cellState - The current cell state.
- * @param {Number} aliveNeighbours - The number of alive Moore's neighbours of the cell.
- * @returns {0|1} - The new cell state.
- */
-export const nextCellState = (cellState, aliveNeighbours) =>
-    (cellState === 1 && (aliveNeighbours === 2 || aliveNeighbours === 3)) ||
-    (cellState === 0 && aliveNeighbours === 3)
-        ? 1
-        : 0;
 
 /**
  * Count Moore's Neighbours
@@ -56,15 +72,23 @@ export const nextCellState = (cellState, aliveNeighbours) =>
  * @param {Number} h - Cell grid height.
  * @param {Number} x - Cell X.
  * @param {Number} y - Cell Y.
+ * @param {Function} ruleFunction - The rule function to apply (e,g., gameOfLifeRule, briansBrainRule).
  * @returns {Number} - The number of Moore's Neighbours.
  */
-export function countMooresNeighbours(cells, w, h, x, y) {
+
+export function countMooresNeighbours(cells, w, h, x, y, ruleFunction) {
     let neighbours = 0;
 
     for (let offsetX = -1; offsetX <= 1; offsetX++) {
         for (let offsetY = -1; offsetY <= 1; offsetY++) {
             if (offsetX === 0 && offsetY === 0) continue;
-            neighbours += cells[posToIndex(x + offsetX, y + offsetY, w, h)];
+
+            const neighbourX = (x + offsetX + w) % w;
+            const neighbourY = (y + offsetY + h) % h;
+            const neighbourState =
+                cells[posToIndex(neighbourX, neighbourY, w, h)];
+
+            neighbours += neighbourState === 1 ? 1 : 0;
         }
     }
 
