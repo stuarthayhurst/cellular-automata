@@ -15,3 +15,13 @@ export const gameOfLifeRule = (cellState, aliveNeighbours) =>
     (cellState === 0 && aliveNeighbours === 3)
         ? 1
         : 0;
+
+export function nextCellState(currentState, aliveNeighbours) {
+    if (currentState === 1) {
+        // cell is alive
+        return aliveNeighbours === 2 || aliveNeighbours === 3 ? 1 : 0;
+    } else {
+        // cell is dead
+        return aliveNeighbours === 3 ? 1 : 0;
+    }
+}

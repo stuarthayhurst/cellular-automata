@@ -83,13 +83,15 @@ export function countMooresNeighbours(cells, w, h, x, y, ruleFunction) {
         for (let offsetY = -1; offsetY <= 1; offsetY++) {
             if (offsetX === 0 && offsetY === 0) continue;
 
+            const neighbourX = (x + offsetX + w) % w;
+            const neighbourY = (y + offsetY + h) % h;
             const neighbourState =
-                cells[posToIndex(x + offsetX, y + offsetY, w, h)];
+                cells[posToIndex(neighbourX, neighbourY, w, h)];
 
             if (ruleFunction === briansBrainRule) {
                 neighbours += neighbourState === 1 ? 1 : 0;
             } else if (ruleFunction === gameOfLifeRule) {
-                neighbours += neighbourState;
+                neighbours += neighbourState === 1 ? 1 : 0;
             }
         }
     }
