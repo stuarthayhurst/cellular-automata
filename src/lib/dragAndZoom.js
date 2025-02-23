@@ -1,7 +1,7 @@
 import * as glMatrix from "gl-matrix";
 import { sharedState } from "./sharedState.js";
 import { reactiveState } from "./reactiveState.svelte.js";
-import { absMod, clientToCanvasSpace } from "./tools.js";
+import { absMod, clientToCanvasSpace, clamp } from "./tools.js";
 
 const primaryButton = 0;
 const secondaryButton = 2;
@@ -10,7 +10,7 @@ const thetaMax = 2 * Math.PI; // Full rotation around the horizontal axis (360 d
 const phiMax = Math.PI; // Vertical rotation limited to half a sphere (180 degrees)
 const dragSensitivity = 0.005;
 const zoomSpeed = 0.002;
-const minCameraDistance = 0.1;
+const minCameraDistance = (shape) => (shape === "sphere" ? 1.15 : 0.1);
 
 let dragRefTheta = 0;
 let dragRefPhi = 0;
@@ -159,7 +159,7 @@ export function setUpDragAndZoom(canvas) {
      */
     const onwheel_3d_view = (wheel) => {
         cameraDistance = Math.max(
-            minCameraDistance,
+            minCameraDistance(reactiveState.shape),
             cameraDistance + wheel * zoomSpeed,
         );
         sharedState.cameraPosition = cameraPosition(theta, phi, cameraDistance);
@@ -184,6 +184,19 @@ export function setUpDragAndZoom(canvas) {
 }
 
 /**
+ * If the camera distance is below the minimum,
+ * update the camera position with the new distance.
+ * @returns {void}
+ */
+export function bumpZoom() {
+    const minDistance = minCameraDistance(reactiveState.shape);
+    if (cameraDistance < minDistance) {
+        cameraDistance = minDistance;
+        sharedState.cameraPosition = cameraPosition(theta, phi, cameraDistance);
+    }
+}
+
+/**
  * Calculate camera position.
  * @param {Number} theta
  * @param {Number} phi
@@ -196,12 +209,3 @@ const cameraPosition = (theta, phi, cameraDistance) =>
         Math.cos(phi) * cameraDistance,
         -Math.sin(theta) * Math.sin(phi) * cameraDistance, // Account for WebGL being right-handed with -z
     );
-
-/**
- * Limit `value` to be no less than `min` and no greater than `max`, inclusively.
- * @param {Number}  min
- * @param {Number} value
- * @param {Number} max
- * @returns {Number}
- */
-const clamp = (min, value, max) => Math.min(Math.max(min, value), max);
