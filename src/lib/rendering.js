@@ -450,7 +450,7 @@ export function startRenderer(context) {
         const borderSize = sharedState.borderSize;
         const borderColour = sharedState.borderColour;
         const backgroundBorderColour = sharedState.backgroundBorderColour;
-        const aliasBackground = sharedState.aliasBackground;
+        const aliasBackground = reactiveState.aliasBackground;
 
         //Fetch simulation data
         const cellWidth = reactiveState.cellGridWidth;
