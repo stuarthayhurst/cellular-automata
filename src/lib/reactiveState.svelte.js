@@ -25,7 +25,8 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
  * @property {Boolean} dragging
  * @property {Array<ChangeT>} historyStack
  * @property {Array<ChangeT>} redoStack
- * @property {String} currentRuleState
+ * @property {"Game of Life"|"Brian's Brain"} simulationRule
+ * @property {Boolean} aliasBackground - 2D mode - Toggle aliasing the background tiles
  */
 /** @type {ReactiveState} */
 export const reactiveState = $state({
@@ -39,5 +40,6 @@ export const reactiveState = $state({
     dragging: false,
     historyStack: [],
     redoStack: [],
-    currentRuleState: "Game of Life",
+    simulationRule: "Game of Life",
+    aliasBackground: true,
 });

@@ -29,7 +29,6 @@ don't need to be 'notified' of its value changing.
  * @property {Number} borderSize - 2D mode
  * @property {glMatrix.vec3} borderColour - 2D mode
  * @property {glMatrix.vec3} backgroundBorderColour - 2D mode
- * @property {Boolean} aliasBackground - 2D mode - Toggle aliasing the background tiles
  */
 /** @type {SharedState} */
 export const sharedState = {
@@ -54,7 +53,6 @@ export const sharedState = {
     borderSize: 0.015,
     borderColour: colour_rgb(0, 0, 0),
     backgroundBorderColour: colour_rgb(77, 77, 77),
-    aliasBackground: true,
 };
 
 export function saveStartState() {

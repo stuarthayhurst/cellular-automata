@@ -7,22 +7,16 @@ import { gameOfLifeRule } from "./gameOfLife.js";
 const baseStepIntervalMillis = 200;
 let simulationInterval = null;
 
-/**
- * Use this to switch between the two rules
- * Default rule
- */
 let currentRule = gameOfLifeRule;
 
 /**
- * ChangeRule function allows changing the existing rules dynamically
  * @returns {void}
  */
 export function changeRule() {
     currentRule =
         currentRule === briansBrainRule ? gameOfLifeRule : briansBrainRule;
 
-    //Update the UI using currentRuleState
-    reactiveState.currentRuleState =
+    reactiveState.simulationRule =
         currentRule === briansBrainRule ? "Brian's Brain" : "Game of Life";
 }
 /**
@@ -50,7 +44,6 @@ export function stepForward() {
  * @param {Function} ruleFunction - The rule function to apply (e,g., gameOfLifeRule, briansBrainRule)
  * @returns {Uint8Array}
  */
-
 export const nextCells = (cells, w, h, ruleFunction) =>
     cells.map((cellState, i) =>
         ruleFunction(
