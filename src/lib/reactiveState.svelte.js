@@ -30,6 +30,7 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
  * @property {Array<ChangeT>} redoStack
  * @property {function(Number, Number):Number} simulationRule
  * @property {Boolean} aliasBackground - 2D mode - Toggle aliasing the background tiles
+ * @property {"blue"|"pink"|"purple"|"yellow"|"mint"|"white"|"coral"|"black"|"green"|"lavender"|"custom"} selectedColour
  */
 
 /** @type {ReactiveState} */
@@ -46,6 +47,7 @@ export const reactiveState = $state({
     redoStack: [],
     simulationRule: gameOfLifeRule,
     aliasBackground: true,
+    selectedColour: "blue",
 });
 
 sharedState.cells = new Uint8Array(
