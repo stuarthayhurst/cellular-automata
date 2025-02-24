@@ -7,18 +7,6 @@ import { gameOfLifeRule } from "./gameOfLife.js";
 const baseStepIntervalMillis = 200;
 let simulationInterval = null;
 
-let currentRule = gameOfLifeRule;
-
-/**
- * @returns {void}
- */
-export function changeRule() {
-    currentRule =
-        currentRule === briansBrainRule ? gameOfLifeRule : briansBrainRule;
-
-    reactiveState.simulationRule =
-        currentRule === briansBrainRule ? "Brian's Brain" : "Game of Life";
-}
 /**
  * Take one step forward.
  * @returns {void}
@@ -30,7 +18,7 @@ export function stepForward() {
         sharedState.cells,
         reactiveState.cellGridWidth,
         reactiveState.cellGridHeight,
-        currentRule,
+        reactiveState.simulationRule,
     );
 
     reactiveState.atStart = false;
@@ -41,20 +29,14 @@ export function stepForward() {
  * @param {Uint8Array} cells - Array of cells.
  * @param {Number} w - Cell grid width.
  * @param {Number} h - Cell grid height.
- * @param {Function} ruleFunction - The rule function to apply (e,g., gameOfLifeRule, briansBrainRule)
+ * @param {function(Number, Number):Number} nextCell - The rule function to apply (e,g., gameOfLifeRule, briansBrainRule)
  * @returns {Uint8Array}
  */
-export const nextCells = (cells, w, h, ruleFunction) =>
+export const nextCells = (cells, w, h, nextCell) =>
     cells.map((cellState, i) =>
-        ruleFunction(
+        nextCell(
             cellState,
-            countMooresNeighbours(
-                cells,
-                w,
-                h,
-                ...indexToPos(i, w),
-                ruleFunction,
-            ),
+            countMooresNeighbours(cells, w, h, ...indexToPos(i, w)),
         ),
     );
 
@@ -65,11 +47,10 @@ export const nextCells = (cells, w, h, ruleFunction) =>
  * @param {Number} h - Cell grid height.
  * @param {Number} x - Cell X.
  * @param {Number} y - Cell Y.
- * @param {Function} ruleFunction - The rule function to apply (e,g., gameOfLifeRule, briansBrainRule).
  * @returns {Number} - The number of Moore's Neighbours.
  */
 
-export function countMooresNeighbours(cells, w, h, x, y, ruleFunction) {
+export function countMooresNeighbours(cells, w, h, x, y) {
     let neighbours = 0;
 
     for (let offsetX = -1; offsetX <= 1; offsetX++) {
