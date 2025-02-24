@@ -1,8 +1,6 @@
 import { reactiveState } from "./reactiveState.svelte.js";
 import { sharedState, saveStartState } from "./sharedState.js";
 import { indexToPos, posToIndex } from "./tools.js";
-import { briansBrainRule } from "./briansBrain.js";
-import { gameOfLifeRule } from "./gameOfLife.js";
 
 const baseStepIntervalMillis = 200;
 let simulationInterval = null;
