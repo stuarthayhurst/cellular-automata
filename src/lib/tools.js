@@ -42,6 +42,15 @@ export const clientToCanvasSpace = (canvas, clientX, clientY) => {
 export const absMod = (x, m) => ((x % m) + m) % m;
 
 /**
+ * Limit `value` to be no less than `min` and no greater than `max`, inclusively.
+ * @param {Number}  min
+ * @param {Number} value
+ * @param {Number} max
+ * @returns {Number}
+ */
+export const clamp = (min, value, max) => Math.min(Math.max(min, value), max);
+
+/**
  * Convert 0-255 RGB to 0-1 Vec3 RGB.
  * @param {Number} r
  * @param {Number} g

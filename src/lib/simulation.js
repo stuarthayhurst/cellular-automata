@@ -1,24 +1,10 @@
 import { reactiveState } from "./reactiveState.svelte.js";
 import { sharedState, saveStartState } from "./sharedState.js";
 import { indexToPos, posToIndex } from "./tools.js";
-import { briansBrainRule } from "./briansBrain.js";
-import { gameOfLifeRule } from "./gameOfLife.js";
 
 const baseStepIntervalMillis = 200;
 let simulationInterval = null;
 
-let currentRule = gameOfLifeRule;
-
-/**
- * @returns {void}
- */
-export function changeRule() {
-    currentRule =
-        currentRule === briansBrainRule ? gameOfLifeRule : briansBrainRule;
-
-    reactiveState.simulationRule =
-        currentRule === briansBrainRule ? "Brian's Brain" : "Game of Life";
-}
 /**
  * Take one step forward.
  * @returns {void}
@@ -30,7 +16,7 @@ export function stepForward() {
         sharedState.cells,
         reactiveState.cellGridWidth,
         reactiveState.cellGridHeight,
-        currentRule,
+        reactiveState.simulationRule,
     );
 
     reactiveState.atStart = false;
@@ -41,20 +27,14 @@ export function stepForward() {
  * @param {Uint8Array} cells - Array of cells.
  * @param {Number} w - Cell grid width.
  * @param {Number} h - Cell grid height.
- * @param {Function} ruleFunction - The rule function to apply (e,g., gameOfLifeRule, briansBrainRule)
+ * @param {function(Number, Number):Number} nextCell - The rule function to apply (e,g., gameOfLifeRule, briansBrainRule)
  * @returns {Uint8Array}
  */
-export const nextCells = (cells, w, h, ruleFunction) =>
+export const nextCells = (cells, w, h, nextCell) =>
     cells.map((cellState, i) =>
-        ruleFunction(
+        nextCell(
             cellState,
-            countMooresNeighbours(
-                cells,
-                w,
-                h,
-                ...indexToPos(i, w),
-                ruleFunction,
-            ),
+            countMooresNeighbours(cells, w, h, ...indexToPos(i, w)),
         ),
     );
 
@@ -65,11 +45,9 @@ export const nextCells = (cells, w, h, ruleFunction) =>
  * @param {Number} h - Cell grid height.
  * @param {Number} x - Cell X.
  * @param {Number} y - Cell Y.
- * @param {Function} ruleFunction - The rule function to apply (e,g., gameOfLifeRule, briansBrainRule).
  * @returns {Number} - The number of Moore's Neighbours.
  */
-
-export function countMooresNeighbours(cells, w, h, x, y, ruleFunction) {
+export function countMooresNeighbours(cells, w, h, x, y) {
     let neighbours = 0;
 
     for (let offsetX = -1; offsetX <= 1; offsetX++) {
@@ -87,6 +65,44 @@ export function countMooresNeighbours(cells, w, h, x, y, ruleFunction) {
 
     return neighbours;
 }
+
+/**
+ * Conway's Game of Life
+ *
+ * - Any live cell with 2 or 3 live neighbours survives.
+ * - Any dead cell with exactly 3 live neighbours becomes a live cell.
+ * - All other live cells die in the next generation.
+ *
+ * @param {0|1} cellState - The current cell state.
+ * @param {Number} aliveNeighbours - The number of alive Moore's neighbours of the cell.
+ * @returns {0|1} - Next cell state.
+ */
+export const gameOfLifeRule = (cellState, aliveNeighbours) =>
+    (cellState === 1 && (aliveNeighbours === 2 || aliveNeighbours === 3)) ||
+    (cellState === 0 && aliveNeighbours === 3)
+        ? 1
+        : 0;
+
+/**
+ * Brian's Brain
+ *
+ * - Dead (0) -> Alive (1) if exactly 2 neighbours are alive (Birth)
+ * - Alive (1) -> Dying (2)
+ * - Dying (2) -> Dead (0)
+ *
+ * @param {0|1|2} cellState
+ * @param {Number} aliveNeighbours
+ * @returns {0|1|2} - Next cell state.
+ */
+export const briansBrainRule = (cellState, aliveNeighbours) => {
+    if (cellState === 0 && aliveNeighbours === 2) {
+        return 1;
+    } else if (cellState === 1) {
+        return 2;
+    } else if (cellState === 2) {
+        return 0;
+    }
+};
 
 /**
  * Set cell grid width.

@@ -10,6 +10,7 @@
         mayRedo,
         clearGrid,
     } from "../cellEditor.js";
+    import { bumpZoom } from "../dragAndZoom.js";
 
     let { togglePaused, stepForward, toggleShowSettings } = $props();
 
@@ -72,9 +73,11 @@
                 title={reactiveState.shape === "sphere"
                     ? "See Torus"
                     : "See Sphere"}
-                onclick={() =>
-                    (reactiveState.shape =
-                        reactiveState.shape === "sphere" ? "torus" : "sphere")}
+                onclick={() => {
+                    reactiveState.shape =
+                        reactiveState.shape === "sphere" ? "torus" : "sphere";
+                    bumpZoom();
+                }}
             >
                 <Icon icon="fa-solid:shapes" width="20" height="20" />
             </button>

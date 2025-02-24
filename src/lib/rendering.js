@@ -332,6 +332,7 @@ export function startRenderer(context) {
         context.uniform3fv(baseColourLocation, baseColour);
         context.uniform3fv(cellColourLocation, cellColour);
         context.uniform3fv(unmappedColourLocation, unmappedColour);
+        // noinspection JSSuspiciousNameCombination
         context.uniform1f(raisedCellHeightLocation, raisedCellHeight);
 
         /*

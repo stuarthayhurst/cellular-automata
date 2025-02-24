@@ -1,3 +1,6 @@
+import { gameOfLifeRule } from "./simulation.js";
+import { sharedState } from "./sharedState.js";
+
 /*
 `reactiveState` contains state that needs universal reactivity (provided by
 Svelte with `$state()`), i.e. UI components need to be 'notified' of changes.
@@ -6,9 +9,9 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
 
 /**
  * @typedef {{
- * setCellsAlive: Set<Number>,
- * setCellsDead: Set<Number>,
- * actionName: String
+ *   setCellsAlive: Set<Number>,
+ *   setCellsDead: Set<Number>,
+ *   actionName: String
  * }} ChangeT
  */
 
@@ -25,10 +28,11 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
  * @property {Boolean} dragging
  * @property {Array<ChangeT>} historyStack
  * @property {Array<ChangeT>} redoStack
- * @property {"Game of Life"|"Brian's Brain"} simulationRule
+ * @property {function(Number, Number):Number} simulationRule
  * @property {Boolean} aliasBackground - 2D mode - Toggle aliasing the background tiles
  * @property {"blue"|"pink"|"purple"|"yellow"|"mint"|"white"|"coral"|"black"|"green"|"lavender"} selectedColour
  */
+
 /** @type {ReactiveState} */
 export const reactiveState = $state({
     paused: true,
@@ -41,7 +45,11 @@ export const reactiveState = $state({
     dragging: false,
     historyStack: [],
     redoStack: [],
-    simulationRule: "Game of Life",
+    simulationRule: gameOfLifeRule,
     aliasBackground: true,
     selectedColour: "blue",
 });
+
+sharedState.cells = new Uint8Array(
+    reactiveState.cellGridWidth * reactiveState.cellGridHeight,
+);
