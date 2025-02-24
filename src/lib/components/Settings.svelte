@@ -466,12 +466,15 @@
         background: rgba(0, 0, 0, 0.1);
         padding: 15px;
         border-radius: 12px;
+        max-width: 360px;
+        box-sizing: border-box;
     }
 
     .colour-controls .radio-group {
         justify-content: center;
-        gap: 15px;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
     }
 
     .colour-controls .radio-label {
@@ -546,6 +549,9 @@
     /* custom colour */
     .colour-picker {
         opacity: 0;
+        position: absolute;
+        width: 100%;
+        height: 100%;
     }
 
     .custom-colour-circle::after {
