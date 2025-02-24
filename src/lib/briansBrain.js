@@ -1,23 +1,21 @@
 /**
- *
- * Brian's Brain Rule - Determines the next state of a cell.
+ * Brian's Brain Rule
  *
  * This cellular automaton follows these rules:
- * - OFF (0) -> ON (1) if exactly 2 neighbours are ON (Birth)
- * - ON (1) -> DYING (2) (Every ON cell dies in the next step)
- * - DYING (2) -> OFF (0) (A DYING cell always turns OFF)
+ * - Dead (0) -> Alive (1) if exactly 2 neighbours are alive (Birth)
+ * - Alive (1) -> Dying (2)
+ * - Dying (2) -> Dead (0)
  *
- *
- * @param {0|1|2} cellState - The current state of the cell
- * 0 = ODD, 1 = ON, 2 = DYING
- * @param {Number} aliveNeighbours - The number of ON (1) neighbours.
- * @returns {0|1|2} - the new state of the cell after one step
+ * @param {0|1|2} cellState
+ * @param {Number} aliveNeighbours
+ * @returns {0|1|2} - Next cell state.
  */
-export const briansBrainRule = (cellState, aliveNeighbours) =>
-    cellState === 0 && aliveNeighbours === 2
-        ? 1 // Birth rule
-        : cellState === 1
-          ? 2 // ON -> DYING
-          : cellState === 2
-            ? 0 // DYING -> OFF
-            : cellState;
+export const briansBrainRule = (cellState, aliveNeighbours) => {
+    if (cellState === 0 && aliveNeighbours === 2) {
+        return 1;
+    } else if (cellState === 1) {
+        return 2;
+    } else if (cellState === 2) {
+        return 0;
+    }
+};
