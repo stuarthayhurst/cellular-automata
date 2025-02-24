@@ -1,4 +1,4 @@
-import { gameOfLifeRule } from "./gameOfLife.js";
+import { gameOfLifeRule } from "./simulation.js";
 
 /*
 `reactiveState` contains state that needs universal reactivity (provided by

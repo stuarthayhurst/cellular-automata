@@ -47,7 +47,6 @@ export const nextCells = (cells, w, h, nextCell) =>
  * @param {Number} y - Cell Y.
  * @returns {Number} - The number of Moore's Neighbours.
  */
-
 export function countMooresNeighbours(cells, w, h, x, y) {
     let neighbours = 0;
 
@@ -66,6 +65,44 @@ export function countMooresNeighbours(cells, w, h, x, y) {
 
     return neighbours;
 }
+
+/**
+ * Conway's Game of Life
+ *
+ * - Any live cell with 2 or 3 live neighbours survives.
+ * - Any dead cell with exactly 3 live neighbours becomes a live cell.
+ * - All other live cells die in the next generation.
+ *
+ * @param {0|1} cellState - The current cell state.
+ * @param {Number} aliveNeighbours - The number of alive Moore's neighbours of the cell.
+ * @returns {0|1} - Next cell state.
+ */
+export const gameOfLifeRule = (cellState, aliveNeighbours) =>
+    (cellState === 1 && (aliveNeighbours === 2 || aliveNeighbours === 3)) ||
+    (cellState === 0 && aliveNeighbours === 3)
+        ? 1
+        : 0;
+
+/**
+ * Brian's Brain
+ *
+ * - Dead (0) -> Alive (1) if exactly 2 neighbours are alive (Birth)
+ * - Alive (1) -> Dying (2)
+ * - Dying (2) -> Dead (0)
+ *
+ * @param {0|1|2} cellState
+ * @param {Number} aliveNeighbours
+ * @returns {0|1|2} - Next cell state.
+ */
+export const briansBrainRule = (cellState, aliveNeighbours) => {
+    if (cellState === 0 && aliveNeighbours === 2) {
+        return 1;
+    } else if (cellState === 1) {
+        return 2;
+    } else if (cellState === 2) {
+        return 0;
+    }
+};
 
 /**
  * Set cell grid width.

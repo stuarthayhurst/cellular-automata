@@ -3,8 +3,7 @@
     import { setCellGridWidth, setCellGridHeight } from "../simulation.js";
     import GridDimensionInput from "./GridDimensionInput.svelte";
     import { applyPreset, presets } from "../preset.js";
-    import { gameOfLifeRule } from "../gameOfLife.js";
-    import { briansBrainRule } from "../briansBrain.js";
+    import { gameOfLifeRule, briansBrainRule } from "../simulation.js";
 </script>
 
 <h1>Settings</h1>
