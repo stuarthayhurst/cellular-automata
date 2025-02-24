@@ -7,7 +7,16 @@
     } from "../simulation.js";
     import GridDimensionInput from "./GridDimensionInput.svelte";
     import { applyPreset, presets } from "../preset.js";
-    import { changeColour } from "../colourTheme.js";
+    import {
+        changeColour,
+        customColours,
+        currentCustomColour,
+        showSaveButton,
+        handleCustomColourChange,
+        saveColour,
+        isDarkColour,
+        errorMessage,
+    } from "../colourTheme.js";
 </script>
 
 <h1>Settings</h1>
@@ -224,7 +233,57 @@
                 title="Black"
             ></div>
         </label>
+        <!-- saved custom colors -->
+        {#each $customColours as colour}
+            <label class="radio-label">
+                <input
+                    type="radio"
+                    name="colour"
+                    value={colour.hex}
+                    checked={reactiveState.selectedColour === colour.hex}
+                    on:change={changeColour}
+                />
+                <div
+                    class="colour-circle"
+                    style="background-color: {colour.hex}"
+                    title="Saved Custom Colour"
+                ></div>
+            </label>
+        {/each}
+        <!-- colour picker -->
+        <label class="radio-label custom-colour-label">
+            <input
+                type="radio"
+                name="colour"
+                value="custom"
+                checked={reactiveState.selectedColour === "custom"}
+                on:change={changeColour}
+            />
+            <div
+                class="colour-circle custom-colour-circle"
+                style="background-color: {$currentCustomColour}"
+                class:dark-background={isDarkColour($currentCustomColour)}
+                title="Pick Custom Colour"
+            >
+                <input
+                    type="color"
+                    value={$currentCustomColour}
+                    on:input={handleCustomColourChange}
+                    class="colour-picker"
+                />
+            </div>
+        </label>
     </div>
+    <!-- save button for custom colours -->
+    {#if $showSaveButton}
+        <button class="save-colour-btn" on:click={saveColour}>
+            Save Colour
+        </button>
+    {/if}
+    <!-- error message for duplicate custom colours -->
+    {#if $errorMessage}
+        <div class="error-message">{$errorMessage}</div>
+    {/if}
 </div>
 
 <!-- 5th section: cell editor-->
@@ -477,5 +536,54 @@
         width: 16px;
         height: 16px;
         margin: 0;
+    }
+
+    .colour-picker {
+        opacity: 0;
+    }
+
+    .custom-colour-circle::after {
+        content: "+";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 20px;
+        pointer-events: none;
+    }
+
+    .save-colour-btn {
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 8px 16px;
+        font-family: "Poppins", system-ui, sans-serif;
+        background: var(--foreground-light);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        display: block;
+    }
+
+    .save-colour-btn:hover {
+        opacity: 0.7;
+    }
+
+    .error-message {
+        color: #ff3e3e;
+        font-size: 14px;
+        font-weight: 750;
+        text-align: center;
+        margin-top: 8px;
+        font-family: "Poppins", system-ui, sans-serif;
+    }
+
+    /* changes the colour of "+" sign to white (with 80% opacity) when the background is dark,
+    if bg is light, "+" stays black (default colour)*/
+    .dark-background::after {
+        color: rgba(255, 255, 255, 0.8);
     }
 </style>
