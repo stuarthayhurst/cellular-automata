@@ -22,6 +22,8 @@ don't need to be 'notified' of its value changing.
  * @property {glMatrix.vec3} unmappedColour
  * @property {glMatrix.vec3} aliasBaseColour
  * @property {glMatrix.vec3} aliasCellColour
+ * @property {Boolean} raiseCells
+ * @property {Number} raisedCellHeight
  * @property {glMatrix.vec3} cameraPosition
  * @property {Number} pixelsPerCell
  * @property {Number} gridOffsetX - A value of -1 indicates 1 pixel is offscreen, to the left
@@ -32,9 +34,7 @@ don't need to be 'notified' of its value changing.
  */
 /** @type {SharedState} */
 export const sharedState = {
-    cells: new Uint8Array(
-        reactiveState.cellGridWidth * reactiveState.cellGridHeight,
-    ),
+    cells: undefined,
     startCells: null,
     startCellGridWidth: undefined,
     startCellGridHeight: undefined,

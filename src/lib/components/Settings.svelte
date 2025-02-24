@@ -1,12 +1,9 @@
 <script>
     import { reactiveState } from "../reactiveState.svelte.js";
-    import {
-        setCellGridWidth,
-        setCellGridHeight,
-        changeRule,
-    } from "../simulation.js";
+    import { setCellGridWidth, setCellGridHeight } from "../simulation.js";
     import GridDimensionInput from "./GridDimensionInput.svelte";
     import { applyPreset, presets } from "../preset.js";
+    import { gameOfLifeRule, briansBrainRule } from "../simulation.js";
     import {
         changeColour,
         customColours,
@@ -60,9 +57,8 @@
             <input
                 type="radio"
                 name="rule"
-                value="gameOfLife"
-                checked={reactiveState.simulationRule === "Game of Life"}
-                on:change={changeRule}
+                bind:group={reactiveState.simulationRule}
+                value={gameOfLifeRule}
             />
             <span class="radio-text">Game of Life</span>
         </label>
@@ -70,9 +66,8 @@
             <input
                 type="radio"
                 name="rule"
-                value="briansBrain"
-                checked={reactiveState.simulationRule === "Brian's Brain"}
-                on:change={changeRule}
+                bind:group={reactiveState.simulationRule}
+                value={briansBrainRule}
             />
             <span class="radio-text">Brian's Brain</span>
         </label>
