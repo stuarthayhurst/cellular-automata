@@ -1,4 +1,5 @@
 import { gameOfLifeRule } from "./simulation.js";
+import { sharedState } from "./sharedState.js";
 
 /*
 `reactiveState` contains state that needs universal reactivity (provided by
@@ -46,3 +47,7 @@ export const reactiveState = $state({
     simulationRule: gameOfLifeRule,
     aliasBackground: true,
 });
+
+sharedState.cells = new Uint8Array(
+    reactiveState.cellGridWidth * reactiveState.cellGridHeight,
+);

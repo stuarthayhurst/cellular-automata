@@ -34,9 +34,7 @@ don't need to be 'notified' of its value changing.
  */
 /** @type {SharedState} */
 export const sharedState = {
-    cells: new Uint8Array(
-        reactiveState.cellGridWidth * reactiveState.cellGridHeight,
-    ),
+    cells: undefined,
     startCells: null,
     startCellGridWidth: undefined,
     startCellGridHeight: undefined,
