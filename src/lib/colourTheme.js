@@ -118,3 +118,10 @@ export function isDarkColour(color) {
     const brightness = (r * 299 + g * 587 + b * 114) / 1000;
     return brightness < 128; //return true if the colour is dark
 }
+
+//remove custom colour from the store
+export function removeCustomColour(hexColour) {
+    customColours.update((colours) =>
+        colours.filter((c) => c.hex !== hexColour),
+    );
+}

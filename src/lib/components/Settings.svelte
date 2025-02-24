@@ -13,6 +13,7 @@
         saveColour,
         isDarkColour,
         errorMessage,
+        removeCustomColour,
     } from "../colourTheme.js";
 </script>
 
@@ -230,7 +231,7 @@
         </label>
         <!-- saved custom colors -->
         {#each $customColours as colour}
-            <label class="radio-label">
+            <label class="radio-label custom-saved-label">
                 <input
                     type="radio"
                     name="colour"
@@ -242,7 +243,16 @@
                     class="colour-circle"
                     style="background-color: {colour.hex}"
                     title="Saved Custom Colour"
-                ></div>
+                >
+                    <button
+                        class="remove-colour-btn"
+                        on:click|stopPropagation={() =>
+                            removeCustomColour(colour.hex)}
+                        title="Remove colour"
+                    >
+                        ×
+                    </button>
+                </div>
             </label>
         {/each}
         <!-- colour picker -->
@@ -533,6 +543,7 @@
         margin: 0;
     }
 
+    /* custom colour */
     .colour-picker {
         opacity: 0;
     }
@@ -580,5 +591,29 @@
     if bg is light, "+" stays black (default colour)*/
     .dark-background::after {
         color: rgba(255, 255, 255, 0.8);
+    }
+
+    .remove-colour-btn {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #ff3e3e;
+        color: white;
+        border: none;
+        font-size: 16px;
+        line-height: 1;
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+
+    .custom-saved-label:hover .remove-colour-btn {
+        opacity: 1;
+    }
+
+    .remove-colour-btn:hover {
+        background: #ff6b6b;
     }
 </style>
