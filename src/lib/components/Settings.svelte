@@ -3,7 +3,11 @@
     import { setCellGridWidth, setCellGridHeight } from "../simulation.js";
     import GridDimensionInput from "./GridDimensionInput.svelte";
     import { applyPreset, presets } from "../preset.js";
-    import { gameOfLifeRule, briansBrainRule } from "../simulation.js";
+    import {
+        gameOfLifeRule,
+        briansBrainRule,
+        seedsRule,
+    } from "../simulation.js";
     import ColourSettings from "./ColourSettings.svelte";
 </script>
 
@@ -61,6 +65,15 @@
                 value={briansBrainRule}
             />
             <span class="radio-text">Brian's Brain</span>
+        </label>
+        <label class="radio-label">
+            <input
+                type="radio"
+                name="rule"
+                bind:group={reactiveState.simulationRule}
+                value={seedsRule}
+            />
+            <span class="radio-text">Seeds</span>
         </label>
     </div>
 </div>
@@ -201,8 +214,10 @@
 
     /* Rules */
     :global(.radio-group) {
-        display: flex;
+        display: grid;
         gap: 10px;
+        grid-template-columns: repeat(2, 1fr);
+        width: 100%;
     }
 
     :global(.radio-label) {
@@ -215,6 +230,9 @@
         border-radius: 4px;
         cursor: pointer;
         transition: all 0.2s ease;
+        justify-content: flex-start;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     :global(.radio-text) {
