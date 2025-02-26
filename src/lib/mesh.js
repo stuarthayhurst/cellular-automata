@@ -8,7 +8,7 @@ import * as sphere from "./meshes/sphere.js";
  * @param {Number} meshWidthScale
  * @param {Number} meshHeightScale
  * @param {String} shape
- * @returns {[Array<glMatrix.vec3>, Array<glMatrix.vec3>, Array<Number>]}
+ * @returns {[glMatrix.vec3[], glMatrix.vec3[], Number[]]}
  */
 export function calculateMesh(
     width,
@@ -45,8 +45,8 @@ export function calculateMesh(
 
 /**
  * Return per-vertex, smoothed normals.
- * @param {Array<glMatrix.vec3>} mesh
- * @param {Array<glMatrix.vec3>} origins
+ * @param {glMatrix.vec3[]} mesh
+ * @param {glMatrix.vec3[]} origins
  * @returns {Number[3][]}
  */
 export function calculateNormals(mesh, origins) {

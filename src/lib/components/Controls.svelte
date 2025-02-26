@@ -15,8 +15,9 @@
     let { togglePaused, stepForward, toggleShowSettings } = $props();
 
     /**
+     * Element at end of array.
      * @template T
-     * @param {Array<T>} arr
+     * @param {T[]} arr
      * @returns {T}
      */
     const top = (arr) => arr[arr.length - 1];
@@ -136,7 +137,7 @@
                 aria-label="Clear"
                 class="square-btn btn-danger"
                 title="Clear"
-                onclick={clearGrid}
+                onclick={() => clearGrid()}
             >
                 <Icon icon="fa-solid:eraser" width="20" height="20" />
             </button>
@@ -145,7 +146,7 @@
             id="toggle-settings-button"
             class="square-btn btn-secondary"
             title="Settings"
-            onclick={toggleShowSettings}
+            onclick={() => toggleShowSettings()}
         >
             <Icon icon="fa-solid:cog" width="20" height="20" />
         </button>

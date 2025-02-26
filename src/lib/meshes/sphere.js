@@ -9,7 +9,7 @@ const volumeDiameter = 1.0;
  * @param {Number} height
  * @param {Number} meshWidthScale
  * @param {Number} meshHeightScale
- * @returns {[Array<glMatrix.vec3>, Array<glMatrix.vec3>]}
+ * @returns {[glMatrix.vec3[], glMatrix.vec3[]]}
  */
 export function generateSkeleton(
     width,
@@ -17,7 +17,7 @@ export function generateSkeleton(
     meshWidthScale,
     meshHeightScale,
 ) {
-    /** @type {Array<glMatrix.vec3>} */
+    /** @type {glMatrix.vec3[]} */
     let skeleton = [];
 
     //Generate extra points according to the scale
@@ -58,13 +58,13 @@ function previousPointWrapped(index, height) {
 
 /**
  * Return a list of vertices in the mesh, and per-triangle lists of origins and indices.
- * @param {Array<glMatrix.vec3>} skeleton
- * @param {Array<glMatrix.vec3>} skeletonOrigins
+ * @param {glMatrix.vec3[]} skeleton
+ * @param {glMatrix.vec3[]} skeletonOrigins
  * @param {Number} width
  * @param {Number} height
  * @param {Number} meshWidthScale
  * @param {Number} meshHeightScale
- * @returns {[Array<glMatrix.vec3>, Array<glMatrix.vec3>, Array<Number>]}
+ * @returns {[glMatrix.vec3[], glMatrix.vec3[], Number[]]}
  */
 export function calculateMesh(
     skeleton,
@@ -74,11 +74,11 @@ export function calculateMesh(
     meshWidthScale,
     meshHeightScale,
 ) {
-    /** @type {Array<glMatrix.vec3>} */
+    /** @type {glMatrix.vec3[]} */
     let mesh = [];
-    /** @type {Array<glMatrix.vec3>} */
+    /** @type {glMatrix.vec3[]} */
     let origins = [];
-    /** @type {Array<Number>} */
+    /** @type {Number[]} */
     let indices = [];
 
     //Handle scaled skeletons
