@@ -105,6 +105,19 @@ export const briansBrainRule = (cellState, aliveNeighbours) => {
 };
 
 /**
+ * Seeds Automata
+ *
+ * - Dead (0) -> Alive (1) if exactly 2 neighbours are alive (Birth)
+ * - Alive (1) -> Dead (0) (Death)
+ *
+ * @param {0|1} cellState
+ * @param {Number} aliveNeighbours
+ * @returns {0|1}
+ */
+export const seedsRule = (cellState, aliveNeighbours) =>
+    cellState === 0 && aliveNeighbours === 2 ? 1 : 0;
+
+/**
  * Set cell grid width.
  * @param {Number} newWidth
  * @returns {void}
