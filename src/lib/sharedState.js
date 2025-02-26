@@ -1,6 +1,6 @@
 import * as glMatrix from "gl-matrix";
 import { reactiveState } from "./reactiveState.svelte.js";
-import { colour_rgb } from "./tools.js";
+import { rgbVec } from "./tools.js";
 
 /*
 `sharedState` contains state that needs to be shared between components but
@@ -39,11 +39,11 @@ export const sharedState = {
     startCellGridWidth: undefined,
     startCellGridHeight: undefined,
     maxCells: 0,
-    baseColour: colour_rgb(12, 56, 102),
-    cellColour: colour_rgb(30, 144, 255),
-    unmappedColour: colour_rgb(255, 255, 255),
-    aliasBaseColour: colour_rgb(102, 102, 102),
-    aliasCellColour: colour_rgb(128, 128, 128),
+    baseColour: rgbVec(12, 56, 102),
+    cellColour: rgbVec(30, 144, 255),
+    unmappedColour: rgbVec(255, 255, 255),
+    aliasBaseColour: rgbVec(102, 102, 102),
+    aliasCellColour: rgbVec(128, 128, 128),
     raiseCells: true,
     raisedCellHeight: 0.02,
     cameraPosition: glMatrix.vec3.fromValues(2, 0, 0),
@@ -51,8 +51,8 @@ export const sharedState = {
     gridOffsetX: 0.0,
     gridOffsetY: 0.0,
     borderSize: 0.015,
-    borderColour: colour_rgb(0, 0, 0),
-    backgroundBorderColour: colour_rgb(77, 77, 77),
+    borderColour: rgbVec(0, 0, 0),
+    backgroundBorderColour: rgbVec(77, 77, 77),
 };
 
 export function saveStartState() {

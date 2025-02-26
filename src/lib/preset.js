@@ -4,7 +4,7 @@ import { pushHistory } from "./cellEditor.js";
 
 /**
  * @typedef {Object} Preset
- * @property {string} name
+ * @property {String} name
  * @property {Number[][]} cells
  */
 
@@ -44,7 +44,7 @@ export const presets = {
 };
 
 /**
- * @param {string} presetKey
+ * @param {String} presetKey
  * @returns {void}
  */
 export function applyPreset(presetKey) {

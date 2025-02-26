@@ -27,7 +27,7 @@ export function setUpCellEditor(canvas) {
      * @param {Boolean} initialClick
      * @param {Number} mouseX
      * @param {Number} mouseY
-     * @returns {Number|void}
+     * @returns {void}
      */
     const draw = (initialClick, mouseX, mouseY) => {
         const canvasMousePos = clientToCanvasSpace(canvas, mouseX, mouseY);
@@ -78,8 +78,6 @@ export function setUpCellEditor(canvas) {
 
         lastGridPos = gridPos;
     };
-
-    const eq = (a, b) => a[0] === b[0] && a[1] === b[1];
 
     // Start Drawing
     document.addEventListener("mousedown", (mouseEvent) => {
@@ -229,7 +227,7 @@ const Change = (cells, value, actionName) =>
 /**
  * Total number of cells changed in a change.
  * @param change
- * @returns {number}
+ * @returns {Number}
  */
 const changeSize = (change) =>
     change.setCellsAlive.size + change.setCellsDead.size;
@@ -238,6 +236,15 @@ const changeSize = (change) =>
  * 0 => 1
  * 1 => 0
  * @param {Number} n
- * @returns {number}
+ * @returns {Number}
  */
 const flip = (n) => 1 - n;
+
+/**
+ * Check tuple members are equal.
+ * @template T
+ * @param {[T, T]} a
+ * @param {[T, T]} b
+ * @returns {Boolean}
+ */
+const eq = (a, b) => a[0] === b[0] && a[1] === b[1];

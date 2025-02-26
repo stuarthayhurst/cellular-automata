@@ -34,10 +34,27 @@ export const clientToCanvasSpace = (canvas, clientX, clientY) => {
 };
 
 /**
+ * @param {String} hex e.g. #fff
+ * @returns {ColourRGB}
+ */
+export const hexToRGB = (hex) => [
+    parseInt(hex.substring(1, 3), 16),
+    parseInt(hex.substring(3, 5), 16),
+    parseInt(hex.substring(5, 7), 16),
+];
+
+/**
+ * hello -> Hello
+ * @param {String} str
+ * @returns {String}
+ */
+export const titleCase = (str) => str[0].toUpperCase() + str.slice(1);
+
+/**
  * Mod a value, looping it around correctly when it becomes negative.
  * @param {Number} x
  * @param {Number} m
- * @returns {number}
+ * @returns {Number}
  */
 export const absMod = (x, m) => ((x % m) + m) % m;
 
@@ -57,7 +74,7 @@ export const clamp = (min, value, max) => Math.min(Math.max(min, value), max);
  * @param {Number} b
  * @returns {glMatrix.vec3}
  */
-export const colour_rgb = (r, g, b) =>
+export const rgbVec = (r, g, b) =>
     glMatrix.vec3.fromValues(r / 255, g / 255, b / 255);
 
 /**
