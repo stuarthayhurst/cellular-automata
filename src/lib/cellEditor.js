@@ -53,7 +53,7 @@ export function setUpCellEditor(canvas) {
         if (strokeChangedCells.has(gridIndex)) return;
 
         if (initialClick) {
-            strokeValue = flip(sharedState.cells[gridIndex]);
+            strokeValue = flip(sharedState.cells[gridIndex]); // @Improve 2 -> -1 !!
             sharedState.cells[gridIndex] = strokeValue;
             strokeChangedCells.add(gridIndex);
         } else if (sharedState.cells[gridIndex] !== strokeValue) {
@@ -138,7 +138,8 @@ export function setUpCellEditor(canvas) {
 export function clearGrid() {
     let clearedCells = new Set();
     sharedState.cells.forEach((cell, i) => {
-        if (cell === 1) {
+        if (cell !== 0) {
+            // Dying cells would be undone as alive cells
             sharedState.cells[i] = 0;
             clearedCells.add(i);
         }
