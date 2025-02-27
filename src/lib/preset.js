@@ -123,7 +123,7 @@ function generateCells(width, height, aliveCells = []) {
  * @param {Number} height
  * @returns {Number[][]}
  */
-function generateRandomCells(width, height) {
+export function generateRandomCells(width, height) {
     return Array.from({ length: height }, () =>
         Array.from({ length: width }, () => (Math.random() > 0.5 ? 1 : 0)),
     );

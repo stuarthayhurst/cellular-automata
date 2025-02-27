@@ -1,5 +1,6 @@
-import { gameOfLifeRule } from "./simulation.js";
+import { briansBrainRule } from "./simulation.js";
 import { sharedState } from "./sharedState.js";
+import { generateRandomCells } from "./preset.js";
 
 /*
 `reactiveState` contains state that needs universal reactivity (provided by
@@ -37,21 +38,24 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
 /** @type {ReactiveState} */
 export const reactiveState = $state({
     paused: true,
-    interfaceMode: "Editor",
+    interfaceMode: "3D View",
     shape: "torus",
-    simulationSpeed: 1,
+    simulationSpeed: 3,
     atStart: true,
     cellGridWidth: 160,
     cellGridHeight: 80,
     dragging: false,
     historyStack: [],
     redoStack: [],
-    simulationRule: gameOfLifeRule,
+    simulationRule: briansBrainRule,
     aliasBackground: true,
     selectedColour: "blue",
     customColours: [],
 });
 
 sharedState.cells = new Uint8Array(
-    reactiveState.cellGridWidth * reactiveState.cellGridHeight,
+    generateRandomCells(
+        reactiveState.cellGridWidth,
+        reactiveState.cellGridHeight,
+    ).flat(),
 );

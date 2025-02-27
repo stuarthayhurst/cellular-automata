@@ -21,7 +21,7 @@ let dragRefMouseY = 0;
 
 // Camera state variables
 let theta = 0; // Horizontal rotation (0 to 2π)
-let phi = Math.PI / 2; // Vertical rotation (initially looking straight ahead)
+let phi = Math.PI / 3.5; // Vertical rotation
 let cameraDistance = 2.0;
 
 /**
@@ -30,6 +30,8 @@ let cameraDistance = 2.0;
  * @returns {void}
  */
 export function setUpDragAndZoom(canvas) {
+    sharedState.cameraPosition = cameraPosition(theta, phi, cameraDistance);
+
     const gridWidth = () =>
         reactiveState.cellGridWidth * sharedState.pixelsPerCell;
     const gridHeight = () =>
