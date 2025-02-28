@@ -22,8 +22,6 @@ don't need to be 'notified' of its value changing.
  * @property {glMatrix.vec3} unmappedColour
  * @property {glMatrix.vec3} aliasBaseColour
  * @property {glMatrix.vec3} aliasCellColour
- * @property {Boolean} raiseCells
- * @property {Number} raisedCellHeight
  * @property {glMatrix.vec3} cameraPosition
  * @property {Number} pixelsPerCell
  * @property {Number} gridOffsetX - A value of -1 indicates 1 pixel is offscreen, to the left
@@ -44,8 +42,6 @@ export const sharedState = {
     unmappedColour: rgbVec(255, 255, 255),
     aliasBaseColour: rgbVec(102, 102, 102),
     aliasCellColour: rgbVec(128, 128, 128),
-    raiseCells: true,
-    raisedCellHeight: 0.02,
     cameraPosition: glMatrix.vec3.fromValues(2, 0, 0),
     pixelsPerCell: 10.0,
     gridOffsetX: 0.0,

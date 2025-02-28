@@ -31,6 +31,8 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
  * @property {ChangeT[]} redoStack
  * @property {function(Number, Number):Number} simulationRule
  * @property {Boolean} aliasBackground - 2D mode - Toggle aliasing the background tiles
+ * @property {Boolean} raiseCells
+ * @property {Number} raisedCellHeight
  * @property {String} selectedColour - Hex or preset like "blue"
  * @property {String[]} customColours - Hex
  */
@@ -50,6 +52,8 @@ export const reactiveState = $state({
     simulationRule: briansBrainRule,
     aliasBackground: true,
     selectedColour: "blue",
+    raiseCells: true,
+    raisedCellHeight: 0.02,
     customColours: [],
 });
 
