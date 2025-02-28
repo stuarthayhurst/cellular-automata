@@ -440,8 +440,8 @@ export function startRenderer(context) {
         const unmappedColour = sharedState.unmappedColour;
         const aliasBaseColour = sharedState.aliasBaseColour;
         const aliasCellColour = sharedState.aliasCellColour;
-        const raiseCells = sharedState.raiseCells;
-        const raisedCellHeight = sharedState.raisedCellHeight;
+        const raiseCells = reactiveState.raiseCells;
+        const raisedCellHeight = reactiveState.raisedCellHeight;
         const shape = reactiveState.shape;
         const interfaceMode = reactiveState.interfaceMode;
 

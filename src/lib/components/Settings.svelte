@@ -13,7 +13,7 @@
 
 <h1>Settings</h1>
 
-<!-- 1st section: grid-->
+<!-- grid-->
 <h2>Grid</h2>
 <div class="grid-controls">
     <div class="grid-input-group">
@@ -34,7 +34,7 @@
     </div>
 </div>
 
-<!-- 2nd section: presets-->
+<!-- presets-->
 <h2>Apply Presets</h2>
 <div class="preset-container">
     {#each Object.entries(presets) as [key, preset]}
@@ -44,8 +44,8 @@
     {/each}
 </div>
 
-<!-- 3rd section: rules-->
-<h2>Rules</h2>
+<!-- rules-->
+<h2>Simulation</h2>
 <div class="rules-controls">
     <div class="radio-group">
         <label class="radio-label">
@@ -78,11 +78,32 @@
     </div>
 </div>
 
-<!-- 4th section: colour selection-->
-<h2>Colour Theme</h2>
+<!-- colour selection-->
+<h2>Graphics</h2>
+
 <ColourSettings />
 
-<!-- 5th section: cell editor-->
+<div class="raised-cells-controls">
+    <div class="height-control">
+        <label class="height-label" for="cell-height">Cell Height</label>
+        <div class="slider-container">
+            <input
+                type="range"
+                id="cell-height"
+                min="0"
+                max="0.3"
+                step="0.01"
+                bind:value={reactiveState.raisedCellHeight}
+                oninput={() =>
+                    (reactiveState.raiseCells =
+                        reactiveState.raisedCellHeight > 0)}
+            />
+            <span class="height-value">{reactiveState.raisedCellHeight}</span>
+        </div>
+    </div>
+</div>
+
+<!-- cell editor-->
 <h2>Cell Editor</h2>
 <div class="cell-editor-controls">
     <div class="toggle-group">
@@ -91,7 +112,7 @@
                 type="checkbox"
                 bind:checked={reactiveState.aliasBackground}
             />
-            <span class="toggle-text">Show aliased cells</span>
+            <span class="toggle-text">Tile the grid</span>
         </label>
     </div>
 </div>
@@ -287,5 +308,40 @@
         width: 16px;
         height: 16px;
         margin: 0;
+    }
+
+    /* Raised Cells*/
+    .raised-cells-controls {
+        background: rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .height-label {
+        font-family: "Poppins", system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #3b3e3f;
+    }
+
+    .slider-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .height-value {
+        font-family: "Poppins", system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 480;
+        color: var(--foreground);
+        min-width: 40px;
+    }
+
+    input[type="range"] {
+        flex-grow: 1;
+        max-width: 250px;
     }
 </style>
