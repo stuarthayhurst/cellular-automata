@@ -118,6 +118,22 @@ export const seedsRule = (cellState, aliveNeighbours) =>
     cellState === 0 && aliveNeighbours === 2 ? 1 : 0;
 
 /**
+ * Day & Night Rule
+ *
+ * - Birth: Dead cell (0) with 3, 6, 7, or 8 neighbours becomes alive (1).
+ * - Survival: Alive cell (1) with 3, 4, 6, 7, or 8 neighbours remains alive.
+ *
+ * @param {0|1} cellState - The current state of the cell (0 = DEAD, 1 = ALIVE)
+ * @param {Number} aliveNeighbours - The number of alive neighbours
+ * @returns {0|1} - The new cell stata
+ */
+export const dayAndNightRule = (cellState, aliveNeighbours) =>
+    (cellState === 0 && [3, 6, 7, 8].includes(aliveNeighbours)) || // Birth conditions
+    (cellState === 1 && [3, 4, 6, 7, 8].includes(aliveNeighbours)) // Survival conditions
+        ? 1
+        : 0;
+
+/**
  * Set cell grid width.
  * @param {Number} newWidth
  * @returns {void}

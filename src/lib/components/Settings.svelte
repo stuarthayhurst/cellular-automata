@@ -7,6 +7,7 @@
         gameOfLifeRule,
         briansBrainRule,
         seedsRule,
+        dayAndNightRule,
     } from "../simulation.js";
     import ColourSettings from "./ColourSettings.svelte";
 </script>
@@ -74,6 +75,15 @@
                 value={seedsRule}
             />
             <span class="radio-text">Seeds</span>
+        </label>
+        <label class="radio-label">
+            <input
+                type="radio"
+                name="rule"
+                bind:group={reactiveState.simulationRule}
+                value={dayAndNightRule}
+            />
+            <span class="radio-text">Day & Night</span>
         </label>
     </div>
 </div>
