@@ -19,11 +19,18 @@ float ambientStrength = 0.3;
 float diffuseStrength = 0.6;
 float specularStrength = 0.125;
 
+//Shared between modelFrag.glsl and gridFrag.glsl
+vec3 weightCell(vec3 cellColour, vec3 baseColour, uint alive) {
+    const float range = 3.0; //(2 ^ bitsPerChannel) - 1
+    float weight = 1.0 - (1.0 / range) * float(alive - 1u);
+    return cellColour * weight + baseColour * (1.0 - weight);
+}
+
 void main() {
     //Check if the cell is active, return early if it is
     //Skip this if we're in the first pass of raised cells
     if (activeCellMode != 1 && alive > 0u) {
-        outColour = vec4(cellColour, 1.0);
+        outColour = vec4(weightCell(cellColour, baseColour, alive), 1.0);
         return;
     }
 

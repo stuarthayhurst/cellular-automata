@@ -29,7 +29,7 @@ uint fetchDataBit(int cellIndex, usampler2D dataTexture) {
 
     //Skip unmapped cells
     if (cellIndex == -1) {
-      return 0u;
+        return 0u;
     }
 
     int textureWidth = textureSize(dataTexture, 0).x;

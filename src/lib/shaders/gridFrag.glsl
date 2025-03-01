@@ -35,7 +35,7 @@ uint fetchDataBit(int cellIndex, usampler2D dataTexture) {
 
     //Skip unmapped cells
     if (cellIndex == -1) {
-      return 0u;
+        return 0u;
     }
 
     int textureWidth = textureSize(dataTexture, 0).x;
@@ -58,6 +58,13 @@ uint fetchDataBit(int cellIndex, usampler2D dataTexture) {
 
     //Fetch the channel and extract the chosen bit(s), then shift back down
     return (cellQuad[channel] & (channelBlockMask << bit)) >> bit;
+}
+
+//Shared between modelFrag.glsl and gridFrag.glsl
+vec3 weightCell(vec3 cellColour, vec3 baseColour, uint alive) {
+    const float range = 3.0; //(2 ^ bitsPerChannel) - 1
+    float weight = 1.0 - (1.0 / range) * float(alive - 1u);
+    return cellColour * weight + baseColour * (1.0 - weight);
 }
 
 void main() {
@@ -132,7 +139,7 @@ void main() {
         if (isBackground) {
             outColour = vec4(aliasCellColour, 1.0);
         } else {
-            outColour = vec4(cellColour, 1.0);
+            outColour = vec4(weightCell(cellColour, baseColour, alive), 1.0);
         }
     } else {
         if (isBackground) {
