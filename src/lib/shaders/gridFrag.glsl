@@ -56,11 +56,8 @@ uint fetchDataBit(int cellIndex, usampler2D dataTexture) {
     //Decide which bit of the channel to look at
     int bit = (cellNumber * bitsPerChannel) % channelWidth;
 
-    //Fetch the specific channel
-    uint fetchedChannelBlock = cellQuad[channel];
-
-    //Select the chosen bit(s) from the fetched channel
-    return fetchedChannelBlock & (channelBlockMask << bit);
+    //Fetch the channel and extract the chosen bit(s), then shift back down
+    return (cellQuad[channel] & (channelBlockMask << bit)) >> bit;
 }
 
 void main() {
