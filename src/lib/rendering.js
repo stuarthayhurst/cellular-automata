@@ -670,8 +670,14 @@ function resetCanvas(context, height, width) {
  * @returns {void}
  */
 function setDataTexture(context, texture, rawData) {
+    const channels = 4;
+    const channelWidth = 32;
+    const bitsPerCell = 2;
+
     //Calculate rows and columns required to store the bytes
-    const minPixels = Math.ceil(rawData.length / (32 * 4));
+    const minPixels = Math.ceil(
+        rawData.length / ((channelWidth / bitsPerCell) * channels),
+    );
     const rows = Math.ceil(minPixels / context.MAX_TEXTURE_SIZE);
     let cols = context.MAX_TEXTURE_SIZE;
     if (rows === 1) {
@@ -684,11 +690,13 @@ function setDataTexture(context, texture, rawData) {
     }
 
     //Resize the buffer to match the rows and columns
-    let size = rows * cols * 4;
+    let size = rows * cols * channels;
     let data = new Uint32Array(size);
 
+    const dataShift = Math.log2(channelWidth / bitsPerCell);
+    const cellMask = channelWidth / bitsPerCell - 1;
     for (let i = 0; i < rawData.length; i++) {
-        data[i >> 5] |= !!rawData[i] << (i & 31);
+        data[i >> dataShift] |= rawData[i] << ((i & cellMask) * bitsPerCell);
     }
 
     //Data is treated as 4 separate cells per pixel

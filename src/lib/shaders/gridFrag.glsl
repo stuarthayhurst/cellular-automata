@@ -26,6 +26,13 @@ out vec4 outColour;
 
 //Shared between modelVert.glsl and gridFrag.glsl
 uint fetchDataBit(int cellIndex, usampler2D dataTexture) {
+    const int channels = 4;
+    const int channelWidth = 32;
+    const int bitsPerChannel = 2;
+
+    const uint channelBlockMask = 3u; //(2 ^ bitsPerChannel) - 1
+    const int cellsPerPixel = channels * (channelWidth / bitsPerChannel);
+
     //Skip unmapped cells
     if (cellIndex == -1) {
       return 0u;
@@ -33,35 +40,27 @@ uint fetchDataBit(int cellIndex, usampler2D dataTexture) {
 
     int textureWidth = textureSize(dataTexture, 0).x;
 
-    //Wrap cellIndexX every 4 * 32 widths (32 cells per channel, 4 channels per pixel)
-    int cellIndexX = cellIndex % (textureWidth * 4 * 32);
-
-    //Increment cellIndexY every 4 * 32 widths (32 cells per channel, 4 channels per pixel)
-    int cellIndexY = cellIndex / (textureWidth * 4 * 32);
+    //Components of the cell index, accounting for texture geometry
+    int cellIndexX = cellIndex % (textureWidth * cellsPerPixel);
+    int cellIndexY = cellIndex / (textureWidth * cellsPerPixel);
 
     //Fetch the pixel the cell is in
-    uvec4 cellQuad = texelFetch(dataTexture, ivec2(cellIndexX / (4 * 32), cellIndexY), 0);
+    uvec4 cellQuad = texelFetch(dataTexture, ivec2(cellIndexX / cellsPerPixel, cellIndexY), 0);
 
-    //Decide which byte of the pixel to look at
-    int packing = cellIndexX % (4 * 32);
-    int byte = packing / 32;
+    //Decide which cell of the pixel to look at
+    int cellNumber = cellIndexX % cellsPerPixel;
 
-    //Fetch the specific byte
-    //This is slow for a GPU, but packing gives 4x better memory usage
-    uint fetchedByte;
-    if (byte == 0) {
-        fetchedByte = cellQuad.x;
-    } else if (byte == 1) {
-        fetchedByte = cellQuad.y;
-    } else if (byte == 2) {
-        fetchedByte = cellQuad.z;
-    } else {
-        fetchedByte = cellQuad.w;
-    }
+    //Decide which channel to look in
+    int channel = (cellNumber * bitsPerChannel) / channelWidth;
 
-    //Decide which bit of the byte to look at and fetch it
-    int bit = packing % 32;
-    return fetchedByte & (1u << bit);
+    //Decide which bit of the channel to look at
+    int bit = (cellNumber * bitsPerChannel) % channelWidth;
+
+    //Fetch the specific channel
+    uint fetchedChannelBlock = cellQuad[channel];
+
+    //Select the chosen bit(s) from the fetched channel
+    return fetchedChannelBlock & (channelBlockMask << bit);
 }
 
 void main() {
