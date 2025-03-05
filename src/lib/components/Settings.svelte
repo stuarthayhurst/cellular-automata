@@ -141,14 +141,14 @@
         position: fixed;
         right: 0;
         top: 0;
-        padding: 20px;
+        padding: 11.5px 20px 20px 20px;
         box-sizing: border-box;
         z-index: 1000;
     }
 
     :global(#settings h1) {
         color: #445d77;
-        margin-top: 3rem;
+        margin-top: 0rem;
         margin-bottom: 1.5rem;
         font-family: "Poppins", sans-serif;
         font-weight: 700;
@@ -244,6 +244,13 @@
     }
 
     /* Rules */
+    .rules-controls {
+        background: rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        border-radius: 12px;
+        margin-top: 10px;
+    }
+
     :global(.radio-group) {
         display: grid;
         gap: 10px;
@@ -288,7 +295,14 @@
         box-shadow: 0 0 0 2px #445d77;
     }
 
-    /* Grid Background */
+    /* Cell Editor */
+    .cell-editor-controls {
+        background: rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        border-radius: 12px;
+        margin-top: 10px;
+    }
+
     .toggle-group {
         display: flex;
         align-items: center;
