@@ -35,6 +35,7 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
  * @property {Number} raisedCellHeight
  * @property {String} selectedColour - Hex or preset like "blue"
  * @property {String[]} customColours - Hex
+ * @property {Number} randomFillProbability
  */
 
 /** @type {ReactiveState} */
@@ -55,6 +56,7 @@ export const reactiveState = $state({
     raiseCells: true,
     raisedCellHeight: 0.02,
     customColours: [],
+    randomFillProbability: 0.5,
 });
 
 sharedState.cells = new Uint8Array(
