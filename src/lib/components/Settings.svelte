@@ -45,6 +45,28 @@
     {/each}
 </div>
 
+<!-- Random Fill Probability -->
+<div class="random-probability-controls">
+    <div class="slider-control">
+        <label class="slider-label" for="random-probability"
+            >Random Fill Probability</label
+        >
+        <div class="slider-container">
+            <input
+                type="range"
+                id="random-probability"
+                min="0"
+                max="1"
+                step="0.05"
+                bind:value={reactiveState.randomFillProbability}
+            />
+            <span class="slider-value"
+                >{reactiveState.randomFillProbability}</span
+            >
+        </div>
+    </div>
+</div>
+
 <!-- rules-->
 <h2>Simulation</h2>
 <div class="rules-controls">
@@ -362,6 +384,44 @@
         font-weight: 480;
         color: var(--foreground);
         min-width: 40px;
+    }
+
+    input[type="range"] {
+        flex-grow: 1;
+        max-width: 250px;
+    }
+
+    /*random fill slider*/
+    .random-probability-controls {
+        background: rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .slider-label {
+        font-family: "Poppins", system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #3b3e3f;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .slider-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .slider-value {
+        font-family: "Poppins", system-ui, sans-serif;
+        font-size: 13px;
+        font-weight: 480;
+        color: var(--foreground);
+        min-width: 40px;
+        text-align: center;
     }
 
     input[type="range"] {

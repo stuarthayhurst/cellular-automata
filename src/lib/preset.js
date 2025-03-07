@@ -125,6 +125,8 @@ function generateCells(width, height, aliveCells = []) {
  */
 export function generateRandomCells(width, height) {
     return Array.from({ length: height }, () =>
-        Array.from({ length: width }, () => (Math.random() > 0.5 ? 1 : 0)),
+        Array.from({ length: width }, () =>
+            Math.random() < reactiveState.randomFillProbability ? 1 : 0,
+        ),
     );
 }
