@@ -21,7 +21,15 @@ import { meter } from "./tools.js";
  * @returns {void}
  */
 export function startRenderer(context) {
-    sharedState.maxCells = context.MAX_TEXTURE_SIZE ** 2 * 4 * 32;
+    //Changes to these require matching changes to the texture types and shader code
+    const channels = 4;
+    const channelWidth = 32;
+
+    //Set this to a value large enough for the simulator
+    const bitsPerCell = 2;
+
+    sharedState.maxCells =
+        context.MAX_TEXTURE_SIZE ** 2 * channels * (channelWidth / bitsPerCell);
     console.info(
         "WebGL2 support detected, width x height must not exceed " +
             sharedState.maxCells,
@@ -489,14 +497,27 @@ export function startRenderer(context) {
             }
 
             //Create the texture, fill it with data and bind it
-            cellDataTexture = createDataTexture(context, cellData);
+            cellDataTexture = createDataTexture(
+                context,
+                cellData,
+                channels,
+                channelWidth,
+                bitsPerCell,
+            );
 
             lastCellWidth = cellWidth;
             lastCellHeight = cellHeight;
             lastShape = shape;
         } else {
             //Just update the cell data if the size hasn't changed, then bind the texture
-            setDataTexture(context, cellDataTexture, cellData);
+            setDataTexture(
+                context,
+                cellDataTexture,
+                cellData,
+                channels,
+                channelWidth,
+                bitsPerCell,
+            );
         }
 
         //Reset the canvas
@@ -667,13 +688,19 @@ function resetCanvas(context, height, width) {
  * @param {WebGL2RenderingContext} context
  * @param {WebGLTexture} texture
  * @param {Uint8Array} rawData
+ * @param {Number} channels
+ * @param {Number} channelWidth
+ * @param {Number} bitsPerCell
  * @returns {void}
  */
-function setDataTexture(context, texture, rawData) {
-    const channels = 4;
-    const channelWidth = 32;
-    const bitsPerCell = 2;
-
+function setDataTexture(
+    context,
+    texture,
+    rawData,
+    channels,
+    channelWidth,
+    bitsPerCell,
+) {
     //Calculate rows and columns required to store the bytes
     const minPixels = Math.ceil(
         rawData.length / ((channelWidth / bitsPerCell) * channels),
@@ -718,12 +745,15 @@ function setDataTexture(context, texture, rawData) {
  * Create a texture for storing data, bind it, fill it and return it
  * @param {WebGL2RenderingContext} context
  * @param {Uint8Array} data
+ * @param {Number} channels
+ * @param {Number} channelWidth
+ * @param {Number} bitsPerCell
  * @returns {WebGLTexture}
  */
-function createDataTexture(context, data) {
+function createDataTexture(context, data, channels, channelWidth, bitsPerCell) {
     //Upload data to a texture
     const texture = context.createTexture();
-    setDataTexture(context, texture, data);
+    setDataTexture(context, texture, data, channels, channelWidth, bitsPerCell);
 
     //Disable filtering
     context.texParameteri(
