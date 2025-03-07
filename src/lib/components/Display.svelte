@@ -1,21 +1,25 @@
-<script module>
+<script>
     /** @type HTMLCanvasElement */
     let canvas;
 
-    export function updateCanvasResolution() {
-        const bound = canvas.getBoundingClientRect();
-
-        canvas.width = canvas.clientWidth;
-        canvas.height = window.innerHeight - bound.y;
-    }
-</script>
-
-<script>
     import { onMount } from "svelte";
     import { reactiveState } from "../reactiveState.svelte.js";
     import { startRenderer } from "../rendering.js";
     import { setUpDragAndZoom } from "../dragAndZoom.js";
     import { setUpCellEditor } from "../cellEditor.js";
+
+    function updateCanvasResolution() {
+        const bound = canvas.getBoundingClientRect();
+
+        canvas.width = canvas.clientWidth;
+        canvas.height = window.innerHeight - bound.y;
+    }
+
+    $effect(() => {
+        updateCanvasResolution();
+        reactiveState.showSettings;
+        reactiveState.controlsVisible;
+    });
 
     onMount(() => {
         const context = canvas.getContext("webgl2");
