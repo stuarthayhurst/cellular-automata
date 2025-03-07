@@ -80,3 +80,25 @@ select.dropdown-btn:focus {
   border: 3px solid var(--foreground);
   padding: 9px 13px;
 }
+
+.hidden-arrow-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--foreground-very-light);
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 0;
+  z-index: 10;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.hidden-arrow-btn:hover {
+  background: rgba(255, 255, 255, 0.9);
+}

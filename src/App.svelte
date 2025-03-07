@@ -2,42 +2,25 @@
     import Settings from "./lib/components/Settings.svelte";
     import Controls from "./lib/components/Controls.svelte";
     import Display from "./lib/components/Display.svelte";
-    import { updateCanvasResolution } from "./lib/components/Display.svelte";
     import { reactiveState } from "./lib/reactiveState.svelte.js";
-    import {
-        stepForward,
-        togglePaused,
-        updateSpeed,
-    } from "./lib/simulation.js";
-
-    let showSettings = $state(false);
-    $effect(() => {
-        updateCanvasResolution();
-        showSettings;
-    });
-    $effect(() => {
-        updateSpeed();
-        reactiveState.simulationSpeed;
-    });
+    import { stepForward, togglePaused } from "./lib/simulation.js";
 </script>
 
 <main
-    class:settings-hidden={!showSettings}
+    class:settings-hidden={!reactiveState.showSettings}
     class:dragging={reactiveState.dragging}
 >
     <div id="canvas-container">
         <Display />
     </div>
-    <div id="controls">
-        <Controls
-            {togglePaused}
-            {stepForward}
-            toggleShowSettings={() => {
-                showSettings = !showSettings;
-            }}
-        />
-    </div>
-    {#if showSettings}
+    <Controls
+        {togglePaused}
+        {stepForward}
+        toggleShowSettings={() => {
+            reactiveState.showSettings = !reactiveState.showSettings;
+        }}
+    />
+    {#if reactiveState.showSettings}
         <div id="settings">
             <Settings />
         </div>
