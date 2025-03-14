@@ -56,7 +56,7 @@ export const reactiveState = $state({
     aliasBackground: true,
     selectedColour: "blue",
     raiseCells: true,
-    raisedCellHeight: 0.02,
+    raisedCellHeight: 0.05,
     customColours: [],
     controlsVisible: true,
     showSettings: false,
