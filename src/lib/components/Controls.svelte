@@ -46,6 +46,8 @@
         updateSpeed();
         reactiveState.simulationSpeed;
     });
+
+    let wasShowingSettings = $state(false);
 </script>
 
 <div id="controls" class:collapsed={!reactiveState.controlsVisible}>
@@ -53,7 +55,10 @@
         <button
             class="hidden-arrow-btn"
             title="Show Controls (CTRL + SPACE)"
-            onclick={() => (reactiveState.controlsVisible = true)}
+            onclick={() => {
+                reactiveState.controlsVisible = true;
+                reactiveState.showSettings = wasShowingSettings;
+            }}
         >
             <Icon icon="fa-solid:angle-down" width="16" height="16" />
         </button>
@@ -190,8 +195,11 @@
                 <button
                     class="square-btn btn-secondary"
                     title="Hide Controls (CTRL + SPACE)"
-                    onclick={() => (reactiveState.controlsVisible = false)}
-                    disabled={reactiveState.showSettings}
+                    onclick={() => {
+                        wasShowingSettings = reactiveState.showSettings;
+                        reactiveState.showSettings = false;
+                        reactiveState.controlsVisible = false;
+                    }}
                 >
                     <Icon icon="fa-solid:angle-up" width="20" height="20" />
                 </button>
