@@ -49,11 +49,19 @@
     });
 
     onMount(() => {
-        showInfoPopup = true;
+        const hasVisitedBefore = localStorage.getItem("hasVisitedCA");
+        if (!hasVisitedBefore) {
+            showInfoPopup = true;
+        }
     });
 
     let wasShowingSettings = $state(false);
     let showInfoPopup = $state(false);
+
+    function handleClosePopup() {
+        showInfoPopup = false;
+        localStorage.setItem("hasVisitedCA", "true");
+    }
 </script>
 
 <div id="controls" class:collapsed={!reactiveState.controlsVisible}>
@@ -236,10 +244,7 @@
             <ul>
                 <li>Insert content here</li>
             </ul>
-            <button
-                class="btn-secondary"
-                onclick={() => (showInfoPopup = false)}
-            >
+            <button class="btn-secondary" onclick={handleClosePopup}>
                 Close
             </button>
         </div>
