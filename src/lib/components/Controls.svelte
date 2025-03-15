@@ -268,7 +268,7 @@
                             style="cursor: pointer;"
                         >
                             <source
-                                src="public/videos/dragAndSpin.mp4"
+                                src="/videos/dragAndSpin.mp4"
                                 type="video/mp4"
                             />
                         </video>
@@ -288,7 +288,7 @@
                             style="cursor: pointer;"
                         >
                             <source
-                                src="public/videos/3DObjectZoom.mp4"
+                                src="/videos/3DObjectZoom.mp4"
                                 type="video/mp4"
                             />
                         </video>
@@ -298,7 +298,7 @@
                             style="cursor: pointer;"
                         >
                             <source
-                                src="public/videos/gridZoom.mp4"
+                                src="/videos/gridZoom.mp4"
                                 type="video/mp4"
                             />
                         </video>
@@ -311,20 +311,20 @@
                 </li>
 
                 <li>
-                    <img src="public/images/pencil.png" alt="Pencil" />
+                    <img src="/images/pencil.png" alt="Pencil" />
                     Use the pencil in the top left to open the cell editor
                 </li>
 
                 <li>
-                    <img src="public/images/dead.png" alt="Dead" />
-                    <img src="public/images/oneAlive.png" alt="Alive" />
+                    <img src="/images/dead.png" alt="Dead" />
+                    <img src="/images/oneAlive.png" alt="Alive" />
                     Click on a tile to toggle it between dead and alive
                 </li>
 
                 <li>
-                    <img src="public/images/dead.png" alt="Dead" />
+                    <img src="/images/dead.png" alt="Dead" />
                     <img
-                        src="public/images/multipleCellsAlive.png"
+                        src="/images/multipleCellsAlive.png"
                         alt="Multiple Cells Alive"
                     />
                     Left click and drag to change multiple cells at once
@@ -338,7 +338,7 @@
                             style="cursor: pointer;"
                         >
                             <source
-                                src="public/videos/dragGrid.mp4"
+                                src="/videos/dragGrid.mp4"
                                 type="video/mp4"
                             />
                         </video>
@@ -351,15 +351,15 @@
                 </li>
 
                 <li>
-                    <img src="public/images/shape.png" alt="Shape" />
-                    <img src="public/images/torus.png" alt="Torus" />
-                    <img src="public/images/sphere.png" alt="Sphere" />
+                    <img src="/images/shape.png" alt="Shape" />
+                    <img src="/images/torus.png" alt="Torus" />
+                    <img src="/images/sphere.png" alt="Sphere" />
                     Use the shape button in the top left to change the 3D object
                 </li>
 
                 <li>
                     <img
-                        src="public/images/playPauseAndSpeed.png"
+                        src="/images/playPauseAndSpeed.png"
                         alt="Play/Pause and Speed"
                     />
                     Use the controls in the middle at the top to run the simulation
@@ -368,24 +368,24 @@
 
                 <li>
                     <img
-                        src="public/images/stepForward.png"
+                        src="/images/stepForward.png"
                         alt="Step Forward"
                     />
                     <img
-                        src="public/images/beforeStepForward.png"
+                        src="/images/beforeStepForward.png"
                         alt="Before Step Forward"
                     />
                     <img
-                        src="public/images/afterStepForward.png"
+                        src="/images/afterStepForward.png"
                         alt="After Step Forward"
                     />
                     Use the "Step forward" button to move one generation at a time
                 </li>
 
                 <li>
-                    <img src="public/images/settings.png" alt="Settings" />
+                    <img src="/images/settings.png" alt="Settings" />
                     <img
-                        src="public/images/showSettingsPanel.png"
+                        src="/images/showSettingsPanel.png"
                         alt="Settings Panel"
                     />
                     Use the settings button in the top right to change the size,
@@ -432,14 +432,16 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
-        font-size: 1.1em;
-        color: #444;
+        color: #3b3e3f;
         gap: 12px;
         border: 1px solid #e0e0e0;
         border-radius: 12px;
         padding: 24px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         width: calc(100% - 48px);
+        font-family: "Poppins", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
     }
 
     .close-button {
@@ -467,10 +469,14 @@
     }
 
     .popup-content h3 {
-        font-size: 24px;
-        color: #1a1a1a;
+        color: #445d77;
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        font-family: "Poppins", sans-serif;
+        font-weight: 700;
+        font-size: 1.8rem;
         text-align: center;
-        font-weight: 600;
+        letter-spacing: -0.5px;
         border-bottom: 2px solid #eee;
         padding-bottom: 16px;
     }
@@ -504,12 +510,15 @@
 
     .video-caption {
         margin-top: 12px;
-        font-size: 1em;
-        color: #555;
+        font-family: "Poppins", sans-serif;
+        font-size: 0.9rem;
+        color: #3f5770;
+        font-weight: 500;
     }
 
     .video-caption small {
-        color: #777;
+        color: #667788;
         font-size: 0.85em;
+        font-weight: 400;
     }
 </style>
