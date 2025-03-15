@@ -240,9 +240,25 @@
 {#if showInfoPopup}
     <div class="info-popup">
         <div class="popup-content">
-            <h3>Cellular Automata Explaination</h3>
+            <h3>Cellular Automata Explanation</h3>
             <ul>
-                <li>Insert content here</li>
+                <li>This project simulates cellular automata and displays it in 3D</li>
+                <li>Play around with different rules, patterns and settings, but have fun!</li>
+
+                <li>Use left or right click and drag to spin the 3D object</li>
+                <li>Scroll up or down to zoom in or out</li>
+
+                <li>Use the pencil in the top left to open the cell editor</li>
+                  <li>Click on a tile to toggle it between dead and alive</li>
+                  <li>Left click and drag to change multiple cells at once</li>
+                  <li>Right click and drag to move the grid around</li>
+
+                <li>Use the shape button in the top left to change the 3D object</li>
+
+                <li>Use the controls in the middle at the top to run the simulation and control its speed</li>
+                  <li>Use the "Step forward" button to move one generation at a time</li>
+
+                <li>Use the settings button in the top right to change the size, preset, rules and graphics settings</li>
             </ul>
             <button class="btn-secondary" onclick={handleClosePopup}>
                 Close
