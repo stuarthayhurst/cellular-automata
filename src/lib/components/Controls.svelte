@@ -48,6 +48,7 @@
     });
 
     let wasShowingSettings = $state(false);
+    let showInfoPopup = $state(false);
 </script>
 
 <div id="controls" class:collapsed={!reactiveState.controlsVisible}>
@@ -194,6 +195,13 @@
                 {/if}
                 <button
                     class="square-btn btn-secondary"
+                    title="Information"
+                    onclick={() => (showInfoPopup = true)}
+                >
+                    <Icon icon="fa-solid:info" width="20" height="20" />
+                </button>
+                <button
+                    class="square-btn btn-secondary"
                     title="Hide Controls (CTRL + SPACE)"
                     onclick={() => {
                         wasShowingSettings = reactiveState.showSettings;
@@ -216,8 +224,76 @@
     {/if}
 </div>
 
+{#if showInfoPopup}
+    <div class="info-popup">
+        <div class="popup-content">
+            <h3>Cellular Automata Explaination</h3>
+            <ul>
+                <li>Insert content here</li>
+            </ul>
+            <button
+                class="btn-secondary"
+                onclick={() => (showInfoPopup = false)}
+            >
+                Close
+            </button>
+        </div>
+    </div>
+{/if}
+
 <style>
     #controls.collapsed {
         padding: 0;
+    }
+
+    .info-popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .popup-content {
+        background-color: white;
+        color: black;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 400px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .popup-content h3 {
+        margin-top: 0;
+        margin-bottom: 16px;
+        color: black;
+    }
+
+    .popup-content ul {
+        list-style-type: none;
+        padding: 0;
+        margin-bottom: 16px;
+        color: black;
+    }
+
+    .popup-content li {
+        margin-bottom: 8px;
+    }
+
+    .popup-content button {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        background-color: #f0f0f0;
+        color: black;
+        border: 1px solid #ccc;
+    }
+
+    .popup-content button:hover {
+        background-color: #e0e0e0;
     }
 </style>
