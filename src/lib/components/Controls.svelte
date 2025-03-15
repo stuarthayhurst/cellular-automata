@@ -402,6 +402,7 @@
         justify-content: center;
         align-items: center;
         backdrop-filter: blur(3px);
+        z-index: 9999;
     }
 
     .popup-content {
@@ -447,6 +448,7 @@
         font-size: 14px;
         font-weight: 600;
         letter-spacing: 0.5px;
+        z-index: 10000;
     }
 
     .close-button:hover {
