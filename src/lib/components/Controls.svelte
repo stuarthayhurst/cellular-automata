@@ -288,7 +288,17 @@
                             style="cursor: pointer;"
                         >
                             <source
-                                src="public/videos/zoom.mp4"
+                                src="public/videos/3DObjectZoom.mp4"
+                                type="video/mp4"
+                            />
+                        </video>
+                        <video
+                            muted
+                            onclick={toggleVideo}
+                            style="cursor: pointer;"
+                        >
+                            <source
+                                src="public/videos/gridZoom.mp4"
                                 type="video/mp4"
                             />
                         </video>
@@ -477,15 +487,19 @@
     }
 
     .video-container {
-        max-width: 450px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 32px;
+        max-width: 900px;
         border-radius: 10px;
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
     }
 
     .popup-content video {
-        width: 100%;
+        width: calc(50% - 16px);
         border-radius: 10px;
         display: block;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
     }
 
     .video-caption {
