@@ -367,10 +367,7 @@
                 </li>
 
                 <li>
-                    <img
-                        src="/images/stepForward.png"
-                        alt="Step Forward"
-                    />
+                    <img src="/images/stepForward.png" alt="Step Forward" />
                     <img
                         src="/images/beforeStepForward.png"
                         alt="Before Step Forward"
