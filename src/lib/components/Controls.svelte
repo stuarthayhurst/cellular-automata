@@ -1,5 +1,6 @@
 <script>
     import Icon from "@iconify/svelte";
+    import { onMount } from "svelte";
     import { reactiveState } from "../reactiveState.svelte.js";
     import { resetToStart } from "../sharedState.js";
     import { pauseSimulation, updateSpeed } from "../simulation.js";
@@ -45,6 +46,10 @@
     $effect(() => {
         updateSpeed();
         reactiveState.simulationSpeed;
+    });
+
+    onMount(() => {
+        showInfoPopup = true;
     });
 
     let wasShowingSettings = $state(false);
