@@ -55,6 +55,15 @@
         }
     });
 
+    function toggleVideo(event) {
+        const video = event.target;
+        if (video.paused) {
+            video.play();
+        } else {
+            video.pause();
+        }
+    }
+
     let wasShowingSettings = $state(false);
     let showInfoPopup = $state(false);
 
@@ -240,29 +249,139 @@
 {#if showInfoPopup}
     <div class="info-popup">
         <div class="popup-content">
+            <button class="close-button" onclick={handleClosePopup}>
+                CLOSE
+            </button>
             <h3>Cellular Automata Explanation</h3>
             <ul>
-                <li>This project simulates cellular automata and displays it in 3D</li>
-                <li>Play around with different rules, patterns and settings, but have fun!</li>
+                <li>
+                    This project simulates cellular automata and displays it in
+                    3D. Play around with different rules, patterns and settings,
+                    but have fun!
+                </li>
 
-                <li>Use left or right click and drag to spin the 3D object</li>
-                <li>Scroll up or down to zoom in or out</li>
+                <li>
+                    <div class="video-container">
+                        <video
+                            muted
+                            onclick={toggleVideo}
+                            style="cursor: pointer;"
+                        >
+                            <source
+                                src="public/videos/dragAndSpin.mp4"
+                                type="video/mp4"
+                            />
+                        </video>
+                    </div>
+                    <div class="video-caption">
+                        Use left or right click and drag to spin the 3D object
+                        <br />
+                        <small>(Click video to play/pause)</small>
+                    </div>
+                </li>
 
-                <li>Use the pencil in the top left to open the cell editor</li>
-                  <li>Click on a tile to toggle it between dead and alive</li>
-                  <li>Left click and drag to change multiple cells at once</li>
-                  <li>Right click and drag to move the grid around</li>
+                <li>
+                    <div class="video-container">
+                        <video
+                            muted
+                            onclick={toggleVideo}
+                            style="cursor: pointer;"
+                        >
+                            <source
+                                src="public/videos/zoom.mp4"
+                                type="video/mp4"
+                            />
+                        </video>
+                    </div>
+                    <div class="video-caption">
+                        Scroll up or down to zoom in or out
+                        <br />
+                        <small>(Click video to play/pause)</small>
+                    </div>
+                </li>
 
-                <li>Use the shape button in the top left to change the 3D object</li>
+                <li>
+                    <img src="public/images/pencil.png" alt="Pencil" />
+                    Use the pencil in the top left to open the cell editor
+                </li>
 
-                <li>Use the controls in the middle at the top to run the simulation and control its speed</li>
-                  <li>Use the "Step forward" button to move one generation at a time</li>
+                <li>
+                    <img src="public/images/dead.png" alt="Dead" />
+                    <img src="public/images/oneAlive.png" alt="Alive" />
+                    Click on a tile to toggle it between dead and alive
+                </li>
 
-                <li>Use the settings button in the top right to change the size, preset, rules and graphics settings</li>
+                <li>
+                    <img src="public/images/dead.png" alt="Dead" />
+                    <img
+                        src="public/images/multipleCellsAlive.png"
+                        alt="Multiple Cells Alive"
+                    />
+                    Left click and drag to change multiple cells at once
+                </li>
+
+                <li>
+                    <div class="video-container">
+                        <video
+                            muted
+                            onclick={toggleVideo}
+                            style="cursor: pointer;"
+                        >
+                            <source
+                                src="public/videos/dragGrid.mp4"
+                                type="video/mp4"
+                            />
+                        </video>
+                    </div>
+                    <div class="video-caption">
+                        Right click and drag to move the grid around
+                        <br />
+                        <small>(Click video to play/pause)</small>
+                    </div>
+                </li>
+
+                <li>
+                    <img src="public/images/shape.png" alt="Shape" />
+                    <img src="public/images/torus.png" alt="Torus" />
+                    <img src="public/images/sphere.png" alt="Sphere" />
+                    Use the shape button in the top left to change the 3D object
+                </li>
+
+                <li>
+                    <img
+                        src="public/images/playPauseAndSpeed.png"
+                        alt="Play/Pause and Speed"
+                    />
+                    Use the controls in the middle at the top to run the simulation
+                    and control its speed
+                </li>
+
+                <li>
+                    <img
+                        src="public/images/stepForward.png"
+                        alt="Step Forward"
+                    />
+                    <img
+                        src="public/images/beforeStepForward.png"
+                        alt="Before Step Forward"
+                    />
+                    <img
+                        src="public/images/afterStepForward.png"
+                        alt="After Step Forward"
+                    />
+                    Use the "Step forward" button to move one generation at a time
+                </li>
+
+                <li>
+                    <img src="public/images/settings.png" alt="Settings" />
+                    <img
+                        src="public/images/showSettingsPanel.png"
+                        alt="Settings Panel"
+                    />
+                    Use the settings button in the top right to change the size,
+                    preset, rules and graphics settings
+                </li>
             </ul>
-            <button class="btn-secondary" onclick={handleClosePopup}>
-                Close
-            </button>
         </div>
     </div>
 {/if}
@@ -278,48 +397,103 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.7);
         display: flex;
         justify-content: center;
         align-items: center;
+        backdrop-filter: blur(3px);
     }
 
     .popup-content {
         background-color: white;
-        color: black;
-        padding: 20px;
-        border-radius: 8px;
-        max-width: 400px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    .popup-content h3 {
-        margin-top: 0;
-        margin-bottom: 16px;
-        color: black;
-    }
-
-    .popup-content ul {
-        list-style-type: none;
-        padding: 0;
-        margin-bottom: 16px;
-        color: black;
+        color: #333;
+        padding: 40px;
+        padding-top: 60px;
+        width: 900px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
 
     .popup-content li {
-        margin-bottom: 8px;
+        margin-bottom: 32px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        font-size: 1.1em;
+        color: #444;
+        gap: 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        width: calc(100% - 48px);
     }
 
-    .popup-content button {
-        width: 100%;
-        padding: 8px;
+    .close-button {
+        position: fixed;
+        top: 40px;
+        right: calc(50% - 450px + 10px);
+        width: auto;
+        height: 36px;
         border-radius: 4px;
-        background-color: #f0f0f0;
-        color: black;
-        border: 1px solid #ccc;
+        background-color: #ff4444;
+        color: white;
+        border: none;
+        justify-content: center;
+        cursor: pointer;
+        padding: 0 16px;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
     }
 
-    .popup-content button:hover {
-        background-color: #e0e0e0;
+    .close-button:hover {
+        background-color: #ff0000;
+        transform: scale(1.05);
+    }
+
+    .popup-content h3 {
+        font-size: 24px;
+        color: #1a1a1a;
+        text-align: center;
+        font-weight: 600;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 16px;
+    }
+
+    .popup-content img {
+        max-width: 200px;
+        height: auto;
+        margin: 8px;
+        border-radius: 8px;
+    }
+
+    .popup-content img[alt="Settings Panel"] {
+        max-width: 700px;
+    }
+
+    .video-container {
+        max-width: 450px;
+        border-radius: 10px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .popup-content video {
+        width: 100%;
+        border-radius: 10px;
+        display: block;
+    }
+
+    .video-caption {
+        margin-top: 12px;
+        font-size: 1em;
+        color: #555;
+    }
+
+    .video-caption small {
+        color: #777;
+        font-size: 0.85em;
     }
 </style>
