@@ -135,10 +135,13 @@ export function setUpDragAndZoom(canvas) {
      * @returns {void}
      */
     const onwheel_editor = (wheel, mouseX, mouseY) => {
-        const change = wheel * -0.1;
-
         const pixels = sharedState.pixelsPerCell;
-        const newPixels = Math.max(7, sharedState.pixelsPerCell + change);
+        const change = wheel * -0.1;
+        const sensitivity = pixels / 100.0;
+        const newPixels = Math.max(
+            7,
+            sharedState.pixelsPerCell + change * sensitivity,
+        );
         const zoomFactor = newPixels / pixels;
 
         const newGridOffsetX =
@@ -151,7 +154,6 @@ export function setUpDragAndZoom(canvas) {
 
         sharedState.gridOffsetX = newGridOffsetX;
         sharedState.gridOffsetY = newGridOffsetY;
-
         sharedState.pixelsPerCell = newPixels;
     };
 
