@@ -252,7 +252,7 @@
             <button class="close-button" onclick={handleClosePopup}>
                 CLOSE
             </button>
-            <h3>Cellular Automata Explanation</h3>
+            <h3>Cellular Automata Information</h3>
             <ul>
                 <li>
                     This project simulates cellular automata and displays it in
