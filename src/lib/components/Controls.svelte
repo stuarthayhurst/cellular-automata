@@ -1,5 +1,6 @@
 <script>
     import Icon from "@iconify/svelte";
+    import { onMount } from "svelte";
     import { reactiveState } from "../reactiveState.svelte.js";
     import { resetToStart } from "../sharedState.js";
     import { pauseSimulation, updateSpeed } from "../simulation.js";
@@ -11,6 +12,7 @@
         clearGrid,
     } from "../cellEditor.js";
     import { bumpZoom } from "../dragAndZoom.js";
+    import InfoPopup from "./InfoPopup.svelte";
 
     let { togglePaused, stepForward, toggleShowSettings } = $props();
 
@@ -47,7 +49,14 @@
         reactiveState.simulationSpeed;
     });
 
+    onMount(() => {
+        if (!localStorage.getItem("hasVisited")) {
+            showInfoPopup = true;
+        }
+    });
+
     let wasShowingSettings = $state(false);
+    let showInfoPopup = $state(false);
 </script>
 
 <div id="controls" class:collapsed={!reactiveState.controlsVisible}>
@@ -194,6 +203,13 @@
                 {/if}
                 <button
                     class="square-btn btn-secondary"
+                    title="Information"
+                    onclick={() => (showInfoPopup = true)}
+                >
+                    <Icon icon="fa-solid:info" width="20" height="20" />
+                </button>
+                <button
+                    class="square-btn btn-secondary"
                     title="Hide Controls (CTRL + SPACE)"
                     onclick={() => {
                         wasShowingSettings = reactiveState.showSettings;
@@ -215,6 +231,8 @@
         </div>
     {/if}
 </div>
+
+<InfoPopup bind:showInfoPopup />
 
 <style>
     #controls.collapsed {
