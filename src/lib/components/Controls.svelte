@@ -311,7 +311,7 @@
                 </li>
 
                 <li>
-                    <img src="/images/pencil2.webp" alt="Pencil" />
+                    <img src="/images/pencil.webp" alt="Pencil" />
                     Use the pencil in the top left to open the cell editor
                 </li>
 
