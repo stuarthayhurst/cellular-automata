@@ -1,7 +1,7 @@
 <script>
     export let showInfoPopup = false;
 
-    import deadImage from "../assets/images/dead.png";
+    import deadImage from "../assets/images/dead.webp";
     import pencilImage from "../assets/images/pencil.webp";
     import oneAliveImage from "../assets/images/oneAlive.webp";
     import multipleCellsAliveImage from "../assets/images/multipleCellsAlive.webp";
