@@ -311,20 +311,20 @@
                 </li>
 
                 <li>
-                    <img src="/images/pencil.png" alt="Pencil" />
+                    <img src="/images/pencil2.webp" alt="Pencil" />
                     Use the pencil in the top left to open the cell editor
                 </li>
 
                 <li>
-                    <img src="/images/dead.png" alt="Dead" />
-                    <img src="/images/oneAlive.png" alt="Alive" />
+                    <img src="/images/dead.webp" alt="Dead" />
+                    <img src="/images/oneAlive.webp" alt="Alive" />
                     Click on a tile to toggle it between dead and alive
                 </li>
 
                 <li>
-                    <img src="/images/dead.png" alt="Dead" />
+                    <img src="/images/dead.webp" alt="Dead" />
                     <img
-                        src="/images/multipleCellsAlive.png"
+                        src="/images/multipleCellsAlive.webp"
                         alt="Multiple Cells Alive"
                     />
                     Left click and drag to change multiple cells at once
@@ -351,15 +351,15 @@
                 </li>
 
                 <li>
-                    <img src="/images/shape.png" alt="Shape" />
-                    <img src="/images/torus.png" alt="Torus" />
-                    <img src="/images/sphere.png" alt="Sphere" />
+                    <img src="/images/shape.webp" alt="Shape" />
+                    <img src="/images/torus.webp" alt="Torus" />
+                    <img src="/images/sphere.webp" alt="Sphere" />
                     Use the shape button in the top left to change the 3D object
                 </li>
 
                 <li>
                     <img
-                        src="/images/playPauseAndSpeed.png"
+                        src="/images/playPauseAndSpeed.webp"
                         alt="Play/Pause and Speed"
                     />
                     Use the controls in the middle at the top to run the simulation
@@ -367,22 +367,22 @@
                 </li>
 
                 <li>
-                    <img src="/images/stepForward.png" alt="Step Forward" />
+                    <img src="/images/stepForward.webp" alt="Step Forward" />
                     <img
-                        src="/images/beforeStepForward.png"
+                        src="/images/beforeStepForward.webp"
                         alt="Before Step Forward"
                     />
                     <img
-                        src="/images/afterStepForward.png"
+                        src="/images/afterStepForward.webp"
                         alt="After Step Forward"
                     />
                     Use the "Step forward" button to move one generation at a time
                 </li>
 
                 <li>
-                    <img src="/images/settings.png" alt="Settings" />
+                    <img src="/images/settings.webp" alt="Settings" />
                     <img
-                        src="/images/showSettingsPanel.png"
+                        src="/images/showSettingsPanel.webp"
                         alt="Settings Panel"
                     />
                     Use the settings button in the top right to change the size,
