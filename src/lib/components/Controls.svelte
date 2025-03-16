@@ -50,8 +50,7 @@
     });
 
     onMount(() => {
-        const hasVisitedBefore = localStorage.getItem("hasVisitedCA");
-        if (!hasVisitedBefore) {
+        if (!localStorage.getItem("hasVisited")) {
             showInfoPopup = true;
         }
     });

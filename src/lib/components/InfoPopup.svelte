@@ -22,7 +22,7 @@
 
     function handleClosePopup() {
         showInfoPopup = false;
-        localStorage.setItem("hasVisitedCA", "true");
+        localStorage.setItem("hasVisited", "true");
     }
 
     function toggleVideo(event) {
