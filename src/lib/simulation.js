@@ -158,12 +158,22 @@ export function setCellGridHeight(newHeight) {
  * @returns {void}
  */
 function resizeCellGrid(newWidth, newHeight) {
+    const oldWidth = reactiveState.cellGridWidth;
+    const oldHeight = reactiveState.cellGridHeight;
+    const oldCells = sharedState.cells;
+
     const resizedCells = new Uint8Array(newWidth * newHeight);
-    sharedState.cells.forEach((cellState, index) => {
-        const [x, y] = indexToPos(index, reactiveState.cellGridWidth);
-        const newIndex = posToIndex(x, y, newWidth, newHeight);
-        if (newIndex < resizedCells.length) resizedCells[newIndex] = cellState;
-    });
+
+    for (let y = 0; y < newHeight; y++) {
+        for (let x = 0; x < newWidth; x++) {
+            if (y < oldHeight && x < oldWidth) {
+                const oldIndex = posToIndex(x, y, oldWidth, oldHeight);
+                const newIndex = posToIndex(x, y, newWidth, newHeight);
+                resizedCells[newIndex] = oldCells[oldIndex];
+            }
+        }
+    }
+
     sharedState.cells = resizedCells;
     reactiveState.cellGridWidth = newWidth;
     reactiveState.cellGridHeight = newHeight;
