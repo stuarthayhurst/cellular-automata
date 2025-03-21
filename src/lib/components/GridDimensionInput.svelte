@@ -1,4 +1,6 @@
 <script>
+    import { sharedState } from "../sharedState.js";
+
     /** @type {{ value: Number, setFn: function(Number):void, [name: string]:any}} */
     let { value, setFn, ...restProps } = $props();
 
@@ -10,7 +12,7 @@
     bind:this={inputElement}
     type="number"
     min="1"
-    max="500"
+    max={Math.min(500, Math.floor(Math.sqrt(sharedState.maxCells)))}
     required
     {value}
     onchange={() => {
