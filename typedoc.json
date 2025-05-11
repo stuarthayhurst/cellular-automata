@@ -1,7 +1,5 @@
 {
-    "entryPoints": [
-        "src"
-    ],
+    "entryPoints": ["src"],
     "entryPointStrategy": "expand",
     "out": "typedoc-docs",
     "tsconfig": "tsconfig.json",
@@ -9,10 +7,7 @@
     "cleanOutputDir": true,
     "excludePrivate": false,
     "name": "Spectacular Cellular Automata",
-    "plugin": [
-        "typedoc-plugin-inline-sources",
-        "typedoc-plugin-not-exported"
-    ],
+    "plugin": ["typedoc-plugin-inline-sources", "typedoc-plugin-not-exported"],
     "headings": {
         "readme": false,
         "document": true
