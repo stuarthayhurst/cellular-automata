@@ -8,7 +8,7 @@ import { pushHistory } from "./cellEditor.js";
  * @property {Number[][]} cells
  */
 
-/** @type {Object.<string, Preset>} */
+/** @type {Object.<string, Preset>} @source */
 export const presets = {
     block: {
         name: "Block (Still)",
@@ -46,6 +46,8 @@ export const presets = {
 /**
  * @param {String} presetKey
  * @returns {void}
+ *
+ * @source
  */
 export function applyPreset(presetKey) {
     let preset = presets[presetKey];
@@ -122,6 +124,8 @@ function generateCells(width, height, aliveCells = []) {
  * @param {Number} width
  * @param {Number} height
  * @returns {Number[][]}
+ *
+ * @source
  */
 export function generateRandomCells(width, height) {
     return Array.from({ length: height }, () =>

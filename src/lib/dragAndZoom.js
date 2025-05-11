@@ -191,6 +191,8 @@ export function setUpDragAndZoom(canvas) {
  * If the camera distance is below the minimum,
  * update the camera position with the new distance.
  * @returns {void}
+ *
+ * @source
  */
 export function bumpZoom() {
     const minDistance = minCameraDistance(reactiveState.shape);

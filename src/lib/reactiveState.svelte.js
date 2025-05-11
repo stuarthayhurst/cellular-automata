@@ -40,7 +40,7 @@ Learn more: https://svelte.dev/tutorial/svelte/universal-reactivity.
  * @property {Number} randomFillProbability
  */
 
-/** @type {ReactiveState} */
+/** @type {ReactiveState} @source */
 export const reactiveState = $state({
     paused: true,
     interfaceMode: "3D View",

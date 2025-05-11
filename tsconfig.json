@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "nodenext",
+        "lib": ["DOM", "ES2020"],
+        "allowJs": true,
+        "checkJs": false,
+        "moduleResolution": "nodenext",
+        "types": ["svelte"]
+    },
+    "include": ["src/**/*"],
+    "exclude": ["src/main.js", "src/vite-env.d.ts"]
+}

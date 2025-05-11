@@ -1,0 +1,27 @@
+{
+    "entryPoints": [
+        "src"
+    ],
+    "entryPointStrategy": "expand",
+    "out": "typedoc-docs",
+    "tsconfig": "tsconfig.json",
+    "readme": "README.md",
+    "cleanOutputDir": true,
+    "excludePrivate": false,
+    "name": "Spectacular Cellular Automata",
+    "plugin": [
+        "typedoc-plugin-inline-sources",
+        "typedoc-plugin-not-exported"
+    ],
+    "headings": {
+        "readme": false,
+        "document": true
+    },
+    "navigationLinks": {
+        "Website": "https://comp2002.ntaulbut.dev/main",
+        "Source Repository": "https://projects.cs.nott.ac.uk/comp2002/2024-2025/team15_project",
+        "Jira": "https://team15.atlassian.net/jira/software/projects/CELL/boards/1/backlog",
+        "Documents": "https://uniofnottm-my.sharepoint.com/:f:/r/personal/psynt5_nottingham_ac_uk/Documents/Cellular%20Automata%20Group%20Project?csf=1&web=1&e=42gfPM"
+    },
+    "excludeNotDocumented": false
+}

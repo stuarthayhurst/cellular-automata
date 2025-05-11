@@ -134,6 +134,8 @@ export function setUpCellEditor(canvas) {
 /**
  * Clear all cells.
  * @returns {void}
+ *
+ * @source
  */
 export function clearGrid() {
     let clearedCells = new Set();
@@ -151,6 +153,8 @@ export function clearGrid() {
 /**
  * Undo last editor action.
  * @returns {void}
+ *
+ * @source
  */
 export function editorUndo() {
     if (drawingStroke) return;
@@ -171,6 +175,8 @@ export function editorUndo() {
  * @param {Number} historyStackLength
  * @param {Boolean} atStart
  * @returns {Boolean}
+ *
+ * @source
  */
 export const mayUndo = (historyStackLength, atStart) =>
     historyStackLength > 0 && atStart;
@@ -178,6 +184,8 @@ export const mayUndo = (historyStackLength, atStart) =>
 /**
  * Redo last editor action.
  * @returns {void}
+ *
+ * @source
  */
 export function editorRedo() {
     if (drawingStroke) return;
@@ -198,6 +206,8 @@ export function editorRedo() {
  * @param {Number} redoStackLength
  * @param {Boolean} atStart
  * @returns {Boolean}
+ *
+ * @source
  */
 export const mayRedo = (redoStackLength, atStart) =>
     redoStackLength > 0 && atStart;
@@ -206,6 +216,8 @@ export const mayRedo = (redoStackLength, atStart) =>
  * Push change to the history stack.
  * @param {ChangeT} change
  * @returns {void}
+ *
+ * @source
  */
 export function pushHistory(change) {
     if (!reactiveState.atStart || changeSize(change) === 0) return;
