@@ -248,10 +248,11 @@ const changeSize = (change) =>
 /**
  * 0 => 1
  * 1 => 0
+ * 2 => 0
  * @param {Number} n
  * @returns {Number}
  */
-const flip = (n) => 1 - n;
+const flip = (n) => (n === 1 || n === 2 ? 0 : 1);
 
 /**
  * Check tuple members are equal.
