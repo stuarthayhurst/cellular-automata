@@ -180,6 +180,7 @@
     }
 
     .popup-content {
+        position: relative;
         background-color: white;
         color: #333;
         padding: 40px;
@@ -209,9 +210,9 @@
     }
 
     .close-button {
-        position: fixed;
+        position: absolute;
         top: 40px;
-        right: calc(50% - 450px + 10px);
+        right: 10px;
         width: auto;
         height: 36px;
         border-radius: 4px;
