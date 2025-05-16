@@ -29,6 +29,9 @@
 <p align="center">
   <img src="https://github.com/stuarthayhurst/cellular-automata/raw/master/docs/demo-1.png" alt="Demo 1">
 </p>
+<p align="center">
+  <img src="https://github.com/stuarthayhurst/cellular-automata/raw/master/docs/demo-2.png" alt="Demo 2">
+</p>
 
 ## Deployment:
   - Run `npm run build` to build the project, producing a bundle in `dist/`
