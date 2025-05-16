@@ -22,16 +22,14 @@
         <GridDimensionInput
             value={reactiveState.cellGridWidth}
             setFn={(v) => setCellGridWidth(v)}
-            id="width"
-        />
+            id="width" />
     </div>
     <div class="grid-input-group">
         <label for="height">Height</label>
         <GridDimensionInput
             value={reactiveState.cellGridHeight}
             setFn={(v) => setCellGridHeight(v)}
-            id="height"
-        />
+            id="height" />
     </div>
 </div>
 
@@ -40,8 +38,7 @@
 <div class="preset-container">
     {#each Object.entries(presets) as [key, preset]}
         <button onclick={() => applyPreset(key)} class="preset-button"
-            >{preset.name}</button
-        >
+            >{preset.name}</button>
     {/each}
 </div>
 
@@ -49,8 +46,7 @@
 <div class="random-probability-controls">
     <div class="slider-control">
         <label class="slider-label" for="random-probability"
-            >Random Fill Probability</label
-        >
+            >Random Fill Probability</label>
         <div class="slider-container">
             <input
                 type="range"
@@ -58,11 +54,9 @@
                 min="0"
                 max="1"
                 step="0.05"
-                bind:value={reactiveState.randomFillProbability}
-            />
+                bind:value={reactiveState.randomFillProbability} />
             <span class="slider-value"
-                >{reactiveState.randomFillProbability}</span
-            >
+                >{reactiveState.randomFillProbability}</span>
         </div>
     </div>
 </div>
@@ -76,8 +70,7 @@
                 type="radio"
                 name="rule"
                 bind:group={reactiveState.simulationRule}
-                value={gameOfLifeRule}
-            />
+                value={gameOfLifeRule} />
             <span class="radio-text">Game of Life</span>
         </label>
         <label class="radio-label">
@@ -85,8 +78,7 @@
                 type="radio"
                 name="rule"
                 bind:group={reactiveState.simulationRule}
-                value={briansBrainRule}
-            />
+                value={briansBrainRule} />
             <span class="radio-text">Brian's Brain</span>
         </label>
         <label class="radio-label">
@@ -94,8 +86,7 @@
                 type="radio"
                 name="rule"
                 bind:group={reactiveState.simulationRule}
-                value={seedsRule}
-            />
+                value={seedsRule} />
             <span class="radio-text">Seeds</span>
         </label>
         <label class="radio-label">
@@ -103,8 +94,7 @@
                 type="radio"
                 name="rule"
                 bind:group={reactiveState.simulationRule}
-                value={dayAndNightRule}
-            />
+                value={dayAndNightRule} />
             <span class="radio-text">Day & Night</span>
         </label>
     </div>
@@ -128,8 +118,7 @@
                 bind:value={reactiveState.raisedCellHeight}
                 oninput={() =>
                     (reactiveState.raiseCells =
-                        reactiveState.raisedCellHeight > 0)}
-            />
+                        reactiveState.raisedCellHeight > 0)} />
             <span class="height-value">{reactiveState.raisedCellHeight}</span>
         </div>
     </div>
@@ -142,8 +131,7 @@
         <label class="toggle-label">
             <input
                 type="checkbox"
-                bind:checked={reactiveState.aliasBackground}
-            />
+                bind:checked={reactiveState.aliasBackground} />
             <span class="toggle-text">Tile the grid</span>
         </label>
     </div>

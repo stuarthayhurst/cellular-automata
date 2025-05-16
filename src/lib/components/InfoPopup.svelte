@@ -54,8 +54,7 @@
                         <video
                             muted
                             onclick={toggleVideo}
-                            style="cursor: pointer;"
-                        >
+                            style="cursor: pointer;">
                             <source src={dragAndSpinVideo} type="video/mp4" />
                         </video>
                     </div>
@@ -71,15 +70,13 @@
                         <video
                             muted
                             onclick={toggleVideo}
-                            style="cursor: pointer;"
-                        >
+                            style="cursor: pointer;">
                             <source src={objectZoomVideo} type="video/mp4" />
                         </video>
                         <video
                             muted
                             onclick={toggleVideo}
-                            style="cursor: pointer;"
-                        >
+                            style="cursor: pointer;">
                             <source src={gridZoomVideo} type="video/mp4" />
                         </video>
                     </div>
@@ -105,8 +102,7 @@
                     <img src={deadImage} alt="Dead" />
                     <img
                         src={multipleCellsAliveImage}
-                        alt="Multiple Cells Alive"
-                    />
+                        alt="Multiple Cells Alive" />
                     Left click and drag to change multiple cells at once
                 </li>
 
@@ -115,8 +111,7 @@
                         <video
                             muted
                             onclick={toggleVideo}
-                            style="cursor: pointer;"
-                        >
+                            style="cursor: pointer;">
                             <source src={dragGridVideo} type="video/mp4" />
                         </video>
                     </div>
@@ -137,8 +132,7 @@
                 <li>
                     <img
                         src={playPauseAndSpeedImage}
-                        alt="Play/Pause and Speed"
-                    />
+                        alt="Play/Pause and Speed" />
                     Use the controls in the middle at the top to run the simulation
                     and control its speed
                 </li>
@@ -147,8 +141,7 @@
                     <img src={stepForwardImage} alt="Step Forward" />
                     <img
                         src={beforeStepForwardImage}
-                        alt="Before Step Forward"
-                    />
+                        alt="Before Step Forward" />
                     <img src={afterStepForwardImage} alt="After Step Forward" />
                     Use the "Step forward" button to move one generation at a time
                 </li>

@@ -8,8 +8,7 @@
 
 <main
     class:settings-hidden={!reactiveState.showSettings}
-    class:dragging={reactiveState.dragging}
->
+    class:dragging={reactiveState.dragging}>
     <div id="canvas-container">
         <Display />
     </div>
@@ -18,8 +17,7 @@
         {stepForward}
         toggleShowSettings={() => {
             reactiveState.showSettings = !reactiveState.showSettings;
-        }}
-    />
+        }} />
     {#if reactiveState.showSettings}
         <div id="settings">
             <Settings />

@@ -21,5 +21,4 @@
     onfocusout={() => {
         if (!inputElement.validity.valid) inputElement.value = String(value);
     }}
-    {...restProps}
-/>
+    {...restProps} />

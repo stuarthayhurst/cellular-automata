@@ -41,8 +41,7 @@
     bind:this={canvas}
     class:grab={!reactiveState.dragging &&
         reactiveState.interfaceMode === "3D View"}
-    oncontextmenu={(event) => event.preventDefault()}
-></canvas>
+    oncontextmenu={(event) => event.preventDefault()}></canvas>
 
 <style>
     canvas {

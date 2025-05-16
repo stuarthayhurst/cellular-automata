@@ -92,13 +92,12 @@
                     name="colour"
                     value={themeKey}
                     bind:group={reactiveState.selectedColour}
-                    onchange={() => setPresetColour(themeKey)}
-                />
+                    onchange={() => setPresetColour(themeKey)} />
                 <div
                     class="colour-circle"
                     style="background-color: rgb({theme.cell.join(' ')})"
-                    title={titleCase(themeKey)}
-                ></div>
+                    title={titleCase(themeKey)}>
+                </div>
             </label>
         {/each}
 
@@ -111,18 +110,17 @@
                     value={hex}
                     bind:group={reactiveState.selectedColour}
                     onchange={(event) =>
-                        setColours(hexToColourTheme(event.currentTarget.value))}
-                />
+                        setColours(
+                            hexToColourTheme(event.currentTarget.value)
+                        )} />
                 <div
                     class="colour-circle"
                     style="background-color: {hex}"
-                    title="Saved Custom Colour"
-                >
+                    title="Saved Custom Colour">
                     <button
                         class="remove-colour-btn"
                         onclick={() => removeCustomColour(hex)}
-                        title="Remove colour"
-                    >
+                        title="Remove colour">
                         ×
                     </button>
                 </div>
@@ -134,14 +132,12 @@
                 type="radio"
                 name="colour"
                 onchange={(event) =>
-                    setColours(hexToColourTheme(event.currentTarget.value))}
-            />
+                    setColours(hexToColourTheme(event.currentTarget.value))} />
             <div
                 class="colour-circle custom-colour-circle"
                 style="background-color: {colourPickerHex}"
                 class:dark-background={isDarkColour(colourPickerHex)}
-                title="Pick Custom Colour"
-            >
+                title="Pick Custom Colour">
                 <input
                     type="color"
                     bind:value={colourPickerHex}
@@ -151,8 +147,7 @@
                     onchange={() => {
                         reactiveState.customColours.push(colourPickerHex);
                         reactiveState.selectedColour = colourPickerHex;
-                    }}
-                />
+                    }} />
             </div>
         </label>
     </div>

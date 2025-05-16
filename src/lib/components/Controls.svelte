@@ -67,8 +67,7 @@
             onclick={() => {
                 reactiveState.controlsVisible = true;
                 reactiveState.showSettings = wasShowingSettings;
-            }}
-        >
+            }}>
             <Icon icon="fa-solid:angle-down" width="16" height="16" />
         </button>
     {/if}
@@ -86,15 +85,13 @@
                             reactiveState.interfaceMode === "Editor"
                                 ? "3D View"
                                 : "Editor";
-                    }}
-                >
+                    }}>
                     <Icon
                         icon={reactiveState.interfaceMode === "3D View"
                             ? "fa-solid:pen"
                             : "fa-solid:cube"}
                         width="20"
-                        height="20"
-                    />
+                        height="20" />
                 </button>
                 {#if reactiveState.interfaceMode === "Editor"}
                     <button
@@ -104,8 +101,7 @@
                         disabled={!mayUndo(
                             reactiveState.historyStack.length,
                             reactiveState.atStart
-                        )}
-                    >
+                        )}>
                         <Icon icon="fa-solid:undo" width="20" height="20" />
                     </button>
                     <button
@@ -115,8 +111,7 @@
                         disabled={!mayRedo(
                             reactiveState.redoStack.length,
                             reactiveState.atStart
-                        )}
-                    >
+                        )}>
                         <Icon icon="fa-solid:redo" width="20" height="20" />
                     </button>
                 {:else}
@@ -131,8 +126,7 @@
                                     ? "torus"
                                     : "sphere";
                             bumpZoom();
-                        }}
-                    >
+                        }}>
                         <Icon icon="fa-solid:shapes" width="20" height="20" />
                     </button>
                 {/if}
@@ -146,34 +140,29 @@
                     onclick={() => {
                         pauseSimulation();
                         resetToStart();
-                    }}
-                >
+                    }}>
                     <Icon
                         icon="fa-solid:fast-backward"
                         width="20"
-                        height="20"
-                    />
+                        height="20" />
                 </button>
                 <button
                     id="pause-button"
                     class="square-btn btn-primary"
                     title={reactiveState.paused ? "Play" : "Pause"}
-                    onclick={togglePaused}
-                >
+                    onclick={togglePaused}>
                     <Icon
                         icon={reactiveState.paused
                             ? "fa-solid:play"
                             : "fa-solid:pause"}
                         width="20"
-                        height="20"
-                    />
+                        height="20" />
                 </button>
                 <select
                     id="speed-selector"
                     class="dropdown-btn"
                     title="Select Speed"
-                    bind:value={reactiveState.simulationSpeed}
-                >
+                    bind:value={reactiveState.simulationSpeed}>
                     <option value={0.5}>0.5x</option>
                     <option value={1}>1x</option>
                     <option value={2}>2x</option>
@@ -184,8 +173,7 @@
                     id="step-forward-button"
                     class="square-btn btn-secondary"
                     title="Step Forward"
-                    onclick={stepForward}
-                >
+                    onclick={stepForward}>
                     <Icon icon="fa-solid:step-forward" width="20" height="20" />
                 </button>
             </div>
@@ -196,16 +184,14 @@
                         aria-label="Clear"
                         class="square-btn btn-danger"
                         title="Clear"
-                        onclick={() => clearGrid()}
-                    >
+                        onclick={() => clearGrid()}>
                         <Icon icon="fa-solid:eraser" width="20" height="20" />
                     </button>
                 {/if}
                 <button
                     class="square-btn btn-secondary"
                     title="Information"
-                    onclick={() => (showInfoPopup = true)}
-                >
+                    onclick={() => (showInfoPopup = true)}>
                     <Icon icon="fa-solid:info" width="20" height="20" />
                 </button>
                 <button
@@ -215,16 +201,14 @@
                         wasShowingSettings = reactiveState.showSettings;
                         reactiveState.showSettings = false;
                         reactiveState.controlsVisible = false;
-                    }}
-                >
+                    }}>
                     <Icon icon="fa-solid:angle-up" width="20" height="20" />
                 </button>
                 <button
                     id="toggle-settings-button"
                     class="square-btn btn-secondary"
                     title="Settings"
-                    onclick={() => toggleShowSettings()}
-                >
+                    onclick={() => toggleShowSettings()}>
                     <Icon icon="fa-solid:cog" width="20" height="20" />
                 </button>
             </div>
