@@ -1,30 +1,30 @@
-# Spectacular Cellular Automata
+## Spectacular Cellular Automata
+  - Originally developed as a group project for the University of Nottingham
+    - This has been open-sourced for interest and inspiration, and is not actively developed
+  - Simulate cellular automata in 2D, displaying it on the surface of 3D meshes
+    - Supports dynamically generated spheres and toruses
+  - Licensed under the [Mozilla Public License 2.0](LICENCE.txt)
 
-- Team 15's group project on cellular automata.
-- An [npm](https://www.npmjs.com/) package using the [Svelte](https://svelte.dev/) web framework with [Vite](https://vite.dev/) to bundle source and asset files.
-- Uses [gl-matrix](https://www.npmjs.com/package/gl-matrix) for linear algebra.
-- Refer to the [style guide](docs/STYLE.md) for programming style guidelines.
-- See also the [branching policy](docs/BRANCHING.md).
-- Licensed under the [Mozilla Public License 2.0](LICENCE.txt)
+## Features:
+  - GPU-accelerated 2D and 3D views
+    - Includes various graphics settings
+  - Interactive, drawable grid editor
+  - 4 different rules
+  - Speed selection, play / pause and single step mode
 
-## Setup
+## Controls:
+  - Left or right click and drag to rotate the 3D view
+  - Scroll to zoom the 2D or 3D view
+  - Click a cell to toggle its state
+    - Click and drag to toggle multiple cells
+  - Change the view mode with the pencil icon in the top left
+  - Change the shape with the shape icon in the top left
 
-1. Install [node](https://nodejs.org/en).
-2. In the project directory, run `npm install` to install dependencies.
+## Development:
+  - Run `npm install` to setup the project
+  - Run `npm run dev` to start the development environment
 
-## Development
-
-- Use `npm run dev`.
-  This will serve the website locally with hot reloading[^1].
-
-## Testing
-
-- Use `npm run test`.
-
-## Deployment
-
-1. Use `npm run build` to build the project, this will create a bundle in `dist/`.
-2. Use any web server to serve the files in `dist/`.
-   An easy way to do this locally is using `npm run preview`.
-
-[^1]: When you save changes in the project directory, the program will automatically reload the webpage in your browser reflecting those changes.
+## Deployment:
+  - Run `npm run build` to build the project, producing a bundle in `dist/`
+    - This can be served using a web server of your choice
+    - Alternatively, use `npm run preview`
