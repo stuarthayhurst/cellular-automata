@@ -1,5 +1,6 @@
 {
-    "name": "team15_project",
+    "name": "cellular-automata",
+    "homepage": "https://github.com/stuarthayhurst/cellular-automata",
     "private": true,
     "version": "0.0.0",
     "type": "module",
