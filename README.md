@@ -3,6 +3,7 @@
     - This has been open-sourced for interest and inspiration, and is not actively developed
   - Simulate cellular automata in 2D, displaying it on the surface of 3D meshes
     - Supports dynamically generated spheres and toruses
+  - See some [examples](#screenshots)
   - Licensed under the [Mozilla Public License 2.0](LICENCE.txt)
 
 ## Features:
@@ -23,6 +24,11 @@
 ## Development:
   - Run `npm install` to setup the project
   - Run `npm run dev` to start the development environment
+
+## Screenshots:
+<p align="center">
+  <img src="https://github.com/stuarthayhurst/cellular-automata/raw/master/docs/demo-1.png" alt="Demo 1">
+</p>
 
 ## Deployment:
   - Run `npm run build` to build the project, producing a bundle in `dist/`
