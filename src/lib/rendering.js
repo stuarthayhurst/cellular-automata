@@ -798,7 +798,7 @@ function generateMesh(height, width, shape) {
 
     const [normals, normalsT] = meter(() => calculateNormals(mesh, origins));
 
-    console.log(`Mesh: ${meshT}ms. Normals: ${normalsT}ms.`);
+    console.log(`Mesh: ${meshT}ms, normals: ${normalsT}ms`);
 
     //Size of each buffer * their 3 uses * 4 bytes per element
     const bufferSize =
