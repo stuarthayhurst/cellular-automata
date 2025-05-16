@@ -4,7 +4,7 @@
 
     import { onMount } from "svelte";
     import { reactiveState } from "../reactiveState.svelte.js";
-    import { startRenderer } from "../rendering.js";
+    import { startRenderer } from "../renderer.js";
     import { setUpDragAndZoom } from "../dragAndZoom.js";
     import { setUpCellEditor } from "../cellEditor.js";
 
