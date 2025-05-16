@@ -9,7 +9,7 @@
         mayUndo,
         editorRedo,
         mayRedo,
-        clearGrid,
+        clearGrid
     } from "../cellEditor.js";
     import { bumpZoom } from "../dragAndZoom.js";
     import InfoPopup from "./InfoPopup.svelte";
@@ -103,7 +103,7 @@
                         onclick={() => editorUndo()}
                         disabled={!mayUndo(
                             reactiveState.historyStack.length,
-                            reactiveState.atStart,
+                            reactiveState.atStart
                         )}
                     >
                         <Icon icon="fa-solid:undo" width="20" height="20" />
@@ -114,7 +114,7 @@
                         onclick={() => editorRedo()}
                         disabled={!mayRedo(
                             reactiveState.redoStack.length,
-                            reactiveState.atStart,
+                            reactiveState.atStart
                         )}
                     >
                         <Icon icon="fa-solid:redo" width="20" height="20" />

@@ -7,7 +7,7 @@
         gameOfLifeRule,
         briansBrainRule,
         seedsRule,
-        dayAndNightRule,
+        dayAndNightRule
     } from "../simulation.js";
     import ColourSettings from "./ColourSettings.svelte";
 </script>

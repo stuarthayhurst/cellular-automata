@@ -3,7 +3,7 @@ import {
     gameOfLifeRule,
     countMooresNeighbours,
     nextCells,
-    briansBrainRule,
+    briansBrainRule
 } from "../src/lib/simulation.js";
 
 describe("Simulator Functions", () => {
@@ -41,7 +41,7 @@ describe("Simulator Functions", () => {
         it("should change at least one value", () => {
             const initialCells = new Uint8Array([0, 1, 1, 0, 1, 0, 1, 1, 0]);
             expect(nextCells(initialCells, 3, 3, briansBrainRule)).not.toBe(
-                initialCells,
+                initialCells
             );
         });
     });

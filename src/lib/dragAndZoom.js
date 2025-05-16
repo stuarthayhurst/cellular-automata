@@ -140,7 +140,7 @@ export function setUpDragAndZoom(canvas) {
         const sensitivity = pixels / 100.0;
         const newPixels = Math.max(
             7,
-            sharedState.pixelsPerCell + change * sensitivity,
+            sharedState.pixelsPerCell + change * sensitivity
         );
         const zoomFactor = newPixels / pixels;
 
@@ -164,7 +164,7 @@ export function setUpDragAndZoom(canvas) {
     const onwheel_3d_view = (wheel) => {
         cameraDistance = Math.max(
             minCameraDistance(reactiveState.shape),
-            cameraDistance + wheel * zoomSpeed,
+            cameraDistance + wheel * zoomSpeed
         );
         sharedState.cameraPosition = cameraPosition(theta, phi, cameraDistance);
     };
@@ -178,8 +178,8 @@ export function setUpDragAndZoom(canvas) {
                 ...clientToCanvasSpace(
                     canvas,
                     wheelEvent.clientX,
-                    wheelEvent.clientY,
-                ),
+                    wheelEvent.clientY
+                )
             );
         } else {
             onwheel_3d_view(wheelEvent.deltaY);
@@ -213,5 +213,5 @@ const cameraPosition = (theta, phi, cameraDistance) =>
     glMatrix.vec3.fromValues(
         Math.cos(theta) * Math.sin(phi) * cameraDistance,
         Math.cos(phi) * cameraDistance,
-        -Math.sin(theta) * Math.sin(phi) * cameraDistance, // Account for WebGL being right-handed with -z
+        -Math.sin(theta) * Math.sin(phi) * cameraDistance // Account for WebGL being right-handed with -z
     );

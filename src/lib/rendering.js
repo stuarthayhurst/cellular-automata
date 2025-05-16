@@ -32,7 +32,7 @@ export function startRenderer(context) {
         context.MAX_TEXTURE_SIZE ** 2 * channels * (channelWidth / bitsPerCell);
     console.info(
         "WebGL2 support detected, width x height must not exceed " +
-            sharedState.maxCells,
+            sharedState.maxCells
     );
     const square = Math.floor(Math.sqrt(sharedState.maxCells));
     console.info("Maximum square dimensions are " + square + " x " + square);
@@ -44,12 +44,12 @@ export function startRenderer(context) {
     const modelVertShader = compileShader(
         context,
         context.VERTEX_SHADER,
-        modelVertSource,
+        modelVertSource
     );
     const modelFragShader = compileShader(
         context,
         context.FRAGMENT_SHADER,
-        modelFragSource,
+        modelFragSource
     );
 
     //Link model shaders into a program
@@ -63,19 +63,19 @@ export function startRenderer(context) {
     //Fetch model shader attribute locations
     const meshAttribLocation = context.getAttribLocation(
         modelProgram,
-        "inPosition",
+        "inPosition"
     );
     const normalAttribLocation = context.getAttribLocation(
         modelProgram,
-        "inNormal",
+        "inNormal"
     );
     const originAttribLocation = context.getAttribLocation(
         modelProgram,
-        "inOrigin",
+        "inOrigin"
     );
     const cellIndexAttribLocation = context.getAttribLocation(
         modelProgram,
-        "inCellIndex",
+        "inCellIndex"
     );
 
     //Stride - (1 * 1) * sizeof(int) + (3 * 3) * sizeof(float)
@@ -90,7 +90,7 @@ export function startRenderer(context) {
         context.FLOAT, //Data type
         false, //Normalisation toggle
         meshStride,
-        0, //Data offset - (0 * 3) * sizeof(float)
+        0 //Data offset - (0 * 3) * sizeof(float)
     );
     context.enableVertexAttribArray(meshAttribLocation);
     context.vertexAttribPointer(
@@ -99,7 +99,7 @@ export function startRenderer(context) {
         context.FLOAT, //Data type
         false, //Normalisation toggle
         meshStride,
-        3 * 4, //Data offset - (1 * 3) * sizeof(float)
+        3 * 4 //Data offset - (1 * 3) * sizeof(float)
     );
     context.enableVertexAttribArray(normalAttribLocation);
     context.vertexAttribPointer(
@@ -108,7 +108,7 @@ export function startRenderer(context) {
         context.FLOAT, //Data type
         false, //Normalisation toggle
         meshStride,
-        6 * 4, //Data offset - (2 * 3) * sizeof(float)
+        6 * 4 //Data offset - (2 * 3) * sizeof(float)
     );
     context.enableVertexAttribArray(originAttribLocation);
     context.vertexAttribIPointer(
@@ -116,7 +116,7 @@ export function startRenderer(context) {
         1, //Number of components
         context.INT, //Data type
         meshStride,
-        9 * 4, //Data offset - (3 * 3) * sizeof(float)
+        9 * 4 //Data offset - (3 * 3) * sizeof(float)
     );
     context.enableVertexAttribArray(cellIndexAttribLocation);
 
@@ -124,47 +124,47 @@ export function startRenderer(context) {
     const MVPLocation = context.getUniformLocation(modelProgram, "MVP");
     const modelMatrixLocation = context.getUniformLocation(
         modelProgram,
-        "modelMatrix",
+        "modelMatrix"
     );
     const cameraPosLocation = context.getUniformLocation(
         modelProgram,
-        "cameraPos",
+        "cameraPos"
     );
     const cellDataTexLocation = context.getUniformLocation(
         modelProgram,
-        "cellDataTexture",
+        "cellDataTexture"
     );
     const baseColourLocation = context.getUniformLocation(
         modelProgram,
-        "baseColour",
+        "baseColour"
     );
     const cellColourLocation = context.getUniformLocation(
         modelProgram,
-        "cellColour",
+        "cellColour"
     );
     const unmappedColourLocation = context.getUniformLocation(
         modelProgram,
-        "unmappedColour",
+        "unmappedColour"
     );
     const activeCellModeLocation = context.getUniformLocation(
         modelProgram,
-        "activeCellMode",
+        "activeCellMode"
     );
     const raisedCellHeightLocation = context.getUniformLocation(
         modelProgram,
-        "raisedCellHeight",
+        "raisedCellHeight"
     );
 
     //Compile the grid shaders
     const gridVertShader = compileShader(
         context,
         context.VERTEX_SHADER,
-        gridVertSource,
+        gridVertSource
     );
     const gridFragShader = compileShader(
         context,
         context.FRAGMENT_SHADER,
-        gridFragSource,
+        gridFragSource
     );
 
     //Link grid shaders into a program
@@ -178,7 +178,7 @@ export function startRenderer(context) {
     //Fetch grid shader attribute locations
     const gridMeshAttribLocation = context.getAttribLocation(
         gridProgram,
-        "inPosition",
+        "inPosition"
     );
 
     //Create a vertex array object for the grid's mesh
@@ -190,79 +190,79 @@ export function startRenderer(context) {
         context.FLOAT, //Data type
         false, //Normalisation toggle
         2 * 4, //Stride - (1 * 2) * sizeof(float)
-        0, //Data offset
+        0 //Data offset
     );
     context.enableVertexAttribArray(gridMeshAttribLocation);
 
     //Get grid shader uniform locations
     const gridCellWidthLocation = context.getUniformLocation(
         gridProgram,
-        "gridCellWidth",
+        "gridCellWidth"
     );
     const gridCellHeightLocation = context.getUniformLocation(
         gridProgram,
-        "gridCellHeight",
+        "gridCellHeight"
     );
     const gridCellsPerWidthLocation = context.getUniformLocation(
         gridProgram,
-        "gridCellsPerWidth",
+        "gridCellsPerWidth"
     );
     const gridOffsetXLocation = context.getUniformLocation(
         gridProgram,
-        "gridOffsetX",
+        "gridOffsetX"
     );
     const gridOffsetYLocation = context.getUniformLocation(
         gridProgram,
-        "gridOffsetY",
+        "gridOffsetY"
     );
     const aspectRatioLocation = context.getUniformLocation(
         gridProgram,
-        "aspectRatio",
+        "aspectRatio"
     );
     const gridCellDataTexLocation = context.getUniformLocation(
         gridProgram,
-        "cellDataTexture",
+        "cellDataTexture"
     );
     const gridBaseColourLocation = context.getUniformLocation(
         gridProgram,
-        "baseColour",
+        "baseColour"
     );
     const gridCellColourLocation = context.getUniformLocation(
         gridProgram,
-        "cellColour",
+        "cellColour"
     );
     const gridAliasBaseColourLocation = context.getUniformLocation(
         gridProgram,
-        "aliasBaseColour",
+        "aliasBaseColour"
     );
     const gridAliasCellColourLocation = context.getUniformLocation(
         gridProgram,
-        "aliasCellColour",
+        "aliasCellColour"
     );
     const gridBorderSizeLocation = context.getUniformLocation(
         gridProgram,
-        "borderSize",
+        "borderSize"
     );
     const gridBorderColourLocation = context.getUniformLocation(
         gridProgram,
-        "borderColour",
+        "borderColour"
     );
     const gridBackgroundBorderColourLocation = context.getUniformLocation(
         gridProgram,
-        "backgroundBorderColour",
+        "backgroundBorderColour"
     );
     const gridAliasBackgroundLocation = context.getUniformLocation(
         gridProgram,
-        "aliasBackground",
+        "aliasBackground"
     );
     const gridWidthPixelsLocation = context.getUniformLocation(
         gridProgram,
-        "widthPixels",
+        "widthPixels"
     );
 
     //Set up the vertices for the grid
     const gridData = new Float32Array([
-        -1, 1, -1, -1, 1, -1, -1, 1, 1, -1, 1, 1,
+        -1, 1, -1, -1, 1, -1, -1, 1, 1, -1, 1, 1
     ]);
     fillMeshBuffer(context, gridBuffer, gridData.buffer);
 
@@ -303,7 +303,7 @@ export function startRenderer(context) {
         cellColour,
         unmappedColour,
         raiseCells,
-        raisedCellHeight,
+        raisedCellHeight
     ) {
         //Use the model shader and the vertex array object
         context.useProgram(modelProgram);
@@ -313,7 +313,7 @@ export function startRenderer(context) {
         const projectionMatrix = calculateProjectionMatrix(
             fieldOfView,
             canvasHeight,
-            canvasWidth,
+            canvasWidth
         );
 
         //Calculate the view matrix
@@ -400,7 +400,7 @@ export function startRenderer(context) {
         borderColour,
         backgroundBorderColour,
         aliasBackground,
-        canvasWidth,
+        canvasWidth
     ) {
         //Use the grid shader and the vertex array object
         context.useProgram(gridProgram);
@@ -427,7 +427,7 @@ export function startRenderer(context) {
         context.uniform3fv(gridBorderColourLocation, borderColour);
         context.uniform3fv(
             gridBackgroundBorderColourLocation,
-            backgroundBorderColour,
+            backgroundBorderColour
         );
         context.uniform1i(gridAliasBackgroundLocation, Number(aliasBackground));
         context.uniform1i(gridWidthPixelsLocation, canvasWidth);
@@ -470,7 +470,7 @@ export function startRenderer(context) {
         if (cellWidth * cellHeight !== cellData.length) {
             window.requestAnimationFrame(drawFrame);
             console.warn(
-                "Not drawing this frame: cell data doesn't match dimensions.",
+                "Not drawing this frame: cell data doesn't match dimensions."
             );
             return;
         }
@@ -485,7 +485,7 @@ export function startRenderer(context) {
             let [meshData, vertexBlockSize] = generateMesh(
                 cellHeight,
                 cellWidth,
-                shape,
+                shape
             );
             fillMeshBuffer(context, meshBuffer, meshData);
             vertexCount = meshData.byteLength / vertexBlockSize;
@@ -502,7 +502,7 @@ export function startRenderer(context) {
                 cellData,
                 channels,
                 channelWidth,
-                bitsPerCell,
+                bitsPerCell
             );
 
             lastCellWidth = cellWidth;
@@ -516,7 +516,7 @@ export function startRenderer(context) {
                 cellData,
                 channels,
                 channelWidth,
-                bitsPerCell,
+                bitsPerCell
             );
         }
 
@@ -533,7 +533,7 @@ export function startRenderer(context) {
                 cellColour,
                 unmappedColour,
                 raiseCells,
-                raisedCellHeight,
+                raisedCellHeight
             );
         } else {
             drawGrid(
@@ -551,7 +551,7 @@ export function startRenderer(context) {
                 borderColour,
                 backgroundBorderColour,
                 aliasBackground,
-                canvasWidth,
+                canvasWidth
             );
         }
         window.requestAnimationFrame(drawFrame);
@@ -625,7 +625,7 @@ function calculateProjectionMatrix(fieldOfView, height, width) {
         glMatrix.glMatrix.toRadian(fieldOfView),
         width / height,
         0.1,
-        null,
+        null
     );
 
     return projectionMatrix;
@@ -643,7 +643,7 @@ function calculateViewMatrix(cameraPosition) {
         viewMatrix,
         cameraPosition,
         cameraTarget,
-        glMatrix.vec3.fromValues(0.0, 1.0, 0.0),
+        glMatrix.vec3.fromValues(0.0, 1.0, 0.0)
     );
 
     return viewMatrix;
@@ -660,7 +660,7 @@ function calculateModelMatrix(scale) {
     glMatrix.mat4.scale(
         modelMatrix,
         modelMatrix,
-        glMatrix.vec3.fromValues(scale, scale, scale),
+        glMatrix.vec3.fromValues(scale, scale, scale)
     );
 
     return modelMatrix;
@@ -699,11 +699,11 @@ function setDataTexture(
     rawData,
     channels,
     channelWidth,
-    bitsPerCell,
+    bitsPerCell
 ) {
     //Calculate rows and columns required to store the bytes
     const minPixels = Math.ceil(
-        rawData.length / ((channelWidth / bitsPerCell) * channels),
+        rawData.length / ((channelWidth / bitsPerCell) * channels)
     );
     const rows = Math.ceil(minPixels / context.MAX_TEXTURE_SIZE);
     let cols = context.MAX_TEXTURE_SIZE;
@@ -737,7 +737,7 @@ function setDataTexture(
         0,
         context.RGBA_INTEGER,
         context.UNSIGNED_INT,
-        data,
+        data
     );
 }
 
@@ -759,12 +759,12 @@ function createDataTexture(context, data, channels, channelWidth, bitsPerCell) {
     context.texParameteri(
         context.TEXTURE_2D,
         context.TEXTURE_MIN_FILTER,
-        context.NEAREST,
+        context.NEAREST
     );
     context.texParameteri(
         context.TEXTURE_2D,
         context.TEXTURE_MAG_FILTER,
-        context.NEAREST,
+        context.NEAREST
     );
 
     return texture;
@@ -793,7 +793,7 @@ function generateMesh(height, width, shape) {
 
     //Generate the mesh, origins, indices and normals
     const [[mesh, origins, indices], meshT] = meter(() =>
-        calculateMesh(width, height, meshWidthScale, meshHeightScale, shape),
+        calculateMesh(width, height, meshWidthScale, meshHeightScale, shape)
     );
 
     const [normals, normalsT] = meter(() => calculateNormals(mesh, origins));

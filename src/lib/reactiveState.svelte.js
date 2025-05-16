@@ -60,12 +60,12 @@ export const reactiveState = $state({
     customColours: [],
     controlsVisible: true,
     showSettings: false,
-    randomFillProbability: 0.5,
+    randomFillProbability: 0.5
 });
 
 sharedState.cells = new Uint8Array(
     generateRandomCells(
         reactiveState.cellGridWidth,
-        reactiveState.cellGridHeight,
-    ).flat(),
+        reactiveState.cellGridHeight
+    ).flat()
 );

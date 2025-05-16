@@ -5,7 +5,7 @@ import App from "./App.svelte";
 
 /** @type {MountOptions} */
 const mountOptions = {
-    target: document.getElementById("app"),
+    target: document.getElementById("app")
 };
 
 const app = mount(App, mountOptions);

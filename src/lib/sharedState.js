@@ -48,7 +48,7 @@ export const sharedState = {
     gridOffsetY: 0.0,
     borderSize: 0.015,
     borderColour: rgbVec(0, 0, 0),
-    backgroundBorderColour: rgbVec(77, 77, 77),
+    backgroundBorderColour: rgbVec(77, 77, 77)
 };
 
 export function saveStartState() {

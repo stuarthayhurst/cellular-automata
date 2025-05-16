@@ -15,7 +15,7 @@ export function calculateMesh(
     height,
     meshWidthScale,
     meshHeightScale,
-    shape,
+    shape
 ) {
     let generator;
     if (shape === "torus") {
@@ -29,7 +29,7 @@ export function calculateMesh(
         width,
         height,
         meshWidthScale,
-        meshHeightScale,
+        meshHeightScale
     );
 
     //Calculate mesh, origins and indices for the skeleton
@@ -39,7 +39,7 @@ export function calculateMesh(
         width,
         height,
         meshWidthScale,
-        meshHeightScale,
+        meshHeightScale
     );
 }
 
@@ -57,14 +57,14 @@ export function calculateNormals(mesh, origins) {
         let normal = [
             mesh[i][0] - origins[i][0],
             mesh[i][1] - origins[i][1],
-            mesh[i][2] - origins[i][2],
+            mesh[i][2] - origins[i][2]
         ];
 
         //Normalise the vector
         const len = Math.sqrt(
             normal[0] * normal[0] +
                 normal[1] * normal[1] +
-                normal[2] * normal[2],
+                normal[2] * normal[2]
         );
         normal[0] /= len;
         normal[1] /= len;

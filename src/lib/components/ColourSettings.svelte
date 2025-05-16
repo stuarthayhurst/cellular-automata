@@ -38,7 +38,7 @@
         const rgb = hexToRGB(hex);
         return {
             base: rgb.map(/** @param {Number} n */ (n) => Math.floor(n * 0.5)), // 50% brightness
-            cell: rgb,
+            cell: rgb
         };
     }
 
@@ -78,7 +78,7 @@
      */
     function removeCustomColour(removeHex) {
         reactiveState.customColours = reactiveState.customColours.filter(
-            (hex) => hex !== removeHex,
+            (hex) => hex !== removeHex
         );
     }
 </script>

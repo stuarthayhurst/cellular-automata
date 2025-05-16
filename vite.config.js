@@ -8,8 +8,8 @@ export default defineConfig({
         svelte(),
         Icons({
             compiler: "svelte",
-            autoInstall: true,
-        }),
+            autoInstall: true
+        })
     ],
-    assetsInclude: ["**/*.png", "**/*.webp", "**/*.mp4"],
+    assetsInclude: ["**/*.png", "**/*.webp", "**/*.mp4"]
 });

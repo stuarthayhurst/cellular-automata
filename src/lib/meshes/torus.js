@@ -16,7 +16,7 @@ export function generateSkeleton(
     width,
     height,
     meshWidthScale,
-    meshHeightScale,
+    meshHeightScale
 ) {
     /** @type {glMatrix.vec3[]} */
     let skeleton = [];
@@ -33,7 +33,7 @@ export function generateSkeleton(
         let origin = glMatrix.vec3.fromValues(
             Math.sin(ringRadians),
             0.0,
-            Math.cos(ringRadians),
+            Math.cos(ringRadians)
         );
         glMatrix.vec3.scale(origin, origin, ringRadius);
         skeletonOrigins.push(origin);
@@ -50,7 +50,7 @@ export function generateSkeleton(
             let point = glMatrix.vec3.fromValues(
                 Math.sin(ringRadians - 2 * Math.PI) * localRadius,
                 Math.cos(volumeRadians) / 2,
-                Math.cos(ringRadians - 2 * Math.PI) * localRadius,
+                Math.cos(ringRadians - 2 * Math.PI) * localRadius
             );
             glMatrix.vec3.scale(point, point, volumeDiameter);
             glMatrix.vec3.add(point, point, skeletonOrigins[i]);
@@ -88,7 +88,7 @@ export function calculateMesh(
     width,
     height,
     meshWidthScale,
-    meshHeightScale,
+    meshHeightScale
 ) {
     /** @type {glMatrix.vec3[]} */
     let mesh = [];
@@ -119,7 +119,7 @@ export function calculateMesh(
             skeleton[nextRingPrevPoint],
             skeleton[i],
             skeleton[nextRingPrevPoint],
-            skeleton[prevPoint],
+            skeleton[prevPoint]
         );
 
         //Save corresponding origins
@@ -129,7 +129,7 @@ export function calculateMesh(
             nextOrigin,
             currentOrigin,
             nextOrigin,
-            currentOrigin,
+            currentOrigin
         );
 
         //Calculate the raw grid index components

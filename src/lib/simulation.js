@@ -16,7 +16,7 @@ export function stepForward() {
         sharedState.cells,
         reactiveState.cellGridWidth,
         reactiveState.cellGridHeight,
-        reactiveState.simulationRule,
+        reactiveState.simulationRule
     );
 
     reactiveState.atStart = false;
@@ -34,8 +34,8 @@ export const nextCells = (cells, w, h, nextCell) =>
     cells.map((cellState, i) =>
         nextCell(
             cellState,
-            countMooresNeighbours(cells, w, h, ...indexToPos(i, w)),
-        ),
+            countMooresNeighbours(cells, w, h, ...indexToPos(i, w))
+        )
     );
 
 /**

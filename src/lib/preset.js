@@ -16,16 +16,16 @@ export const presets = {
             [3, 3],
             [3, 4],
             [4, 3],
-            [4, 4],
-        ],
+            [4, 4]
+        ]
     },
     blinker: {
         name: "Blinker (Oscillator)",
         cells: [
             [5, 3],
             [5, 4],
-            [5, 5],
-        ],
+            [5, 5]
+        ]
     },
     glider: {
         name: "Glider (Spaceships)",
@@ -34,13 +34,13 @@ export const presets = {
             [4, 4],
             [5, 2],
             [5, 3],
-            [5, 4],
-        ],
+            [5, 4]
+        ]
     },
     random: {
         name: "Random",
-        cells: [],
-    },
+        cells: []
+    }
 };
 
 /**
@@ -98,7 +98,7 @@ export function applyPreset(presetKey) {
     pushHistory({
         setCellsAlive: changedCellsAlive,
         setCellsDead: changedCellsDead,
-        actionName: "Apply Preset",
+        actionName: "Apply Preset"
     });
 
     sharedState.cells = newCellsFlat;
@@ -130,7 +130,7 @@ function generateCells(width, height, aliveCells = []) {
 export function generateRandomCells(width, height) {
     return Array.from({ length: height }, () =>
         Array.from({ length: width }, () =>
-            Math.random() < reactiveState.randomFillProbability ? 1 : 0,
-        ),
+            Math.random() < reactiveState.randomFillProbability ? 1 : 0
+        )
     );
 }

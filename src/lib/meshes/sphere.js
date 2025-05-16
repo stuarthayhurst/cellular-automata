@@ -15,7 +15,7 @@ export function generateSkeleton(
     width,
     height,
     meshWidthScale,
-    meshHeightScale,
+    meshHeightScale
 ) {
     /** @type {glMatrix.vec3[]} */
     let skeleton = [];
@@ -35,7 +35,7 @@ export function generateSkeleton(
             let point = glMatrix.vec3.fromValues(
                 Math.sin(ringRadians - 2 * Math.PI) * localRadius,
                 Math.cos(volumeRadians),
-                Math.cos(ringRadians - 2 * Math.PI) * localRadius,
+                Math.cos(ringRadians - 2 * Math.PI) * localRadius
             );
             glMatrix.vec3.scale(point, point, volumeDiameter);
 
@@ -72,7 +72,7 @@ export function calculateMesh(
     width,
     height,
     meshWidthScale,
-    meshHeightScale,
+    meshHeightScale
 ) {
     /** @type {glMatrix.vec3[]} */
     let mesh = [];
@@ -106,7 +106,7 @@ export function calculateMesh(
         let prevPoint = previousPointWrapped(i, height + 3);
         let nextRingPrevPoint = previousPointWrapped(
             nextRingSamePoint,
-            height + 3,
+            height + 3
         );
 
         //Save first and second triangles
@@ -116,7 +116,7 @@ export function calculateMesh(
             skeleton[nextRingPrevPoint],
             skeleton[i],
             skeleton[nextRingPrevPoint],
-            skeleton[prevPoint],
+            skeleton[prevPoint]
         );
 
         if (mapTriangles) {
