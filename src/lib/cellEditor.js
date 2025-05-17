@@ -104,10 +104,14 @@ export function setUpCellEditor(canvas) {
 
     // While Drawing
     document.addEventListener("pointermove", (pointerEvent) => {
-        if (drawingStroke)
-            pointerEvent
-                .getCoalescedEvents()
-                .forEach((e) => draw(false, e.clientX, e.clientY));
+        if (drawingStroke) {
+            if (typeof pointerEvent.getCoalescedEvents === "function") {
+                const events = pointerEvent.getCoalescedEvents();
+                events.forEach((e) => draw(false, e.clientX, e.clientY));
+            } else {
+                draw(false, pointerEvent.clientX, pointerEvent.clientY);
+            }
+        }
     });
 
     /*
