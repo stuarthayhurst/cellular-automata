@@ -11,7 +11,8 @@
         "preview": "vite preview",
         "test": "vitest",
         "format": "prettier . --write",
-        "check-formatting": "prettier . --check"
+        "check-formatting": "prettier . --check",
+        "clean": "rm -rf dist"
     },
     "devDependencies": {
         "@iconify/svelte": "^4.0.2",
