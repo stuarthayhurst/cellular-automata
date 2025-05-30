@@ -3,6 +3,7 @@
     - This has been open-sourced for interest and inspiration, and is not actively developed
   - Simulate cellular automata in 2D, displaying it on the surface of 3D meshes
     - Supports dynamically generated spheres and toruses
+  - Host it yourself, or visit the [GitHub pages copy](https://stuarthayhurst.github.io/cellular-automata)
   - See some [examples](#screenshots)
   - Licensed under the [Mozilla Public License 2.0](LICENCE.txt)
 

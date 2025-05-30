@@ -13,7 +13,7 @@
         "document": true
     },
     "navigationLinks": {
-        "Website": "https://github.com/stuarthayhurst/cellular-automata",
+        "Website": "https://stuarthayhurst.github.io/cellular-automata",
         "Source Repository": "https://github.com/stuarthayhurst/cellular-automata"
     },
     "excludeNotDocumented": false
