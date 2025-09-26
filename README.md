@@ -13,6 +13,7 @@
   - Interactive, drawable grid editor
   - 4 different rules
   - Speed selection, play / pause and single step mode
+  - Up to 1.46 billion individually addressable cells, with configurable bit width
 
 ## Controls:
   - Left or right click and drag to rotate the 3D view
