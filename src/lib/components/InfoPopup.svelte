@@ -196,7 +196,7 @@
         border-radius: 12px;
         padding: 24px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        width: calc(100% - 48px);
+        width: calc(100% - 80px);
         font-family: "Poppins", sans-serif;
         font-size: 0.95rem;
         font-weight: 500;
@@ -205,7 +205,7 @@
     .close-button {
         position: absolute;
         top: 40px;
-        right: 10px;
+        right: 40px;
         width: auto;
         height: 36px;
         border-radius: 4px;
@@ -237,6 +237,8 @@
         letter-spacing: -0.5px;
         border-bottom: 2px solid #eee;
         padding-bottom: 16px;
+        margin-left: 40px;
+        width: calc(100% - 72px);
     }
 
     .popup-content img {
