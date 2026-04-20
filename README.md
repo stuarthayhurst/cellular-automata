@@ -39,3 +39,5 @@
   - Run `npm run build` to build the project, producing a bundle in `dist/`
     - This can be served using a web server of your choice
     - Alternatively, use `npm run preview`
+  - Alternatively, run `docker build -t cellular-automata .` to build a Docker image
+    - Use `docker run -p 80:80 cellular-automata` to run it
