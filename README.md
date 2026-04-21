@@ -39,5 +39,4 @@
   - Run `cd app; npm run build` to build the project, producing a bundle in `app/dist/`
     - This can be served using a web server of your choice
     - Alternatively, use `cd app; npm run preview`
-  - Alternatively, run `docker build -t cellular-automata .` to build a Docker image
-    - Use `docker run -p 80:80 cellular-automata` to run it
+  - Alternatively, run `docker compose up` to build and start a Docker image
