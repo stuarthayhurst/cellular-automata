@@ -11,7 +11,6 @@ WORKDIR /cellular-automata
 RUN npm install
 
 #Build the project
-RUN npm run clean
 RUN npm run build
 
 FROM debian:stable-slim
