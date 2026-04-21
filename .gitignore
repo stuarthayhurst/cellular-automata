@@ -7,8 +7,8 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
+app/node_modules
+app/dist
 typedoc-docs
 dist-ssr
 *.local

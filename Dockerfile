@@ -6,7 +6,7 @@ RUN apt install -y npm --no-install-recommends
 RUN apt clean
 
 #Copy the project and install NPM dependencies
-COPY ./ /cellular-automata
+COPY app /cellular-automata
 WORKDIR /cellular-automata
 RUN npm install
 

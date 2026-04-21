@@ -24,8 +24,8 @@
   - Change the shape with the shape icon in the top left
 
 ## Development:
-  - Run `npm install` to setup the project
-  - Run `npm run dev` to start the development environment
+  - Run `cd app; npm install` to setup the project
+  - Run `cd app; npm run dev` to start the development environment
 
 ## Screenshots:
 <p align="center">
@@ -36,8 +36,8 @@
 </p>
 
 ## Deployment:
-  - Run `npm run build` to build the project, producing a bundle in `dist/`
+  - Run `cd app; npm run build` to build the project, producing a bundle in `app/dist/`
     - This can be served using a web server of your choice
-    - Alternatively, use `npm run preview`
+    - Alternatively, use `cd app; npm run preview`
   - Alternatively, run `docker build -t cellular-automata .` to build a Docker image
     - Use `docker run -p 80:80 cellular-automata` to run it
