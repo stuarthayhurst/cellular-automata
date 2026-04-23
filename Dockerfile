@@ -1,3 +1,4 @@
+#Stage 0: Build the project
 FROM debian:stable-slim
 
 #Install apt dependencies
@@ -13,17 +14,11 @@ RUN npm install
 #Build the project
 RUN npm run build
 
-FROM debian:stable-slim
-
-#Install apt dependencies
-RUN apt update
-RUN apt install -y apache2 --no-install-recommends
-RUN apt clean
+#Stage 1: Set up the runtime container
+FROM httpd:alpine
 
 #Copy the built project
-COPY --from=0 /cellular-automata/dist/assets /var/www/html/cellular-automata/assets
-COPY --from=0 /cellular-automata/dist/index.html /var/www/html/index.html
+COPY --from=0 /cellular-automata/dist/assets /usr/local/apache2/htdocs/cellular-automata/assets
+COPY --from=0 /cellular-automata/dist/index.html /usr/local/apache2/htdocs/index.html
 
-#Run the web server
 EXPOSE 80 443
-CMD ["apachectl", "-D", "FOREGROUND"]
