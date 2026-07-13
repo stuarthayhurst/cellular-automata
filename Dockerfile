@@ -19,7 +19,6 @@ FROM httpd:alpine
 
 #Metadata for GitHub Container Registry
 LABEL org.opencontainers.image.source="https://github.com/stuarthayhurst/cellular-automata"
-LABEL org.opencontainers.image.description="Visualise 2D cellular automaton simulations on 3D objects"
 LABEL org.opencontainers.image.licenses="MPL-2.0"
 
 #Install curl for the healthcheck

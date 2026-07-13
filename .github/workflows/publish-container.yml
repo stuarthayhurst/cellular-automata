@@ -10,7 +10,11 @@ env:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [{runner: ubuntu-26.04, platform: amd64}, {runner: ubuntu-26.04-arm, platform: arm64}]
+    runs-on: ${{ matrix.os.runner }}
     permissions:
       contents: read
       packages: write
@@ -31,8 +35,12 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
             # Tag master branch as latest
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
+            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push Docker image
         id: push
@@ -42,6 +50,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/${{ matrix.os.platform }}
+          outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=Visualise 2D cellular automaton simulations on 3D objects
 
       - name: Generate artefact attestation
         uses: actions/attest@v4
