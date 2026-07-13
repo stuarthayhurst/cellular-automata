@@ -47,6 +47,10 @@
                     This project simulates cellular automata and displays it in
                     3D. Play around with different rules, patterns and settings,
                     but have fun!
+                    <a
+                        href="https://github.com/stuarthayhurst/cellular-automata">
+                        Source code
+                    </a>
                 </li>
 
                 <li>
