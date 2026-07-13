@@ -40,3 +40,5 @@
     - This can be served using a web server of your choice
     - Alternatively, use `cd app; npm run preview`
   - Alternatively, run `docker compose up` to build and start a Docker image
+  - Alternatively, use the provided container to skip building it
+    - Run `docker run -p 80:80 -p 443:443 ghcr.io/stuarthayhurst/cellular-automata:latest`
