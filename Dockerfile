@@ -1,5 +1,5 @@
 #Stage 0: Build the project
-FROM debian:stable-slim
+FROM debian:stable-slim AS build
 
 #Install apt dependencies
 RUN apt update
@@ -25,8 +25,8 @@ LABEL org.opencontainers.image.licenses="MPL-2.0"
 RUN apk add --no-cache curl
 
 #Copy the built project
-COPY --from=0 /cellular-automata/dist/assets /usr/local/apache2/htdocs/cellular-automata/assets
-COPY --from=0 /cellular-automata/dist/index.html /usr/local/apache2/htdocs/index.html
+COPY --from=build /cellular-automata/dist/assets /usr/local/apache2/htdocs/cellular-automata/assets
+COPY --from=build /cellular-automata/dist/index.html /usr/local/apache2/htdocs/index.html
 
 EXPOSE 80 443
 
