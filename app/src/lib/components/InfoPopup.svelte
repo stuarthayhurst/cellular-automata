@@ -153,8 +153,8 @@
                 <li>
                     <img src={settingsImage} alt="Settings" />
                     <img src={showSettingsPanelImage} alt="Settings Panel" />
-                    Use the settings button in the top right to change the size,
-                    preset, rules and graphics settings
+                    Use the settings button in the top right to change the size, preset,
+                    rules and graphics settings
                 </li>
             </ul>
         </div>
