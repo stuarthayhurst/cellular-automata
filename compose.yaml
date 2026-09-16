@@ -2,6 +2,10 @@ services:
   web:
     build: .
     restart: unless-stopped
+    user: www-data
+    command: [httpd-foreground, -C, "PidFile /tmp/httpd.pid"]
+    cap_add:
+      - net_bind_service
     ports:
       - "80:80"
       - "443:443"
