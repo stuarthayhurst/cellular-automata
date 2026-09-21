@@ -2,9 +2,10 @@
 FROM debian:stable-slim AS build
 
 #Install apt dependencies
-RUN apt update
-RUN apt install -y npm --no-install-recommends
-RUN apt clean
+RUN apt update \
+    && apt install -y npm --no-install-recommends \
+    && apt clean \
+    && rm -rf /var/lib/apt/lists/*
 
 #Copy the project and install NPM dependencies
 COPY app /cellular-automata
